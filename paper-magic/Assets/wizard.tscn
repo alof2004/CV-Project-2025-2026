@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://dkl2jsvaojhlo"]
 
-[ext_resource type="PackedScene" uid="uid://d1q3u3wn1l4tb" path="res://wizard.glb" id="1_xxhrx"]
-[ext_resource type="PackedScene" uid="uid://dxeq6ox6ejjci" path="res://wand.glb" id="2_34mad"]
+[ext_resource type="PackedScene" uid="uid://d1q3u3wn1l4tb" path="res://Assets/wizard.glb" id="1_xxhrx"]
+[ext_resource type="PackedScene" uid="uid://dxeq6ox6ejjci" path="res://Assets/wand.glb" id="2_34mad"]
 
 [node name="wizard" instance=ExtResource("1_xxhrx")]
 

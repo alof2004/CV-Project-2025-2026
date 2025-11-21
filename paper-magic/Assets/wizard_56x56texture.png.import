@@ -2,20 +2,20 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bq5e2pjrf5kff"
-path.s3tc="res://.godot/imported/wand_0.png-83efa09bbe0594c208b790890392c188.s3tc.ctex"
+uid="uid://b2dbnofdu6eqc"
+path.s3tc="res://.godot/imported/wizard_56x56texture.png-555a8efe2311fc89f8b38b1f531118c4.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 generator_parameters={
-"md5": "659d4e19b153dde02491c9ecc1644a7f"
+"md5": "c51cae2df8c99fced25ad1cc5fca1b89"
 }
 
 [deps]
 
-source_file="res://wand_0.png"
-dest_files=["res://.godot/imported/wand_0.png-83efa09bbe0594c208b790890392c188.s3tc.ctex"]
+source_file="res://Assets/wizard_56x56texture.png"
+dest_files=["res://.godot/imported/wizard_56x56texture.png-555a8efe2311fc89f8b38b1f531118c4.s3tc.ctex"]
 
 [params]
 

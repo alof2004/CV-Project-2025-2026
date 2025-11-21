@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://d1q3u3wn1l4tb"
-path="res://.godot/imported/wizard.glb-b531edb68bc003f8265733bce854de74.scn"
+uid="uid://dxeq6ox6ejjci"
+path="res://.godot/imported/wand.glb-3983ff3458b42807e847e5be0f149cec.scn"
 
 [deps]
 
-source_file="res://wizard.glb"
-dest_files=["res://.godot/imported/wizard.glb-b531edb68bc003f8265733bce854de74.scn"]
+source_file="res://Assets/wand.glb"
+dest_files=["res://.godot/imported/wand.glb-3983ff3458b42807e847e5be0f149cec.scn"]
 
 [params]
 

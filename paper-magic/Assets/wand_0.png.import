@@ -2,23 +2,24 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bjcut5sdow18"
-path="res://.godot/imported/wizard_56x56texture.png-02e9f404da69c75e0742cce2fd291d9e.ctex"
+uid="uid://djrrcwi423flg"
+path.s3tc="res://.godot/imported/wand_0.png-063eba380e95b4ebddac71f8ee5b6034.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
-"md5": "c51cae2df8c99fced25ad1cc5fca1b89"
+"md5": "659d4e19b153dde02491c9ecc1644a7f"
 }
 
 [deps]
 
-source_file="res://wizard_56x56texture.png"
-dest_files=["res://.godot/imported/wizard_56x56texture.png-02e9f404da69c75e0742cce2fd291d9e.ctex"]
+source_file="res://Assets/wand_0.png"
+dest_files=["res://.godot/imported/wand_0.png-063eba380e95b4ebddac71f8ee5b6034.s3tc.ctex"]
 
 [params]
 
-compress/mode=4
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -26,7 +27,7 @@ compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
 compress/normal_map=0
 compress/channel_pack=0
-mipmaps/generate=false
+mipmaps/generate=true
 mipmaps/limit=-1
 roughness/mode=0
 roughness/src_normal=""
