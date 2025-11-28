@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://boo7j2nhf4dfx"]
+
+[ext_resource type="MeshLibrary" uid="uid://bm5tc00flusa4" path="res://cubes_mesh_lib.tres" id="1_4hvuo"]
+
+[node name="Level1" type="Node3D"]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.8637156, 2.0782452, 2.24727)
+
+[node name="GridMap" type="GridMap" parent="."]
+mesh_library = ExtResource("1_4hvuo")
+data = {
+"cells": PackedInt32Array(0, 65534, 0, 1, 65534, 0, 2, 65534, 0, 3, 65534, 0, 4, 65534, 0, 6, 65534, 0, 5, 65534, 0, 0, 65533, 0, 1, 65533, 0, 2, 65533, 0, 3, 65533, 0, 4, 65533, 0, 5, 65533, 0, 6, 65533, 0)
+}
+metadata/_editor_floor_ = Vector3(0, 0, 0)

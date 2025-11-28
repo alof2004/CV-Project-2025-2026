@@ -29,4 +29,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.005, 0, 4.67)
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_a0tk4")
+position = Vector2(-12, -7)
 texture = SubResource("ViewportTexture_r3fl7")
