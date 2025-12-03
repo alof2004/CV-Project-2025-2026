@@ -1,4 +1,4 @@
-[gd_resource type="MeshLibrary" load_steps=9 format=4 uid="uid://bm5tc00flusa4"]
+[gd_resource type="MeshLibrary" load_steps=10 format=4 uid="uid://bm5tc00flusa4"]
 
 [ext_resource type="Texture2D" uid="uid://dbmi76p3hs40h" path="res://Blender Files/cube_cube2_tile161.png" id="1_b534i"]
 [ext_resource type="Texture2D" uid="uid://cdvhnuonlfc1o" path="res://Blender Files/cube_cube2_Design sem nome (2).png" id="2_nh1i5"]
@@ -83,12 +83,15 @@ data = {
 [sub_resource type="ImageTexture" id="ImageTexture_1c0iu"]
 image = SubResource("Image_b534i")
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_b534i"]
+size = Vector3(2, 2, 2)
+
 [resource]
 item/0/name = "Cube"
 item/0/mesh = SubResource("ArrayMesh_nimj3")
 item/0/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/0/mesh_cast_shadow = 1
-item/0/shapes = []
+item/0/shapes = [SubResource("BoxShape3D_b534i"), Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)]
 item/0/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/0/navigation_layers = 1
 item/0/preview = SubResource("ImageTexture_1c0iu")
