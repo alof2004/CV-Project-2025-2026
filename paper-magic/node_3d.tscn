@@ -1,19 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://bwncpkxa54eyd"]
+[gd_scene load_steps=2 format=3 uid="uid://bwncpkxa54eyd"]
 
 [ext_resource type="PackedScene" uid="uid://dkl2jsvaojhlo" path="res://Assets/wizard.tscn" id="1_a202f"]
-[ext_resource type="Shader" uid="uid://chf8lm8s6wge1" path="res://Shaders/wizard_shader.gdshader" id="2_noarx"]
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_noarx"]
-viewport_path = NodePath("SubViewport")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_a0tk4"]
-resource_local_to_scene = true
-shader = ExtResource("2_noarx")
-shader_parameter/screen_tex = SubResource("ViewportTexture_noarx")
-shader_parameter/pixel_count = Vector2(240, 240)
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_r3fl7"]
-viewport_path = NodePath("SubViewport")
 
 [node name="Node3D" type="Node3D"]
 
@@ -26,8 +13,3 @@ size_2d_override_stretch = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.005, 0, 4.67)
 
 [node name="wizard" parent="SubViewport" instance=ExtResource("1_a202f")]
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-material = SubResource("ShaderMaterial_a0tk4")
-position = Vector2(-12, -7)
-texture = SubResource("ViewportTexture_r3fl7")
