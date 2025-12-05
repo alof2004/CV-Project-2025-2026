@@ -1,24 +1,33 @@
+# Wand.gd
 extends Node3D
 
+# --------------------------------------------------------------------
+# NODES
+# --------------------------------------------------------------------
 @export var wand_ray_path: NodePath
-@export var magic_particles_path: NodePath   # GPUParticles3D (WandMagic)
+@export var magic_particles_path: NodePath   # GPUParticles3D
 
-@export var selection_radius: float = 2.0
-@export var rotate_speed: float = 2.0
-@export var scale_speed: float = 1.0
+# --------------------------------------------------------------------
+# SELECTION / TRANSFORM
+# --------------------------------------------------------------------
+@export var selection_radius: float = 7.0   # how close to wand tip to hover/select
+@export var rotate_speed: float = 2.0       # manual rotation (rad/s)
+@export var scale_speed: float = 1.0        # manual scale factor/s
 @export var min_scale: float = 0.5
 @export var max_scale: float = 2.0
 
-@export var aura_max_alpha: float = 0.4
-@export var aura_fade_time: float = 0.2
+# --------------------------------------------------------------------
+# AURA
+# --------------------------------------------------------------------
+@export var aura_max_alpha: float = 0.4     # target alpha when fully glowing
+@export var aura_fade_time: float = 0.2     # time (seconds) for fade in/out
 
-# how thick the beam looks
-@export var beam_thickness: float = 0.2     # half-height / half-width of the box
-# how far past the object the beam continues
-@export var beam_length_factor: float = 1.2 # 1.0 = exactly to object, >1 = overshoot
-
-# NEW: how strong the downward bend is
-@export var beam_gravity: float = 0.5       # small value = slight fall, larger = big arc
+# --------------------------------------------------------------------
+# BEAM (GPUParticles3D)
+# --------------------------------------------------------------------
+@export var beam_speed: float = 5.0        # particle speed along beam
+@export var beam_amount: int = 3000         # how many particles
+@export var beam_max_length: float = 90.0   # must cover max wand distance
 
 const TARGET_GROUP := "wand_target"
 const AURA_NAME    := "SelectionAura"
@@ -38,6 +47,9 @@ var frame_counter: int = 0
 var aura_tweens: Dictionary = {}
 
 
+# -------------------------------------------------------
+# Helper: get a *per-instance* StandardMaterial3D for aura
+# -------------------------------------------------------
 func _get_aura_material(aura: MeshInstance3D) -> StandardMaterial3D:
 	var mat: Material = aura.get_surface_override_material(0)
 	if mat == null:
@@ -47,6 +59,7 @@ func _get_aura_material(aura: MeshInstance3D) -> StandardMaterial3D:
 	if mat == null:
 		return null
 
+	# Make sure this instance has its own copy
 	if not mat.resource_local_to_scene:
 		mat = mat.duplicate()
 		mat.resource_local_to_scene = true
@@ -56,39 +69,40 @@ func _get_aura_material(aura: MeshInstance3D) -> StandardMaterial3D:
 
 
 func _ready() -> void:
-	print("\n[WAND] _ready")
-
-	# ---- Ray ----
-	if wand_ray:
-		wand_ray.enabled = true
+	# Ray
+	if wand_ray == null:
+		push_error("[WAND] ERROR: wand_ray is NULL (bad path?)")
 	else:
-		push_error("[WAND] ERROR: wand_ray is NULL")
+		wand_ray.enabled = true
 
-	# ---- Particles / beam ----
-	if wand_magic:
+	# Magic beam
+	if wand_magic == null:
+		push_error("[WAND] ERROR: wand_magic is NULL (bad path?)")
+	else:
 		magic_mat = wand_magic.process_material as ParticleProcessMaterial
 		if magic_mat == null:
 			push_error("[WAND] WandMagic has no ParticleProcessMaterial")
 		else:
-			# Static beam along a box; particles then fall a bit in world -Y
-			magic_mat.initial_velocity_min = 0.0
-			magic_mat.initial_velocity_max = 0.0
-			# CHANGED: give them a small downward pull
-			magic_mat.gravity = Vector3(0.0, -beam_gravity, 0.0)
-			magic_mat.spread = 0.0
-			magic_mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
+			# Emit from a single point
+			magic_mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_POINT
+			magic_mat.spread = 5.0
+			magic_mat.gravity = Vector3.ZERO      # straight beam
+			magic_mat.direction = Vector3(0, 0, -1)  # along -Z of emitter
+			magic_mat.initial_velocity_min = beam_speed
+			magic_mat.initial_velocity_max = beam_speed
 
-		# CHANGED: world-space so gravity is always “down”
-		wand_magic.local_coords = false
-
-		wand_magic.lifetime = 0.8
-		wand_magic.preprocess = 0.8
-		wand_magic.amount = 800
+		# Local coords so we can rotate emitter to face the target
+		wand_magic.local_coords = true
+		wand_magic.amount = beam_amount
 		wand_magic.emitting = false
-	else:
-		push_error("[WAND] ERROR: magic_particles_path is NULL")
 
-	# ---- Auras start hidden ----
+		# Large visibility box so the beam is not clipped
+		var aabb := AABB()
+		aabb.position = Vector3(-beam_max_length * 0.5, -beam_max_length * 0.5, -beam_max_length * 0.5)
+		aabb.size = Vector3(beam_max_length, beam_max_length, beam_max_length)
+		wand_magic.visibility_aabb = aabb
+
+	# Ensure all auras start hidden and fully transparent
 	for node in get_tree().get_nodes_in_group(TARGET_GROUP):
 		if node is Node3D:
 			var aura_node: MeshInstance3D = node.get_node_or_null(AURA_NAME) as MeshInstance3D
@@ -107,6 +121,7 @@ func _physics_process(delta: float) -> void:
 
 	frame_counter += 1
 
+	# Ray debug (optional)
 	var is_col: bool = wand_ray.is_colliding()
 	if is_col != last_colliding or frame_counter % 30 == 0:
 		if is_col:
@@ -118,22 +133,26 @@ func _physics_process(delta: float) -> void:
 
 	_update_hover()
 
+	# Select / deselect with wand_grab
 	if Input.is_action_just_pressed("wand_grab"):
 		_toggle_select()
 
+	# While something is selected, rotate / scale it
 	if grabbed:
 		_update_rotation(delta)
 		_update_scale(delta)
 
+	# Beam goes to grabbed if any, otherwise to hovered
 	var target: Node3D = grabbed if grabbed != null else hovered
 	_update_magic_beam(target)
 
 
-# ---------- Hover / selection ----------
 
 func _update_hover() -> void:
 	var new_hover: Node3D = null
 	var best_dist: float = selection_radius
+
+	# Use wand tip (ray origin) in world coordinates
 	var wand_pos: Vector3 = wand_ray.global_transform.origin
 
 	for node in get_tree().get_nodes_in_group(TARGET_GROUP):
@@ -144,16 +163,21 @@ func _update_hover() -> void:
 				best_dist = d
 				new_hover = node
 
+	if new_hover == hovered:
+		return
+
 	hovered = new_hover
 
 
 func _toggle_select() -> void:
+	# Click empty space → clear selection
 	if hovered == null and grabbed:
 		_set_aura_visible(grabbed, false)
 		grabbed = null
 		return
 
 	if hovered:
+		# Clear previous selection
 		if grabbed and grabbed != hovered:
 			_set_aura_visible(grabbed, false)
 
@@ -161,22 +185,25 @@ func _toggle_select() -> void:
 		_set_aura_visible(grabbed, true)
 
 
-# ---------- Aura fade ----------
+# ====================================================================
+# AURA FADE-IN / FADE-OUT
+# ====================================================================
 
 func _set_aura_visible(target: Node3D, visible: bool) -> void:
 	if target == null:
 		return
 
-	var aura := target.get_node_or_null(AURA_NAME) as MeshInstance3D
+	var aura: MeshInstance3D = target.get_node_or_null(AURA_NAME) as MeshInstance3D
 	if aura == null:
 		return
 
-	var mat := _get_aura_material(aura)
+	var mat: StandardMaterial3D = _get_aura_material(aura)
 	if mat == null:
 		return
 
+	# Stop old tween
 	if aura_tweens.has(aura):
-		var old_tween := aura_tweens[aura] as Tween
+		var old_tween: Tween = aura_tweens[aura] as Tween
 		if old_tween and old_tween.is_valid():
 			old_tween.kill()
 		aura_tweens.erase(aura)
@@ -185,9 +212,10 @@ func _set_aura_visible(target: Node3D, visible: bool) -> void:
 	var to_col: Color = from_col
 	to_col.a = aura_max_alpha if visible else 0.0
 
+	# Visible while animating
 	aura.visible = true
 
-	var tw := get_tree().create_tween()
+	var tw: Tween = get_tree().create_tween()
 	tw.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	tw.tween_property(mat, "albedo_color", to_col, aura_fade_time)
 
@@ -197,7 +225,9 @@ func _set_aura_visible(target: Node3D, visible: bool) -> void:
 	aura_tweens[aura] = tw
 
 
-# ---------- Transform controls ----------
+# ====================================================================
+# TRANSFORM CONTROLS
+# ====================================================================
 
 func _update_rotation(delta: float) -> void:
 	if grabbed == null:
@@ -218,6 +248,7 @@ func _update_scale(delta: float) -> void:
 		return
 
 	var s: Vector3 = grabbed.scale
+	var orig: Vector3 = s
 
 	if Input.is_action_pressed("wand_scale_up"):
 		s *= 1.0 + scale_speed * delta
@@ -228,10 +259,13 @@ func _update_scale(delta: float) -> void:
 	s.y = clamp(s.y, min_scale, max_scale)
 	s.z = clamp(s.z, min_scale, max_scale)
 
-	grabbed.scale = s
+	if s != orig:
+		grabbed.scale = s
 
 
-# ---------- MAGIC BEAM (solid “line” between wand and target) ----------
+# ====================================================================
+# MAGIC BEAM (STRAIGHT LINE FROM WAND TIP TO TARGET)
+# ====================================================================
 
 func _update_magic_beam(target: Node3D) -> void:
 	if wand_magic == null or magic_mat == null:
@@ -241,41 +275,32 @@ func _update_magic_beam(target: Node3D) -> void:
 		wand_magic.emitting = false
 		return
 
-	var from_pos: Vector3 = wand_ray.global_transform.origin
-	var to_pos: Vector3   = target.global_transform.origin
-	var dir: Vector3      = to_pos - from_pos
-	var dist: float       = dir.length()
+	# Start from the *tip* of the ray (not the RayCast origin)
+	var from_pos: Vector3 = wand_ray.to_global(wand_ray.target_position)
+
+	# Target position
+	var to_pos: Vector3 = target.global_transform.origin
+	var dir_world: Vector3 = to_pos - from_pos
+	var dist: float = dir_world.length()
 
 	if dist < 0.05:
 		wand_magic.emitting = false
 		return
 
-	dir = dir.normalized()
+	dir_world = dir_world.normalized()
 
-	# How far the beam should cover (can overshoot object)
-	var length := dist * beam_length_factor
+	# Build a transform that looks from from_pos to to_pos (-Z axis points to target)
+	var xf := Transform3D.IDENTITY
+	xf.origin = from_pos
+	xf = xf.looking_at(from_pos + dir_world, Vector3.UP)
 
-	# Center of the beam
-	var mid := from_pos + dir * (length * 0.5)
+	wand_magic.global_transform = xf
 
-	# Build basis so local +Z points along dir
-	var z_axis: Vector3 = dir
-	var up := Vector3.UP
-	if abs(z_axis.dot(up)) > 0.9:
-		up = Vector3.RIGHT
-	var x_axis: Vector3 = up.cross(z_axis).normalized()
-	var y_axis: Vector3 = z_axis.cross(x_axis).normalized()
+	# Time so particles reach the target exactly once
+	var lifetime: float = dist / beam_speed
 
-	var basis := Basis(x_axis, y_axis, z_axis)
-
-	# Move / rotate particle node so its local Z spans along wand->target
-	wand_magic.global_transform = Transform3D(basis, mid)
-
-	# Emit inside a long, thin box aligned to that Z axis
-	magic_mat.emission_box_extents = Vector3(
-		beam_thickness,
-		beam_thickness,
-		length * 0.5
-	)
-
+	magic_mat.initial_velocity_min = beam_speed
+	magic_mat.initial_velocity_max = beam_speed
+	wand_magic.lifetime = lifetime
+	wand_magic.preprocess = lifetime   # fill whole beam
 	wand_magic.emitting = true
