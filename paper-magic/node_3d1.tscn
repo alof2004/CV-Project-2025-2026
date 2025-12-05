@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://c2yhmnhr6c5po"]
+[gd_scene load_steps=17 format=3 uid="uid://c2yhmnhr6c5po"]
 
 [ext_resource type="Script" uid="uid://d0fmx80seh18a" path="res://camera_movement.gd" id="1_1cqoy"]
 [ext_resource type="Script" uid="uid://bxkwr7fohigl0" path="res://floor_level1.gd" id="1_g04si"]
@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://o656lp5r0xg0" path="res://Assets/forest_sprites/forest_back.png" id="8_u82ko"]
 [ext_resource type="Texture2D" uid="uid://coaqybjci1d3q" path="res://Assets/forest_sprites/forest_mountain.png" id="9_ai2ps"]
 [ext_resource type="Texture2D" uid="uid://bs3y7r0htq73u" path="res://Assets/forest_sprites/forest_sky.png" id="10_nh60g"]
+[ext_resource type="PackedScene" uid="uid://mxnvrd8e46n2" path="res://cube1.tscn" id="12_u82ko"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_svp3w"]
 
@@ -141,3 +142,6 @@ mesh = SubResource("QuadMesh_g04si")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport"]
 transform = Transform3D(0.7671651, 0.45357335, -0.45357335, 0, 0.7071067, 0.7071067, 0.64144963, -0.5424676, 0.5424676, -19.464, 20.23, 0)
 light_indirect_energy = 9.0
+
+[node name="cube" parent="SubViewportContainer/SubViewport" groups=["wand_target"] instance=ExtResource("12_u82ko")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.0545216, 0.8914795, -2.4002292)

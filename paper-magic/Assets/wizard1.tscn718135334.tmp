@@ -291,7 +291,7 @@ direction = Vector3(0, 0, -1)
 spread = 10.0
 initial_velocity_min = 8.0
 initial_velocity_max = 12.0
-gravity = Vector3(0, 20, 0)
+gravity = Vector3(0, 0, 0)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u7hby"]
 transparency = 1
