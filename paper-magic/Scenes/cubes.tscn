@@ -1,5 +1,106 @@
-[gd_scene load_steps=2 format=3 uid="uid://vb2gw7cf54s5"]
+[gd_scene load_steps=10 format=4 uid="uid://vb2gw7cf54s5"]
 
 [ext_resource type="PackedScene" uid="uid://cssfykhhlsyd1" path="res://Blender Files/cube.glb" id="1_6yhm0"]
+[ext_resource type="Texture2D" uid="uid://d1dynsvnu08tu" path="res://Assets/cave_ground_1.png" id="2_yvb3w"]
+[ext_resource type="Texture2D" uid="uid://b1yu38xba0whq" path="res://Assets/cave_ground_2.png" id="3_dunqq"]
+[ext_resource type="Texture2D" uid="uid://bh88oluaqr57q" path="res://Assets/cave_ground_3.png" id="4_umucf"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_40sgn"]
+resource_name = "Material.001"
+cull_mode = 2
+albedo_texture = ExtResource("2_yvb3w")
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dtm7r"]
+resource_name = "Material.002"
+cull_mode = 2
+albedo_texture = ExtResource("3_dunqq")
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sagog"]
+resource_name = "Material.003"
+cull_mode = 2
+albedo_texture = ExtResource("4_umucf")
+roughness = 0.5
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_v5m7n"]
+_surfaces = [{
+"aabb": AABB(-1, -1, -1, 2, 2, 2),
+"format": 34896613377,
+"index_count": 24,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAAAAIAAwAFAAEABAACAAYAAwAHAAUABwAEAAYABwAGAAUA"),
+"name": "Material.001",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 8,
+"vertex_data": PackedByteArray("//8AAP//AAAAAP////8AAP///////wAAAAAAAP//AAD//wAAAAAAAAAA//8AAAAA/////wAAAAAAAAAAAAAAAA==")
+}, {
+"aabb": AABB(-1, -1, -1, 2, 1e-05, 2),
+"format": 34896613377,
+"index_count": 6,
+"index_data": PackedByteArray("AAABAAIAAAADAAEA"),
+"name": "Material.002",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 4,
+"vertex_data": PackedByteArray("AAAAAAAAAAD//wAA//8AAP//AAAAAAAAAAAAAP//AAA=")
+}, {
+"aabb": AABB(-1, 1, -1, 2, 1e-05, 2),
+"format": 34896613377,
+"index_count": 6,
+"index_data": PackedByteArray("AAABAAIAAAADAAEA"),
+"name": "Material.003",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 4,
+"vertex_data": PackedByteArray("//8AAAAAAAAAAAAA//8AAAAAAAAAAAAA//8AAP//AAA=")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_kfrfq"]
+resource_name = "cave_ground_Cube"
+_surfaces = [{
+"aabb": AABB(-1, -1, -1, 2, 2, 2),
+"attribute_data": PackedByteArray("1P+6//J/DIC6//J/DIDU/7b/1/8QgO5/1/8QgO5/tv/Q/73/9n8IgL3/9n8IgND/j////zeAx3///zeAx3+P/w=="),
+"format": 34896613399,
+"index_count": 24,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0A"),
+"material": SubResource("StandardMaterial3D_40sgn"),
+"name": "Material.001",
+"primitive": 3,
+"uv_scale": Vector4(2.0034072, 2.0034072, 0, 0),
+"vertex_count": 16,
+"vertex_data": PackedByteArray("//8AAP//BoAAAP////8GgP///////waAAAAAAP//BoAAAAAA////vwAA//8AAP+/AAD//////78AAAAAAAD/v///AAAAAP+//////////7//////AAD/v///AAD///+/AAAAAAAA////////AAD//wAA//8AAP////8AAAAA////f/9//3//f/9//3//f/9/IIDu/yCA7v8ggO7/IIDu/wiAEgAIgBIACIASAAiAEgA3gMf/N4DH/zeAx/83gMf/")
+}, {
+"aabb": AABB(-1, -1, -1, 2, 1e-05, 2),
+"attribute_data": PackedByteArray("AAD/////AAD/////AAAAAA=="),
+"format": 34896613399,
+"index_count": 6,
+"index_data": PackedByteArray("AAABAAIAAAADAAEA"),
+"material": SubResource("StandardMaterial3D_dtm7r"),
+"name": "Material.002",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 4,
+"vertex_data": PackedByteArray("AAAAAAAA/7///wAA////v///AAAAAP+/AAAAAP///78AAP9/AAD/fwAA/38AAP9/")
+}, {
+"aabb": AABB(-1, 1, -1, 2, 1e-05, 2),
+"attribute_data": PackedByteArray("AAD/////AAD/////AAAAAA=="),
+"format": 34896613399,
+"index_count": 6,
+"index_data": PackedByteArray("AAABAAIAAAADAAEA"),
+"material": SubResource("StandardMaterial3D_sagog"),
+"name": "Material.003",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 4,
+"vertex_data": PackedByteArray("//8AAAAA//8AAAAA/////wAAAAAAAP////8AAP//////f/+//3//v/9//7//f/+/")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_v5m7n")
 
 [node name="cube" instance=ExtResource("1_6yhm0")]
+
+[node name="Cube2" type="MeshInstance3D" parent="." index="1"]
+mesh = SubResource("ArrayMesh_kfrfq")
+skeleton = NodePath("")
