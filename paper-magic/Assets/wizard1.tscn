@@ -291,7 +291,7 @@ direction = Vector3(0, 0, -1)
 spread = 10.0
 initial_velocity_min = 8.0
 initial_velocity_max = 12.0
-gravity = Vector3(0, 20, 0)
+gravity = Vector3(0, 0, 0)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u7hby"]
 transparency = 1
@@ -339,7 +339,6 @@ _data = {
 
 [node name="wizard" type="Node3D"]
 script = ExtResource("3_8rlng")
-wand_ray_path = NodePath("Armature/GeneralSkeleton/BoneAttachment3D/WandRay")
 
 [node name="WandController" type="Node3D" parent="."]
 script = ExtResource("1_2x3hs")
@@ -347,7 +346,7 @@ wand_ray_path = NodePath("../Armature/GeneralSkeleton/BoneAttachment3D/WandRay")
 magic_particles_path = NodePath("../Armature/GeneralSkeleton/BoneAttachment3D/WandMagic")
 
 [node name="Armature" type="Node3D" parent="."]
-transform = Transform3D(0.19937062, 0, 0, 0, 0.19931112, 0.0048710573, 0, -0.004871059, 0.19931105, -0.19518887, -0.18481384, -0.19794054)
+transform = Transform3D(0.19937062, 0, 0, 0, 0.19937064, 0, 0, 0, 0.19937056, -0.19518887, -0.18481384, -0.19794054)
 
 [node name="GeneralSkeleton" type="Skeleton3D" parent="Armature"]
 unique_name_in_owner = true
@@ -558,7 +557,7 @@ bones/29/name = "DEF-FOREARM.L"
 bones/29/parent = 28
 bones/29/rest = Transform3D(0.9757947, 0.21863051, -0.005052792, -0.21853247, 0.97571003, 0.015277331, 0.008270151, -0.013803338, 0.99987054, 1.2665987e-07, 1.3919622, 1.1518598e-05)
 bones/29/enabled = true
-bones/29/position = Vector3(1.2665987e-07, 1.3919622, 1.1518598e-05)
+bones/29/position = Vector3(1.5102714e-07, 1.3919623, 1.1040358e-05)
 bones/29/rotation = Quaternion(-0.016318342, -0.0030570645, -0.42199245, 0.90644735)
 bones/29/scale = Vector3(1, 0.99999994, 1)
 bones/30/name = "DEF-HAND.L"

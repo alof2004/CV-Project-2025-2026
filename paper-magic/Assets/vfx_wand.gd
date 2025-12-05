@@ -13,13 +13,12 @@ extends Node3D
 @export var aura_fade_time: float = 0.2
 
 # how thick the beam looks
-@export var beam_thickness: float = 0.1     # half-height / half-width of the box
+@export var beam_thickness: float = 0.2     # half-height / half-width of the box
 # how far past the object the beam continues
-@export var beam_length_factor: float = 1.0 # 1.0 = exactly to object, >1 = overshoot
+@export var beam_length_factor: float = 1.2 # 1.0 = exactly to object, >1 = overshoot
 
-# beam density controls
-@export var beam_lifetime: float = 0.6      # how long particles live (more = denser)
-@export var beam_amount: int = 1500          # how many particles (more = denser)
+# NEW: how strong the downward bend is
+@export var beam_gravity: float = 0.5       # small value = slight fall, larger = big arc
 
 const TARGET_GROUP := "wand_target"
 const AURA_NAME    := "SelectionAura"
@@ -38,9 +37,7 @@ var frame_counter: int = 0
 # aura -> Tween
 var aura_tweens: Dictionary = {}
 
-# -------------------------------------------------------
-# Helper: get a *per-instance* StandardMaterial3D for aura
-# -------------------------------------------------------
+
 func _get_aura_material(aura: MeshInstance3D) -> StandardMaterial3D:
 	var mat: Material = aura.get_surface_override_material(0)
 	if mat == null:
@@ -73,22 +70,20 @@ func _ready() -> void:
 		if magic_mat == null:
 			push_error("[WAND] WandMagic has no ParticleProcessMaterial")
 		else:
-			# Static beam: no velocity, no gravity, no spread
+			# Static beam along a box; particles then fall a bit in world -Y
 			magic_mat.initial_velocity_min = 0.0
 			magic_mat.initial_velocity_max = 0.0
-			magic_mat.gravity = Vector3.ZERO
+			# CHANGED: give them a small downward pull
+			magic_mat.gravity = Vector3(0.0, -beam_gravity, 0.0)
 			magic_mat.spread = 0.0
-			# Emit inside a box we will stretch along the segment
 			magic_mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
 
-		# Use local coords so the whole beam moves with the node
-		wand_magic.local_coords = true
+		# CHANGED: world-space so gravity is always “down”
+		wand_magic.local_coords = false
 
-		# DENSITY SETTINGS
-		wand_magic.lifetime = beam_lifetime
-		wand_magic.preprocess = beam_lifetime   # pre-fill the beam
-		wand_magic.amount = beam_amount
-
+		wand_magic.lifetime = 0.8
+		wand_magic.preprocess = 0.8
+		wand_magic.amount = 800
 		wand_magic.emitting = false
 	else:
 		push_error("[WAND] ERROR: magic_particles_path is NULL")
@@ -112,7 +107,6 @@ func _physics_process(delta: float) -> void:
 
 	frame_counter += 1
 
-	# --- debug ray (optional) ---
 	var is_col: bool = wand_ray.is_colliding()
 	if is_col != last_colliding or frame_counter % 30 == 0:
 		if is_col:
@@ -154,7 +148,6 @@ func _update_hover() -> void:
 
 
 func _toggle_select() -> void:
-	# Clear current
 	if hovered == null and grabbed:
 		_set_aura_visible(grabbed, false)
 		grabbed = null
@@ -182,7 +175,6 @@ func _set_aura_visible(target: Node3D, visible: bool) -> void:
 	if mat == null:
 		return
 
-	# stop old tween
 	if aura_tweens.has(aura):
 		var old_tween := aura_tweens[aura] as Tween
 		if old_tween and old_tween.is_valid():
@@ -280,7 +272,6 @@ func _update_magic_beam(target: Node3D) -> void:
 	wand_magic.global_transform = Transform3D(basis, mid)
 
 	# Emit inside a long, thin box aligned to that Z axis
-	# (extents are half-lengths in local space)
 	magic_mat.emission_box_extents = Vector3(
 		beam_thickness,
 		beam_thickness,
