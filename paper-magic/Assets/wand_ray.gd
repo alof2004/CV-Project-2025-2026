@@ -29,6 +29,11 @@ extends Node3D
 @export var beam_amount: int = 1500         # how many particles
 @export var beam_max_length: float = 10000.0   # must cover max wand distance
 
+@export var mouse_pick_radius_px: float = 120.0  # how close to cursor (pixels) counts as hover
+
+@export_node_path("Camera3D") var camera_path: NodePath
+@onready var cam: Camera3D = get_node_or_null(camera_path) as Camera3D
+
 const TARGET_GROUP := "wand_target"
 const AURA_NAME    := "SelectionAura"
 
@@ -146,22 +151,42 @@ func _physics_process(delta: float) -> void:
 	var target: Node3D = grabbed if grabbed != null else hovered
 	_update_magic_beam(target)
 
-
-
 func _update_hover() -> void:
 	var new_hover: Node3D = null
-	var best_dist: float = selection_radius
+	var best_px: float = mouse_pick_radius_px
 
-	# Use wand tip (ray origin) in world coordinates
+	# Get camera (from path if set, otherwise try viewport camera)
+	var camera: Camera3D = cam
+	if camera == null:
+		camera = get_viewport().get_camera_3d()
+	if camera == null:
+		return
+
+	var mouse_pos: Vector2 = get_viewport().get_mouse_position()
 	var wand_pos: Vector3 = wand_ray.global_transform.origin
 
 	for node in get_tree().get_nodes_in_group(TARGET_GROUP):
-		if node is Node3D:
-			var pos: Vector3 = node.global_transform.origin
-			var d: float = (pos - wand_pos).length()
-			if d < best_dist:
-				best_dist = d
-				new_hover = node
+		if not (node is Node3D):
+			continue
+
+		var n := node as Node3D
+		var world_pos: Vector3 = n.global_transform.origin
+
+		# Keep your original constraint: must be near wand tip
+		if (world_pos - wand_pos).length() > selection_radius:
+			continue
+
+		# Ignore stuff behind the camera
+		if camera.is_position_behind(world_pos):
+			continue
+
+		# Measure screen-space distance to mouse
+		var screen_pos: Vector2 = camera.unproject_position(world_pos)
+		var d_px: float = screen_pos.distance_to(mouse_pos)
+
+		if d_px < best_px:
+			best_px = d_px
+			new_hover = n
 
 	if new_hover == hovered:
 		return

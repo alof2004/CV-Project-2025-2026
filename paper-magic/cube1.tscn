@@ -3,8 +3,8 @@
 [ext_resource type="Texture2D" uid="uid://dbmi76p3hs40h" path="res://Blender Files/cube_cube2_tile161.png" id="1_3ijdl"]
 [ext_resource type="Texture2D" uid="uid://cdvhnuonlfc1o" path="res://Blender Files/cube_cube2_Design sem nome (2).png" id="2_kbawv"]
 
-[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_q1b0n"]
-data = PackedVector3Array(1, -1, 1, -1, 1, 1, 1, 1, 1, 1, -1, 1, -1, -1, 1, -1, 1, 1, -1, -1, 1, -1, 1, -1, -1, 1, 1, -1, -1, 1, -1, -1, -1, -1, 1, -1, -1, -1, -1, 1, -1, 1, 1, -1, -1, -1, -1, -1, -1, -1, 1, 1, -1, 1, 1, -1, -1, 1, 1, 1, 1, 1, -1, 1, -1, -1, 1, -1, 1, 1, 1, 1, -1, -1, -1, 1, 1, -1, -1, 1, -1, -1, -1, -1, 1, -1, -1, 1, 1, -1, 1, 1, -1, -1, 1, 1, -1, 1, -1, 1, 1, -1, 1, 1, 1, -1, 1, 1)
+[sub_resource type="BoxShape3D" id="BoxShape3D_3ijdl"]
+size = Vector3(2, 2, 2)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yxqvi"]
 resource_name = "Material.003"
@@ -20,7 +20,7 @@ albedo_texture = ExtResource("2_kbawv")
 roughness = 0.5
 texture_filter = 2
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_kmwok"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_3ijdl"]
 _surfaces = [{
 "aabb": AABB(-1, -1, -1, 2, 2, 2),
 "format": 34896613377,
@@ -72,7 +72,7 @@ _surfaces = [{
 "vertex_data": PackedByteArray("//8AAAAA//8AAAAA/////wAAAAAAAP////8AAP//////f/+//3//v/9//7//f/+/")
 }]
 blend_shape_mode = 0
-shadow_mesh = SubResource("ArrayMesh_kmwok")
+shadow_mesh = SubResource("ArrayMesh_3ijdl")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3ijdl"]
 transparency = 1
@@ -95,20 +95,20 @@ glow_strength = 0.66
 
 [node name="cube" type="StaticBody3D"]
 
-[node name="StaticBody3D" type="StaticBody3D" parent="."]
+[node name="StaticBody3D" type="RigidBody3D" parent="." groups=["wand_target"]]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
-shape = SubResource("ConcavePolygonShape3D_q1b0n")
+shape = SubResource("BoxShape3D_3ijdl")
 
-[node name="Cube" type="MeshInstance3D" parent="."]
+[node name="Cube" type="MeshInstance3D" parent="StaticBody3D"]
 mesh = SubResource("ArrayMesh_gpf1o")
 skeleton = NodePath("")
 
-[node name="SelectionAura" type="MeshInstance3D" parent="."]
+[node name="SelectionAura" type="MeshInstance3D" parent="StaticBody3D"]
 mesh = SubResource("ArrayMesh_gpf1o")
 skeleton = NodePath("")
 surface_material_override/0 = SubResource("StandardMaterial3D_3ijdl")
 surface_material_override/1 = SubResource("StandardMaterial3D_kbawv")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="StaticBody3D"]
 environment = SubResource("Environment_q1b0n")

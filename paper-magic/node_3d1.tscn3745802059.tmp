@@ -1,0 +1,219 @@
+[gd_scene load_steps=29 format=3 uid="uid://c2yhmnhr6c5po"]
+
+[ext_resource type="Script" uid="uid://d0fmx80seh18a" path="res://camera_movement.gd" id="1_1cqoy"]
+[ext_resource type="Script" uid="uid://bxkwr7fohigl0" path="res://floor_level1.gd" id="1_g04si"]
+[ext_resource type="Shader" uid="uid://n1eam1wn670j" path="res://outliner.gdshader" id="1_svp3w"]
+[ext_resource type="MeshLibrary" uid="uid://bm5tc00flusa4" path="res://cubes_mesh_lib.tres" id="2_7dyij"]
+[ext_resource type="PackedScene" uid="uid://bwveaoetdbncr" path="res://Scenes/magician.tscn" id="3_g04si"]
+[ext_resource type="Texture2D" uid="uid://ci0csk0mn566y" path="res://Assets/forest_sprites/forest_long.png" id="6_u82ko"]
+[ext_resource type="Script" uid="uid://bat3srnpdiw03" path="res://parallax_background.gd" id="6_wdd02"]
+[ext_resource type="Texture2D" uid="uid://dlne5lifbpwda" path="res://Assets/forest_sprites/forest_mid.png" id="7_wdd02"]
+[ext_resource type="Texture2D" uid="uid://o656lp5r0xg0" path="res://Assets/forest_sprites/forest_back.png" id="8_u82ko"]
+[ext_resource type="Texture2D" uid="uid://coaqybjci1d3q" path="res://Assets/forest_sprites/forest_mountain.png" id="9_ai2ps"]
+[ext_resource type="Texture2D" uid="uid://ctd8smhgwfhq2" path="res://srky.png" id="10_lmhyn"]
+[ext_resource type="Texture2D" uid="uid://bs3y7r0htq73u" path="res://Assets/forest_sprites/forest_sky.png" id="10_nh60g"]
+[ext_resource type="PackedScene" uid="uid://mxnvrd8e46n2" path="res://cube1.tscn" id="12_u82ko"]
+[ext_resource type="Script" uid="uid://35oe6ihlm7dp" path="res://background_wall_3d.gd" id="13_ai2ps"]
+[ext_resource type="Texture2D" uid="uid://boja2i8xeenyd" path="res://pUaluZ.png" id="13_nh60g"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_svp3w"]
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_svp3w"]
+data = PackedVector3Array(1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, -1, 0, -1, 1, 0, -1)
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_lmhyn"]
+panorama = ExtResource("10_lmhyn")
+
+[sub_resource type="Sky" id="Sky_lmhyn"]
+sky_material = SubResource("PanoramaSkyMaterial_lmhyn")
+radiance_size = 6
+
+[sub_resource type="Environment" id="Environment_ymjn4"]
+background_mode = 2
+sky = SubResource("Sky_lmhyn")
+sky_custom_fov = 116.8
+sky_rotation = Vector3(0, -3.0717795, 0.13264503)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1cqoy"]
+render_priority = 0
+shader = ExtResource("1_svp3w")
+
+[sub_resource type="QuadMesh" id="QuadMesh_g04si"]
+material = SubResource("ShaderMaterial_1cqoy")
+size = Vector2(2, 2)
+
+[sub_resource type="QuadMesh" id="QuadMesh_ai2ps"]
+size = Vector2(80, 1000)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lmhyn"]
+transparency = 1
+shading_mode = 0
+albedo_texture = ExtResource("13_nh60g")
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ai2ps"]
+transparency = 1
+albedo_texture = ExtResource("10_nh60g")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ymjn4"]
+transparency = 1
+shading_mode = 0
+albedo_texture = ExtResource("9_ai2ps")
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4nelp"]
+transparency = 1
+shading_mode = 0
+albedo_texture = ExtResource("8_u82ko")
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nh60g"]
+transparency = 1
+shading_mode = 0
+albedo_texture = ExtResource("7_wdd02")
+texture_filter = 0
+
+[node name="Node3D" type="Node3D"]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="CanvasLayer"]
+follow_viewport_enabled = true
+script = ExtResource("6_wdd02")
+camera_3d_path = NodePath("../../SubViewportContainer/SubViewport/Camera3D")
+
+[node name="ParallaxLayer5" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
+motion_scale = Vector2(-0.1, 0)
+motion_mirroring = Vector2(807, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/ParallaxBackground/ParallaxLayer5"]
+position = Vector2(811.5002, 273)
+scale = Vector2(0.85, 0.85)
+texture = ExtResource("10_nh60g")
+
+[node name="ParallaxLayer4" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
+motion_scale = Vector2(-0.2, 0)
+motion_mirroring = Vector2(1615, 0)
+
+[node name="Sprite2D2" type="Sprite2D" parent="CanvasLayer/ParallaxBackground/ParallaxLayer4"]
+position = Vector2(810.5, 207)
+scale = Vector2(0.425, 0.425)
+texture = ExtResource("9_ai2ps")
+
+[node name="ParallaxLayer3" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
+motion_scale = Vector2(-0.4, 0)
+motion_mirroring = Vector2(1615, 0)
+
+[node name="Sprite2D2" type="Sprite2D" parent="CanvasLayer/ParallaxBackground/ParallaxLayer3"]
+position = Vector2(811.50006, 140.99997)
+scale = Vector2(0.425, 0.425)
+texture = ExtResource("8_u82ko")
+
+[node name="ParallaxLayer2" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
+motion_scale = Vector2(-0.5, 0)
+motion_mirroring = Vector2(1615, 0)
+
+[node name="Sprite2D2" type="Sprite2D" parent="CanvasLayer/ParallaxBackground/ParallaxLayer2"]
+position = Vector2(808.5, 126.99998)
+scale = Vector2(0.425, 0.425)
+texture = ExtResource("7_wdd02")
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
+motion_scale = Vector2(-0.6, 0)
+motion_mirroring = Vector2(1615, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/ParallaxBackground/ParallaxLayer"]
+position = Vector2(813.5, 148.26)
+scale = Vector2(0.425, 0.425)
+texture = ExtResource("6_u82ko")
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+texture_filter = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+stretch_shrink = 3
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+handle_input_locally = false
+size = Vector2i(384, 216)
+render_target_clear_mode = 1
+render_target_update_mode = 4
+
+[node name="GridMap2" type="GridMap" parent="SubViewportContainer/SubViewport"]
+mesh_library = ExtResource("2_7dyij")
+script = ExtResource("1_g04si")
+metadata/_editor_floor_ = Vector3(0, 0, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="SubViewportContainer/SubViewport"]
+transform = Transform3D(7.81, 0, 0, 0, 7.81, 0, 0, 0, 7.81, 0.014282227, -0.10852051, 0.059814453)
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/StaticBody3D"]
+transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0)
+mesh = SubResource("PlaneMesh_svp3w")
+skeleton = NodePath("../../../..")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="SubViewportContainer/SubViewport/StaticBody3D"]
+transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0)
+shape = SubResource("ConcavePolygonShape3D_svp3w")
+
+[node name="CharacterBody3D" parent="SubViewportContainer/SubViewport" instance=ExtResource("3_g04si")]
+transform = Transform3D(-0.13571563, 0, 0.9907478, 0, 1, 0, -0.9907478, 0, -0.13571563, 0.9741516, 2.550293, 4.1676025)
+
+[node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport"]
+transform = Transform3D(-0.13571565, 0, 0.99074787, 0, 1, 0, -0.99074787, 0, -0.13571565, 8.038721, 1.6311646, 3.5629895)
+environment = SubResource("Environment_ymjn4")
+far = 56.0
+script = ExtResource("1_1cqoy")
+player_path = NodePath("../CharacterBody3D")
+parallax_2d_path = NodePath("../../../CanvasLayer/ParallaxBackground")
+subviewport_path = NodePath("..")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/Camera3D"]
+transform = Transform3D(0.9999999, 0, -1.4901161e-08, 0, 1, 0, 1.4901161e-08, 0, 0.9999999, 0.06796551, 0, -0.49615955)
+extra_cull_margin = 16384.0
+mesh = SubResource("QuadMesh_g04si")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport"]
+transform = Transform3D(0.7671651, 0.45357332, -0.45357335, 0, 0.70710677, 0.7071067, 0.64144963, -0.5424676, 0.54246765, -19.464, 20.23, 0)
+light_indirect_energy = 9.0
+
+[node name="BackgroundWall3D" type="Node3D" parent="SubViewportContainer/SubViewport"]
+visible = false
+script = ExtResource("13_ai2ps")
+camera_path = NodePath("../Camera3D")
+player_path = NodePath("../CharacterBody3D")
+layer_nodes = Array[NodePath]([NodePath("Layer_Quad_4")])
+
+[node name="Layer_Quad_4" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/BackgroundWall3D"]
+mesh = SubResource("QuadMesh_ai2ps")
+skeleton = NodePath("../Layer_Quad_3")
+surface_material_override/0 = SubResource("StandardMaterial3D_lmhyn")
+
+[node name="Layer_Quad_0" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/BackgroundWall3D"]
+visible = false
+mesh = SubResource("QuadMesh_ai2ps")
+surface_material_override/0 = SubResource("StandardMaterial3D_ai2ps")
+
+[node name="Layer_Quad_1" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/BackgroundWall3D"]
+visible = false
+mesh = SubResource("QuadMesh_ai2ps")
+skeleton = NodePath("../Layer_Quad_3")
+surface_material_override/0 = SubResource("StandardMaterial3D_ymjn4")
+
+[node name="Layer_Quad_2" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/BackgroundWall3D"]
+visible = false
+mesh = SubResource("QuadMesh_ai2ps")
+skeleton = NodePath("../Layer_Quad_3")
+surface_material_override/0 = SubResource("StandardMaterial3D_4nelp")
+
+[node name="Layer_Quad_3" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/BackgroundWall3D"]
+visible = false
+mesh = SubResource("QuadMesh_ai2ps")
+surface_material_override/0 = SubResource("StandardMaterial3D_nh60g")
+
+[node name="cube" parent="SubViewportContainer/SubViewport" groups=["wand_target"] instance=ExtResource("12_u82ko")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.1408815, 1.6806436, 3.3924444)

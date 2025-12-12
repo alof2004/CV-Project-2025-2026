@@ -1,0 +1,5 @@
+[gd_scene load_steps=2 format=3 uid="uid://4ghhvuf74kg8"]
+
+[ext_resource type="PackedScene" uid="uid://dagxo8n7ysfa" path="res://Assets/Spike Platform.glb" id="1_iv44t"]
+
+[node name="Root Scene" instance=ExtResource("1_iv44t")]
