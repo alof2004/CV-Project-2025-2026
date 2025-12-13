@@ -104,3 +104,6 @@ shadow_mesh = SubResource("ArrayMesh_v5m7n")
 [node name="Cube2" type="MeshInstance3D" parent="." index="1"]
 mesh = SubResource("ArrayMesh_kfrfq")
 skeleton = NodePath("")
+
+[node name="Cube3" type="MeshInstance3D" parent="." index="2"]
+skeleton = NodePath("../Cube2")
