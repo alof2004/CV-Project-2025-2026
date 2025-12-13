@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=4 uid="uid://cxjctmev8k5wo"]
+[gd_scene load_steps=33 format=4 uid="uid://cxjctmev8k5wo"]
 
 [ext_resource type="Script" uid="uid://b7e4ip2qp7u2u" path="res://Assets/vfx_wand.gd" id="1_2x3hs"]
 [ext_resource type="Texture2D" uid="uid://b2dbnofdu6eqc" path="res://Assets/wizard_56x56texture.png" id="1_sfqje"]
@@ -275,15 +275,6 @@ bind/70/pose = Transform3D(5.0140066, -0.13314947, 0.010162447, 0.006628017, -0.
 bind/71/name = &"DEF-ROBE-TWEAK.015.R"
 bind/71/bone = -1
 bind/71/pose = Transform3D(5.0140066, -0.13314947, 0.010162447, 0.006628018, -0.13309659, -5.014015, 0.13337213, 5.0122504, -0.13287285, 0.8559475, 0.8552818, -2.674407)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2x3hs"]
-albedo_color = Color(0.5571116, 0.3723, 0.73, 1)
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_2x3hs"]
-material = SubResource("StandardMaterial3D_2x3hs")
-top_radius = 0.02
-bottom_radius = 0.02
-height = 1.0
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_8rlng"]
 direction = Vector3(0, 0, -1)
@@ -872,11 +863,6 @@ transform = Transform3D(3.9056244, -2.614588, 0, 2.6145878, 3.9056249, 0, 0, 0, 
 [node name="WandRay" type="RayCast3D" parent="Armature/GeneralSkeleton/BoneAttachment3D"]
 transform = Transform3D(0.525, -9.163958e-08, 3.760718e-09, -3.760718e-09, -0.0430176, -0.5232346, 9.163958e-08, 0.5232346, -0.0430176, -0.21164799, 1.0184438, 0.19538116)
 target_position = Vector3(0, 0, -5)
-
-[node name="WandBeam" type="MeshInstance3D" parent="Armature/GeneralSkeleton/BoneAttachment3D"]
-transform = Transform3D(0.9999999, 1.4901161e-08, -2.9802322e-08, 0, -2.9802322e-08, -0.9999999, -2.9802322e-08, 0.99999994, -2.9802322e-08, -0.35973787, -0.3201263, 1.0401187)
-visible = false
-mesh = SubResource("CylinderMesh_2x3hs")
 
 [node name="WandMagic" type="GPUParticles3D" parent="Armature/GeneralSkeleton/BoneAttachment3D"]
 transform = Transform3D(0.9999998, 5.9604645e-08, 4.4703484e-08, 0, 0.9999998, -8.940697e-08, -5.9604645e-08, 1.7881393e-07, 0.9999998, -0.25391436, 2.3973653, -0.058006167)
