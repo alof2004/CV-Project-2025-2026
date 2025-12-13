@@ -1,9 +1,10 @@
-[gd_scene load_steps=10 format=4 uid="uid://vb2gw7cf54s5"]
+[gd_scene load_steps=15 format=4 uid="uid://vb2gw7cf54s5"]
 
 [ext_resource type="PackedScene" uid="uid://cssfykhhlsyd1" path="res://Blender Files/cube.glb" id="1_6yhm0"]
 [ext_resource type="Texture2D" uid="uid://d1dynsvnu08tu" path="res://Assets/cave_ground_1.png" id="2_yvb3w"]
 [ext_resource type="Texture2D" uid="uid://b1yu38xba0whq" path="res://Assets/cave_ground_2.png" id="3_dunqq"]
 [ext_resource type="Texture2D" uid="uid://bh88oluaqr57q" path="res://Assets/cave_ground_3.png" id="4_umucf"]
+[ext_resource type="Texture2D" uid="uid://d3v3oelus1iib" path="res://Blender Files/cube_dirt2_image (2).png" id="5_dunqq"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_40sgn"]
 resource_name = "Material.001"
@@ -99,6 +100,61 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_v5m7n")
 
+[sub_resource type="Shader" id="Shader_dunqq"]
+code = "shader_type spatial;
+
+uniform sampler2D texture_albedo : source_color, filter_nearest_mipmap;
+uniform float saturation : hint_range(0.0, 3.0) = 0.8; // Adjustable slider
+
+void fragment() {
+    vec4 albedo_tex = texture(texture_albedo, UV);
+    
+    // Convert RGB to Grayscale
+    float verify_grayscale = dot(albedo_tex.rgb, vec3(0.299, 0.587, 0.114));
+    
+    // Mix the grayscale version with the original color based on saturation amount
+    ALBEDO = mix(vec3(verify_grayscale), albedo_tex.rgb, saturation);
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_umucf"]
+resource_name = "Material"
+render_priority = 0
+shader = SubResource("Shader_dunqq")
+shader_parameter/texture_albedo = ExtResource("5_dunqq")
+shader_parameter/saturation = 0.850000040375
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_pji0u"]
+_surfaces = [{
+"aabb": AABB(-1, -1, -1, 2, 2, 2),
+"format": 34896613377,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAwACAAEAAAAEAAEAAwAFAAIABQAAAAIABgAEAAAABQAGAAAABwABAAQABwADAAEABgAHAAQABQADAAcABQAHAAYA"),
+"name": "Material",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 8,
+"vertex_data": PackedByteArray("/////wAAAAAAAP////8AAAAA//8AAAAAAAAAAP//AAD///////8AAAAAAAAAAAAA//8AAAAAAAD//wAA//8AAA==")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_umucf"]
+resource_name = "cube_dirt2_Cube"
+_surfaces = [{
+"aabb": AABB(-1, -1, -1, 2, 2, 2),
+"attribute_data": PackedByteArray("AAD/////AAD/////AAAAAP////8AAAAA//8AAAAA////////AAAAAP//AAAAAP//AAD/////AAD/////AAAAAP7///8AAAAA//8AAAAA////////AAAAAP//AAAAAP//"),
+"format": 34896613399,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEAFAAVABYAFAAXABUA"),
+"material": SubResource("ShaderMaterial_umucf"),
+"name": "Material",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("/////wAA//8AAP///////wAA//8AAP///////////////wAA//8AgAAA/////wCA////////AIAAAAAA//8AgAAAAAD///+/AAD//wAA/78AAP//////vwAAAAAAAP+/AAAAAAAA/7///wAA////v///AAAAAP+/AAAAAP///7///wAAAAD/v/////////+//////wAA/7///wAA////vwAAAAAAAP///////wAA//8AAP//AAD/////AAAAAP///3//v/9//7//f/+//3//v/9/////f////3////9/////f////3////9/////f///AAD/fwAA/38AAP9/AAD/f/9/AAD/fwAA/38AAP9/AAD/f////3////9/////f///")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_pji0u")
+
 [node name="cube" instance=ExtResource("1_6yhm0")]
 
 [node name="Cube2" type="MeshInstance3D" parent="." index="1"]
@@ -106,4 +162,5 @@ mesh = SubResource("ArrayMesh_kfrfq")
 skeleton = NodePath("")
 
 [node name="Cube3" type="MeshInstance3D" parent="." index="2"]
-skeleton = NodePath("../Cube2")
+mesh = SubResource("ArrayMesh_umucf")
+skeleton = NodePath("")

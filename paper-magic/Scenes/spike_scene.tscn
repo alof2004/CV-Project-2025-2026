@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://eljyas0it7cv"]
+
+[ext_resource type="PackedScene" uid="uid://dagxo8n7ysfa" path="res://Assets/Spike Platform.glb" id="1_23yao"]
+[ext_resource type="Script" uid="uid://21n7dn68s4mo" path="res://Scenes/kill_spikes.gd" id="2_56i4m"]
+
+[node name="Root Scene" instance=ExtResource("1_23yao")]
+
+[node name="KillArea" type="Area3D" parent="RootNode/Spikes_Platform" index="0"]
+script = ExtResource("2_56i4m")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RootNode/Spikes_Platform/KillArea" index="0"]
