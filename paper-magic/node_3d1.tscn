@@ -4,8 +4,8 @@
 [ext_resource type="Script" uid="uid://bxkwr7fohigl0" path="res://floor_level1.gd" id="1_g04si"]
 [ext_resource type="Script" uid="uid://fbeyq6uxf32o" path="res://objects_level1.gd" id="1_nh60g"]
 [ext_resource type="Shader" uid="uid://n1eam1wn670j" path="res://outliner.gdshader" id="1_svp3w"]
-[ext_resource type="PackedScene" uid="uid://4ghhvuf74kg8" path="res://Scenes/spikes_scene.tscn" id="2_ymjn4"]
 [ext_resource type="PackedScene" uid="uid://bwveaoetdbncr" path="res://Scenes/magician.tscn" id="3_g04si"]
+[ext_resource type="PackedScene" uid="uid://c24h815i4a8ql" path="res://Scenes/woodtile_scene.tscn" id="3_ymjn4"]
 [ext_resource type="Texture2D" uid="uid://ci0csk0mn566y" path="res://Assets/forest_sprites/forest_long.png" id="6_u82ko"]
 [ext_resource type="Script" uid="uid://bat3srnpdiw03" path="res://parallax_background.gd" id="6_wdd02"]
 [ext_resource type="MeshLibrary" uid="uid://d2u2045t6cgcx" path="res://cubes_mesh_lib9.tres" id="7_ai2ps"]
@@ -15,7 +15,7 @@
 [ext_resource type="Texture2D" uid="uid://bgfmkc3s0q3yy" path="res://sky.png" id="10_lmhyn"]
 [ext_resource type="Texture2D" uid="uid://bs3y7r0htq73u" path="res://Assets/forest_sprites/forest_sky.png" id="10_nh60g"]
 [ext_resource type="PackedScene" uid="uid://fj2wnd5hej5a" path="res://box.tscn" id="13_ai2ps"]
-[ext_resource type="PackedScene" uid="uid://dagxo8n7ysfa" path="res://Assets/Spike Platform.glb" id="15_lmhyn"]
+[ext_resource type="PackedScene" uid="uid://eljyas0it7cv" path="res://Scenes/spike_scene.tscn" id="16_ymjn4"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_nh60g"]
 panorama = ExtResource("10_lmhyn")
@@ -50,7 +50,8 @@ script = ExtResource("1_nh60g")
 grid_path = NodePath("SubViewportContainer/SubViewport/GridMap")
 box_template_path = NodePath("SubViewportContainer/SubViewport/Box")
 subviewport_path = NodePath("SubViewportContainer/SubViewport")
-spike_scene = ExtResource("2_ymjn4")
+spike_scene = ExtResource("16_ymjn4")
+wood_tile_scene = ExtResource("3_ymjn4")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -126,7 +127,7 @@ script = ExtResource("1_g04si")
 metadata/_editor_floor_ = Vector3(0, 0, 0)
 
 [node name="CharacterBody3D" parent="SubViewportContainer/SubViewport" groups=["player"] instance=ExtResource("3_g04si")]
-transform = Transform3D(-0.13571563, 0, 0.9907478, 0, 1, 0, -0.9907478, 0, -0.13571563, 5.5176406, 2.550293, -0.5380964)
+transform = Transform3D(-0.13571563, 0, 0.9907478, 0, 1, 0, -0.9907478, 0, -0.13571563, 32.088287, 14.162161, -0.5380964)
 
 [node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport"]
 transform = Transform3D(-0.13571565, 0, 0.99074787, 0, 1, 0, -0.99074787, 0, -0.13571565, 8.038721, 1.6311646, 3.5629895)
@@ -151,4 +152,4 @@ light_indirect_energy = 9.0
 [node name="Box" parent="SubViewportContainer/SubViewport" instance=ExtResource("13_ai2ps")]
 visible = false
 
-[node name="SpikePlatform" parent="SubViewportContainer/SubViewport" instance=ExtResource("15_lmhyn")]
+[node name="Spike" parent="SubViewportContainer/SubViewport" instance=ExtResource("16_ymjn4")]

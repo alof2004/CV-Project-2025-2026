@@ -13,7 +13,7 @@ cull_mode = 2
 albedo_texture = ExtResource("1_bqn3j")
 roughness = 0.5
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_8a7oj"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_bqn3j"]
 _surfaces = [{
 "aabb": AABB(-1, -1, -1, 2, 2, 2),
 "format": 34896613377,
@@ -43,7 +43,7 @@ _surfaces = [{
 "vertex_data": PackedByteArray("/////wAA//8AAP///////wAA//8AAP///////////////wAA////vwAA//////+//////////78AAAAA////vwAAAAD//1TVAAD//wAAVNUAAP////9U1QAAAAAAAFTVAAAAAAAA/7///wAA////v///AAAAAP+/AAAAAP///7///wAAAABU1f///////1TV/////wAAVNX//wAA//9U1QAAAAAAAP///////wAA//8AAP//AAD/////AAAAAP///3//v/9//7//f/+//3//v/////////////////////9U1VTVVNVU1VTVVNVU1VTVAAD/fwAA/38AAP9/AAD/f6oqqiqqKqoqqiqqKqoqqir/v/+//7//v/+//7//v/+/")
 }]
 blend_shape_mode = 0
-shadow_mesh = SubResource("ArrayMesh_8a7oj")
+shadow_mesh = SubResource("ArrayMesh_bqn3j")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yxqvi"]
 resource_name = "Material.003"
@@ -59,7 +59,7 @@ albedo_texture = ExtResource("3_jjbh2")
 roughness = 0.5
 texture_filter = 2
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_kmwok"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_3n43a"]
 _surfaces = [{
 "aabb": AABB(-1, -1, -1, 2, 2, 2),
 "format": 34896613377,
@@ -111,7 +111,7 @@ _surfaces = [{
 "vertex_data": PackedByteArray("//8AAAAA//8AAAAA/////wAAAAAAAP////8AAP//////f/+//3//v/9//7//f/+/")
 }]
 blend_shape_mode = 0
-shadow_mesh = SubResource("ArrayMesh_kmwok")
+shadow_mesh = SubResource("ArrayMesh_3n43a")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3d203"]
 transparency = 1
@@ -136,6 +136,10 @@ glow_strength = 0.66
 
 [node name="StaticBody3D2" type="RigidBody3D" parent="." groups=["wand_target"]]
 mass = 97.779
+can_sleep = false
+lock_rotation = true
+freeze_mode = 1
+continuous_cd = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D2"]
 shape = SubResource("BoxShape3D_amiuo")
