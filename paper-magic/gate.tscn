@@ -1,9 +1,8 @@
-[gd_scene load_steps=10 format=4 uid="uid://5dkf6x7sqao6"]
+[gd_scene load_steps=9 format=4 uid="uid://5dkf6x7sqao6"]
 
 [ext_resource type="Texture2D" uid="uid://psyh3kmldsud" path="res://Assets/Gate_Archway Texture.png" id="1_15vrf"]
 [ext_resource type="PackedScene" uid="uid://do2qy7cu70qeb" path="res://portal.tscn" id="2_ikl61"]
 [ext_resource type="Script" uid="uid://cpqgj83xronu2" path="res://end_level_script.gd" id="3_5lukw"]
-[ext_resource type="PackedScene" uid="uid://cbxwsd5rrggev" path="res://LevelSelect.tscn" id="4_4oabi"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k2sr6"]
 resource_name = "lambert3SG"
@@ -52,7 +51,6 @@ size = Vector3(10.170181, 21.90332, 14.696228)
 [node name="Gate" type="Node3D"]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0, 0)
 script = ExtResource("3_5lukw")
-target_scene = ExtResource("4_4oabi")
 
 [node name="Archway1" type="MeshInstance3D" parent="."]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, -19.695, 0)
