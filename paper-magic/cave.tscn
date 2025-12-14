@@ -1,7 +1,8 @@
-[gd_scene load_steps=16 format=3 uid="uid://dfmvbxfnwxw4p"]
+[gd_scene load_steps=17 format=3 uid="uid://dfmvbxfnwxw4p"]
 
 [ext_resource type="Script" uid="uid://bat3srnpdiw03" path="res://parallax_background.gd" id="1_3ayon"]
 [ext_resource type="Texture2D" uid="uid://dyha3p76kp0sy" path="res://Assets/purple/purple_L1.png" id="1_23xot"]
+[ext_resource type="Texture2D" uid="uid://cv4h4cv1vqn42" path="res://Assets/purple/background_cave.png" id="2_rxq2d"]
 [ext_resource type="Script" uid="uid://crxribpscxxol" path="res://floor_cave_level.gd" id="2_shk3w"]
 [ext_resource type="Texture2D" uid="uid://do3uk3clcyc4p" path="res://Assets/purple/purple_L2.png" id="2_xtwoi"]
 [ext_resource type="Texture2D" uid="uid://c1l7gymv6ng6n" path="res://Assets/purple/purple_L3.png" id="3_dnhvd"]
@@ -10,9 +11,9 @@
 [ext_resource type="Script" uid="uid://d0fmx80seh18a" path="res://camera_movement.gd" id="7_cxskf"]
 [ext_resource type="Shader" uid="uid://n1eam1wn670j" path="res://outliner.gdshader" id="8_rxq2d"]
 [ext_resource type="PackedScene" uid="uid://mxnvrd8e46n2" path="res://cube1.tscn" id="9_8eeko"]
-[ext_resource type="MeshLibrary" uid="uid://dwsek2a0bjrbd" path="res://cubes_mesh_lib3.tres" id="11_cxskf"]
+[ext_resource type="MeshLibrary" uid="uid://c8ta2xr53wxr" path="res://cubes_mesh_lib3.tres" id="11_cxskf"]
 [ext_resource type="PackedScene" uid="uid://xnd1qv10g2i" path="res://lighted_torch.tscn" id="15_8eeko"]
-[ext_resource type="PackedScene" uid="uid://c5ujynq6dvk6v" path="res://Fireball.tscn" id="15_q41cu"]
+[ext_resource type="PackedScene" path="res://Fireball.tscn" id="15_q41cu"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_1cqoy"]
 render_priority = 0
@@ -38,6 +39,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0027113855, 0, -0.00375327
 follow_viewport_enabled = true
 script = ExtResource("1_3ayon")
 camera_3d_path = NodePath("../../SubViewportContainer/SubViewport/Camera3D")
+
+[node name="ParallaxLayer6" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
+motion_scale = Vector2(-0.5, 0)
+motion_mirroring = Vector2(1187.2, 0)
+
+[node name="Sprite2D2" type="Sprite2D" parent="CanvasLayer/ParallaxBackground/ParallaxLayer6"]
+position = Vector2(554.5, 255)
+scale = Vector2(1.8546873, 1.5279999)
+texture = ExtResource("2_rxq2d")
 
 [node name="ParallaxLayer5" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
 motion_scale = Vector2(-0.05, 0)
@@ -71,8 +81,8 @@ motion_scale = Vector2(-0.5, 0)
 motion_mirroring = Vector2(1187.2, 0)
 
 [node name="Sprite2D2" type="Sprite2D" parent="CanvasLayer/ParallaxBackground/ParallaxLayer2"]
-position = Vector2(554.5, 255)
-scale = Vector2(1.8546873, 1.5279999)
+position = Vector2(554.5, 248.49998)
+scale = Vector2(1.8546873, 1.6039999)
 texture = ExtResource("4_78gyg")
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="."]

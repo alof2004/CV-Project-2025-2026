@@ -1,0 +1,16 @@
+[gd_resource type="Environment" load_steps=4 format=3 uid="uid://d16t207osgbm2"]
+
+[ext_resource type="Texture2D" uid="uid://bgfmkc3s0q3yy" path="res://sky.png" id="1_diklu"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_nh60g"]
+panorama = ExtResource("1_diklu")
+
+[sub_resource type="Sky" id="Sky_nh60g"]
+sky_material = SubResource("PanoramaSkyMaterial_nh60g")
+radiance_size = 6
+
+[resource]
+background_mode = 2
+sky = SubResource("Sky_nh60g")
+sky_custom_fov = 114.7
+sky_rotation = Vector3(0, 0.7853982, 0.17453292)

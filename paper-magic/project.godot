@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="paper magic"
-run/main_scene="uid://c2yhmnhr6c5po"
+run/main_scene="uid://cbxwsd5rrggev"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
 
