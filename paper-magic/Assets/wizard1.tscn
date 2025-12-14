@@ -1,10 +1,13 @@
-[gd_scene load_steps=33 format=4 uid="uid://cxjctmev8k5wo"]
+[gd_scene load_steps=37 format=4 uid="uid://cxjctmev8k5wo"]
 
 [ext_resource type="Script" uid="uid://b7e4ip2qp7u2u" path="res://Assets/vfx_wand.gd" id="1_2x3hs"]
 [ext_resource type="Texture2D" uid="uid://b2dbnofdu6eqc" path="res://Assets/wizard_56x56texture.png" id="1_sfqje"]
 [ext_resource type="PackedScene" uid="uid://dxeq6ox6ejjci" path="res://Assets/wand.glb" id="2_783b8"]
 [ext_resource type="Animation" uid="uid://bsrb7boo68vyx" path="res://Assets/wizard_animations/Armature_001_mixamo_com_Layer0.res" id="3_2x3hs"]
+[ext_resource type="Shader" uid="uid://l174gfetk8ov" path="res://Assets/death_shader.gdshader" id="3_8rlng"]
+[ext_resource type="Texture2D" uid="uid://brnjt63v1fijd" path="res://gradient_texture_2d.tres" id="4_4iemb"]
 [ext_resource type="Animation" uid="uid://dbmbfcirsn52c" path="res://Assets/wizard_animations/Armature_001_mixamo_com_Layer0_001.res" id="4_8rlng"]
+[ext_resource type="Texture2D" uid="uid://dft0unu7s78qh" path="res://Assets/noise.png" id="4_u7hby"]
 [ext_resource type="Animation" uid="uid://cw3r5agnrj71r" path="res://Assets/wizard_animations/Armature_002_mixamo_com_Layer0.res" id="5_u7hby"]
 [ext_resource type="Animation" uid="uid://dc4iqa1iqnh6h" path="res://Assets/wizard_animations/Armature_002_mixamo_com_Layer0_001.res" id="6_4iemb"]
 [ext_resource type="Animation" uid="uid://deg6aviw2dcyb" path="res://Assets/wizard_animations/Armature_003_mixamo_com_Layer0.res" id="7_yx3t2"]
@@ -276,6 +279,20 @@ bind/71/name = &"DEF-ROBE-TWEAK.015.R"
 bind/71/bone = -1
 bind/71/pose = Transform3D(5.0140066, -0.13314947, 0.010162447, 0.006628018, -0.13309659, -5.014015, 0.13337213, 5.0122504, -0.13287285, 0.8559475, 0.8552818, -2.674407)
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_u7hby"]
+render_priority = 0
+shader = ExtResource("3_8rlng")
+shader_parameter/albedo_texture = ExtResource("1_sfqje")
+shader_parameter/burn_center = Vector3(0, 0, 0)
+shader_parameter/radius = 0.0
+shader_parameter/borderWidth = 0.35
+shader_parameter/burnMult = 1.0
+shader_parameter/noiseTexture = ExtResource("4_u7hby")
+shader_parameter/noise_scale = 2.0
+shader_parameter/noise_z_scale = 0.35
+shader_parameter/blend_steps = 3.52
+shader_parameter/colorCurve = ExtResource("4_4iemb")
+
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_8rlng"]
 direction = Vector3(0, 0, -1)
 spread = 10.0
@@ -334,7 +351,7 @@ script = ExtResource("1_2x3hs")
 wand_ray_path = NodePath("../Armature/GeneralSkeleton/BoneAttachment3D/WandRay")
 magic_particles_path = NodePath("../Armature/GeneralSkeleton/BoneAttachment3D/WandMagic")
 player_path = NodePath("..")
-mouse_pick_radius_px = 200.0
+mouse_pick_radius_px = 50.0
 
 [node name="Armature" type="Node3D" parent="."]
 transform = Transform3D(0.14486992, 0.010437137, -0.1365738, 0.00024617682, 0.19877084, 0.015451431, 0.13697185, -0.0113962125, 0.14442118, -0.047578067, -0.09981499, 0.04628495)
@@ -851,6 +868,7 @@ mesh = SubResource("ArrayMesh_72ejq")
 skin = SubResource("Skin_8eecw")
 blend_shapes/Leg-corr.L = 0.0
 blend_shapes/Leg-corr.R = 0.0
+surface_material_override/0 = SubResource("ShaderMaterial_u7hby")
 
 [node name="BoneAttachment3D" type="BoneAttachment3D" parent="Armature/GeneralSkeleton"]
 transform = Transform3D(-0.5211084, 0.0055216476, -0.853473, -0.3856252, -0.8936134, 0.22967151, -0.76140654, 0.44880402, 0.46779847, -1.6864113, 5.2110343, 0.7489592)

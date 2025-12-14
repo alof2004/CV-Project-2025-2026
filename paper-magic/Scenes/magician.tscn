@@ -1,13 +1,17 @@
-[gd_scene load_steps=4 format=3 uid="uid://bwveaoetdbncr"]
+[gd_scene load_steps=6 format=3 uid="uid://bwveaoetdbncr"]
 
 [ext_resource type="Script" uid="uid://b8h4m6jhrk8pl" path="res://Scenes/wizard_movement.gd" id="1_c74ex"]
 [ext_resource type="PackedScene" uid="uid://cxjctmev8k5wo" path="res://Assets/wizard1.tscn" id="2_rnjn7"]
+[ext_resource type="Shader" uid="uid://l174gfetk8ov" path="res://Assets/death_shader.gdshader" id="2_w7tej"]
+[ext_resource type="Texture2D" uid="uid://dft0unu7s78qh" path="res://Assets/noise.png" id="3_t33pb"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_c74ex"]
 height = 1.9890137
 
 [node name="CharacterBody3D" type="CharacterBody3D"]
 script = ExtResource("1_c74ex")
+dissolve_shader = ExtResource("2_w7tej")
+noise_tex = ExtResource("3_t33pb")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.91296387, 0)

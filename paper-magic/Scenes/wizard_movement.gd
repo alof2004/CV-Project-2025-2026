@@ -1,8 +1,9 @@
 extends CharacterBody3D
 
+# ---------------- Movement ----------------
 const SPEED := 4.0
-const JUMP_FORCE := 5.0          # normal jump
-const RUN_JUMP_FORCE := 6.0      # stronger jump when running
+const JUMP_FORCE := 5.0
+const RUN_JUMP_FORCE := 6.0
 const GRAVITY := 15.0
 const ROTATION_SPEED := 10.0
 
@@ -15,15 +16,52 @@ const FALL_ANIM := ""
 const JUMP_ANIM_SPEED := 1.3
 const BLEND_TIME := 0.15
 
-@onready var anim: AnimationPlayer = $"wizard/AnimationPlayer"
+# ---------------- Burn / Respawn ----------------
+@export var burn_out_time := 1.2
+@export var burn_in_time := 1.2
+@export var kill_radius := 2.0 # world units; increase if model doesn't fully disappear
+@export var burn_center_offset := Vector3(0.0, 0.5, 0.0) # where burn starts relative to player pos
 
-var is_2d: bool = true
-var plane_z: float = 0.0   # z-position used in 2D mode
+@onready var anim: AnimationPlayer = $"wizard/AnimationPlayer"
+@onready var wizard_root: Node = $"wizard"
+@onready var main_mesh: MeshInstance3D = $"wizard/Armature/GeneralSkeleton/Main_Mesh"
+
+var is_2d := true
+var plane_z := 0.0
+
+var dead := false
+var burn_mats: Array[ShaderMaterial] = []
+var _saved_collision_layer: int
+var _saved_collision_mask: int
+var _burn_template: ShaderMaterial
 
 
 func _ready() -> void:
 	anim.animation_finished.connect(_on_animation_finished)
 	plane_z = global_transform.origin.z
+
+	_saved_collision_layer = collision_layer
+	_saved_collision_mask = collision_mask
+
+	# Use the ShaderMaterial you configured in the Inspector as the template:
+	# Main_Mesh -> Surface Material Override -> 0
+	_burn_template = main_mesh.get_surface_override_material(0) as ShaderMaterial
+	if _burn_template == null:
+		_burn_template = main_mesh.get_active_material(0) as ShaderMaterial
+
+	if _burn_template == null or _burn_template.shader == null:
+		push_warning("Assign your burn ShaderMaterial on Main_Mesh -> Surface Material Override -> 0 (with Albedo/Noise/ColorCurve set).")
+		return
+
+	burn_mats.clear()
+	_apply_burn_to_all_meshes(wizard_root)
+
+	# Start visible
+	for m in burn_mats:
+		m.set_shader_parameter("radius", 0.0)
+
+	# Optional debug
+	print("[Wizard] burn_mats:", burn_mats.size())
 
 
 func set_2d_mode(enabled: bool) -> void:
@@ -34,16 +72,16 @@ func set_2d_mode(enabled: bool) -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if dead:
+		return
+
 	var input_dir := Vector2.ZERO
 
-	# --- collect input ---
-	# Left/right always available
 	if Input.is_action_pressed("move_left"):
 		input_dir.x -= 1.0
 	if Input.is_action_pressed("move_right"):
 		input_dir.x += 1.0
 
-	# Forward/back only matter in 3D mode
 	if not is_2d:
 		if Input.is_action_pressed("move_north"):
 			input_dir.y += 1.0
@@ -53,14 +91,10 @@ func _physics_process(delta: float) -> void:
 	if input_dir.length() > 1.0:
 		input_dir = input_dir.normalized()
 
-	# --- convert input to world movement ---
 	var move_dir := Vector3.ZERO
-
 	if is_2d:
-		# Movement only along X (Paper Mario side view)
 		move_dir = Vector3(input_dir.x, 0.0, 0.0)
 	else:
-		# Movement relative to camera: W = forward, A = left, etc.
 		var cam := get_viewport().get_camera_3d()
 		if cam:
 			var basis := cam.global_transform.basis
@@ -72,36 +106,26 @@ func _physics_process(delta: float) -> void:
 			right = right.normalized()
 			move_dir = (right * input_dir.x + forward * input_dir.y).normalized()
 		else:
-			# Fallback: world axes
 			move_dir = Vector3(input_dir.x, 0.0, input_dir.y)
 
 	var vel := velocity
-
-	# Horizontal movement
 	vel.x = move_dir.x * SPEED
-	if is_2d:
-		vel.z = 0.0
-	else:
-		vel.z = move_dir.z * SPEED
+	vel.z = 0.0 if is_2d else move_dir.z * SPEED
 
-	# Gravity
 	if not is_on_floor():
 		vel.y -= GRAVITY * delta
 
-	# Jump: apply Y velocity immediately, stronger when running
 	if is_on_floor() and Input.is_action_just_pressed("jump"):
 		var horizontal_speed := Vector2(vel.x, vel.z).length()
 		if horizontal_speed > 0.1:
 			vel.y = RUN_JUMP_FORCE
 			_play(RUN_JUMP_ANIM, 0.05)
 			anim.seek(0.2, true)
-
 		else:
 			vel.y = JUMP_FORCE
 			_play(JUMP_ANIM, 0.05)
 			anim.seek(0.55, true)
 
-	# Rotate towards movement direction
 	if move_dir.length() > 0.01:
 		var target_yaw := atan2(move_dir.x, move_dir.z)
 		rotation.y = lerp_angle(rotation.y, target_yaw, ROTATION_SPEED * delta)
@@ -109,7 +133,6 @@ func _physics_process(delta: float) -> void:
 	velocity = vel
 	move_and_slide()
 
-	# Lock Z in 2D mode
 	if is_2d:
 		var t := global_transform
 		t.origin.z = plane_z
@@ -118,11 +141,97 @@ func _physics_process(delta: float) -> void:
 	_handle_animation(move_dir)
 
 
+# Called by your KillArea
+func die_and_respawn(respawn_pos: Vector3) -> void:
+	if dead:
+		return
+	dead = true
+
+	velocity = Vector3.ZERO
+	anim.stop()
+
+	# prevent re-trigger while burning / spawning
+	collision_layer = 0
+	collision_mask = 0
+
+	_set_burn_center(global_position + burn_center_offset)
+
+	# Burn OUT: radius 0 -> kill_radius
+	for m in burn_mats:
+		m.set_shader_parameter("radius", 0.0)
+
+	var t := create_tween()
+	t.set_parallel(true)
+	for m in burn_mats:
+		t.tween_property(m, "shader_parameter/radius", kill_radius, burn_out_time)
+
+	t.set_parallel(false)
+	t.tween_callback(Callable(self, "_respawn_now").bind(respawn_pos))
+
+
+func _respawn_now(respawn_pos: Vector3) -> void:
+	global_position = respawn_pos
+	if is_2d:
+		plane_z = global_position.z
+
+	_set_burn_center(respawn_pos + burn_center_offset)
+
+	# Burn IN (reverse): start fully cut, then kill_radius -> 0
+	for m in burn_mats:
+		m.set_shader_parameter("radius", kill_radius)
+
+	var t := create_tween()
+	t.set_parallel(true)
+	for m in burn_mats:
+		t.tween_property(m, "shader_parameter/radius", 0.0, burn_in_time)
+
+	t.set_parallel(false)
+	t.tween_callback(func ():
+		collision_layer = _saved_collision_layer
+		collision_mask = _saved_collision_mask
+		dead = false
+		_playsafe(IDLE_ANIM)
+	)
+
+
+func _set_burn_center(center: Vector3) -> void:
+	# Requires your shader to have: uniform vec3 burn_center;
+	for m in burn_mats:
+		m.set_shader_parameter("burn_center", center)
+
+
+func _apply_burn_to_all_meshes(node: Node) -> void:
+	for c in node.get_children():
+		_apply_burn_to_all_meshes(c)
+
+	if not (node is MeshInstance3D):
+		return
+
+	var mi := node as MeshInstance3D
+	if mi.mesh == null:
+		return
+
+	var surface_count := mi.mesh.get_surface_count()
+	for s in range(surface_count):
+		# Copy template so every mesh (including wand) uses the same burn setup
+		var sm := _burn_template.duplicate(true) as ShaderMaterial
+
+		# If this surface has its own albedo texture, prefer it
+		var base_mat := mi.get_active_material(s)
+		if base_mat is BaseMaterial3D:
+			var albedo := (base_mat as BaseMaterial3D).get_texture(BaseMaterial3D.TEXTURE_ALBEDO)
+			if albedo != null:
+				sm.set_shader_parameter("albedo_texture", albedo)
+
+		# Defaults
+		sm.set_shader_parameter("radius", 0.0)
+
+		mi.set_surface_override_material(s, sm)
+		burn_mats.append(sm)
+
+
 func _handle_animation(move_dir: Vector3) -> void:
-	# do not interrupt jump animations while they are playing
-	if (anim.current_animation == JUMP_ANIM
-			or anim.current_animation == RUN_JUMP_ANIM) \
-			and anim.is_playing():
+	if (anim.current_animation == JUMP_ANIM or anim.current_animation == RUN_JUMP_ANIM) and anim.is_playing():
 		return
 
 	if not is_on_floor():
@@ -136,12 +245,10 @@ func _handle_animation(move_dir: Vector3) -> void:
 		_play(IDLE_ANIM, BLEND_TIME)
 
 
-# kept in case your animations still call this method
-func _on_jump_takeoff() -> void:
-	pass
-
-
 func _on_animation_finished(name: StringName) -> void:
+	if dead:
+		return
+
 	if (name == JUMP_ANIM or name == RUN_JUMP_ANIM) and is_on_floor():
 		var horizontal_speed := Vector2(velocity.x, velocity.z).length()
 		if horizontal_speed > 0.1:
@@ -154,11 +261,7 @@ func _play(name: String, blend_time: float = BLEND_TIME) -> void:
 	if anim.current_animation == name and anim.is_playing():
 		return
 
-	if name == JUMP_ANIM or name == RUN_JUMP_ANIM:
-		anim.speed_scale = JUMP_ANIM_SPEED
-	else:
-		anim.speed_scale = 1.0
-
+	anim.speed_scale = JUMP_ANIM_SPEED if (name == JUMP_ANIM or name == RUN_JUMP_ANIM) else 1.0
 	anim.play(name, blend_time)
 
 

@@ -3,6 +3,7 @@ extends Area3D
 @export var respawn_point_path: NodePath
 
 var respawn_point: Node3D = null
+var busy := false
 
 func _ready() -> void:
 	monitoring = true
@@ -15,14 +16,14 @@ func _ready() -> void:
 
 func set_respawn_target(p: Node3D) -> void:
 	respawn_point = p
-	# print("[KillArea] respawn set to:", respawn_point)
 
 func _on_body_entered(body: Node) -> void:
+	if busy:
+		return
+
 	var p := body as Node3D
 	if p == null:
 		return
-
-	print("[KillArea] body_entered:", body)
 
 	if not p.is_in_group("player"):
 		return
@@ -31,8 +32,16 @@ func _on_body_entered(body: Node) -> void:
 		push_warning("[KillArea] respawn_point is NULL (not set).")
 		return
 
-	# Defer so CharacterBody movement code in the same tick doesn't overwrite it
-	p.set_deferred("global_transform", respawn_point.global_transform)
+	# Use dissolve if available
+	if p.has_method("die_and_respawn"):
+		busy = true
+		p.call("die_and_respawn", respawn_point.global_position)
+		# Prevent re-trigger spam while overlapping
+		await get_tree().create_timer(0.2).timeout
+		busy = false
+		return
 
+	# Fallback: old instant respawn
+	p.set_deferred("global_transform", respawn_point.global_transform)
 	if p is CharacterBody3D:
 		(p as CharacterBody3D).velocity = Vector3.ZERO

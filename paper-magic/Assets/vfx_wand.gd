@@ -1,4 +1,4 @@
-# Wand.gd
+# Wand.gd (with aura debug)
 extends Node3D
 
 # --------------------------------------------------------------------
@@ -6,10 +6,13 @@ extends Node3D
 # --------------------------------------------------------------------
 @export var wand_ray_path: NodePath
 @export var magic_particles_path: NodePath   # GPUParticles3D
-@export var player_path: NodePath            # Player (optional, used to read is_2d)
-@export var camera_path: NodePath            # Optional: assign a Camera3D manually
+@export var player_path: NodePath            # optional
+@export var camera_path: NodePath            # optional
 @export var mouse_pick_radius_px: float = 120.0
 @export var debug_camera: bool = false
+
+@export var debug_wand: bool = true
+@export var debug_aura: bool = true
 
 @onready var cam: Camera3D = get_node_or_null(camera_path) as Camera3D
 @onready var wand_ray: RayCast3D = get_node_or_null(wand_ray_path) as RayCast3D
@@ -24,12 +27,13 @@ extends Node3D
 @export var move_speed: float = 4.0
 @export var max_grab_distance: float = 15.0
 
+# Scaling is RELATIVE multiplier while grabbed
 @export var scale_speed: float = 1.0
 @export var min_scale: float = 0.5
 @export var max_scale: float = 2.0
 
 # --------------------------------------------------------------------
-# FLOOR / GROUND (dynamic)
+# FLOOR / GROUND
 # --------------------------------------------------------------------
 @export var floor_height: float = 2.0
 @export var floor_offset: float = 0.0
@@ -37,12 +41,19 @@ extends Node3D
 @export var ground_ray_start_offset: float = 0.2
 
 # --------------------------------------------------------------------
-# AURA (glow)
+# AURA (SelectionAura mesh under targets)
+# You said: albedo is transparent, glow comes from EMISSION.
+# We will:
+#   - force unique material instance (fix disappearing)
+#   - tween ALBEDO alpha (for visibility) AND EMISSION energy (for glow)
+#   - NOT overwrite your emission color/texture/operator
 # --------------------------------------------------------------------
-@export var aura_max_alpha: float = 0.4
+@export var aura_max_alpha: float = 0.65
 @export var aura_fade_time: float = 0.2
-@export var aura_scale_boost: float = 1.01        # slight scale up to avoid z-fighting
-@export var aura_emission: float = 2.0            # glow strength (needs WorldEnvironment glow enabled)
+@export var aura_scale_boost: float = 1.01
+
+# multiply your existing Energy Multiplier by this when visible
+@export var aura_energy_boost: float = 1.0
 
 # --------------------------------------------------------------------
 # BEAM
@@ -66,79 +77,60 @@ var magic_mat: ParticleProcessMaterial = null
 var hovered: Node3D = null
 var grabbed: Node3D = null
 
-var aura_tweens: Dictionary = {}
+var aura_tweens: Dictionary = {}             # MeshInstance3D -> Tween
+var aura_base_energy: Dictionary = {}        # MeshInstance3D -> float (original energy mult)
 var rotate_tween: Tween = null
-var frame_counter: int = 0
 
-# Relative scaling state (so big imported models don't snap to (2,2,2))
+# Relative scaling state
 var grabbed_scale_factor: float = 1.0
 var grabbed_base_mesh_scale: Vector3 = Vector3.ONE
 var grabbed_base_cs_scale: Vector3 = Vector3.ONE
 var grabbed_base_aura_scale: Vector3 = Vector3.ONE
 
-# RigidBody grab state (kinematic freeze mode)
-var grabbed_rb_prev_freeze_mode: int = RigidBody3D.FREEZE_MODE_STATIC
+# RigidBody grab state
 var grabbed_is_rb: bool = false
+var grabbed_rb_prev_freeze_mode: int = RigidBody3D.FREEZE_MODE_STATIC
+
+var orig_mesh_scale: Dictionary = {} # Node3D -> Vector3
+var orig_cs_scale: Dictionary = {}   # Node3D -> Vector3
+var orig_aura_scale: Dictionary = {} # Node3D -> Vector3
 
 # ====================================================================
-# Helpers: Aura material & mesh
+# Debug helpers
 # ====================================================================
-func _get_aura_material(aura: MeshInstance3D) -> StandardMaterial3D:
-	if aura == null:
-		return null
+func _dbg(msg: String) -> void:
+	if debug_wand:
+		print("[WAND] ", msg)
 
-	var mat: Material = aura.get_surface_override_material(0)
+func _dbg_aura(msg: String) -> void:
+	if debug_aura:
+		print("[WAND][AURA] ", msg)
+
+func _mat_summary(mat: Material) -> String:
 	if mat == null:
-		mat = aura.material_override
-	if mat == null:
-		mat = aura.get_active_material(0)
-	if mat == null:
-		return null
+		return "mat=NULL"
+	var t := mat.get_class()
+	var id := str(mat.get_instance_id())
+	if mat is StandardMaterial3D:
+		var sm := mat as StandardMaterial3D
+		return "%s id=%s albedo_a=%.3f emission_on=%s emission_energy=%.3f emission_color=%s blend=%s cull=%s depth_draw=%s" % [
+			t, id,
+			sm.albedo_color.a,
+			str(sm.emission_enabled),
+			sm.emission_energy_multiplier,
+			str(sm.emission),
+			str(sm.blend_mode),
+			str(sm.cull_mode),
+			str(sm.depth_draw_mode)
+		]
+	return "%s id=%s" % [t, id]
 
-	# Always unique so aura can't affect the real mesh
-	mat = mat.duplicate(true)
-	mat.resource_local_to_scene = true
-	aura.material_override = mat
-
-	var sm := mat as StandardMaterial3D
-	if sm == null:
-		return null
-
-	# Outline shell glow settings
-	sm.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	sm.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
-	sm.cull_mode = BaseMaterial3D.CULL_FRONT
-	sm.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	sm.alpha_scissor_threshold = 0.0
-
-	# Don't cover the real mesh
-	sm.depth_draw_mode = BaseMaterial3D.DEPTH_DRAW_DISABLED
-	sm.no_depth_test = false
-	sm.render_priority = 1
-
-	# EMISSION is the actual glow color (keep whatever you set in the inspector)
-	sm.emission_enabled = true
-	sm.emission_energy_multiplier = aura_emission
-
-	# Make sure the aura "fill" is invisible; only emission shows.
-	# Keep alpha (for fading), but kill RGB.
-	var c := sm.albedo_color
-	sm.albedo_color = Color(0.0, 0.0, 0.0, c.a)
-
-	return sm
-
-
-func _get_visual_mesh(root: Node3D) -> MeshInstance3D:
-	if root is MeshInstance3D:
-		return root
-	for child in root.get_children():
-		if child is MeshInstance3D:
-			return child as MeshInstance3D
-	return null
+func _node_path_safe(n: Node) -> String:
+	return str(n.get_path()) if n != null else "<null>"
 
 
 # ====================================================================
-# Helpers: Camera & mouse (SubViewport safe)
+# Camera & mouse (SubViewport safe)
 # ====================================================================
 func _get_subviewport_camera() -> Camera3D:
 	var root: Node = get_tree().current_scene
@@ -153,7 +145,6 @@ func _get_subviewport_camera() -> Camera3D:
 
 	return sv.get_node_or_null("Camera3D") as Camera3D
 
-
 func _get_active_camera() -> Camera3D:
 	var c: Camera3D = cam
 	if c == null:
@@ -161,7 +152,6 @@ func _get_active_camera() -> Camera3D:
 	if c == null:
 		c = get_viewport().get_camera_3d()
 	return c
-
 
 func _get_mouse_pos_for_camera(camera: Camera3D) -> Vector2:
 	var root: Node = get_tree().current_scene
@@ -185,13 +175,20 @@ func _get_mouse_pos_for_camera(camera: Camera3D) -> Vector2:
 			m_local.x * (sv_size.x / c_size.x),
 			m_local.y * (sv_size.y / c_size.y)
 		)
-
 	return m_local
 
 
 # ====================================================================
-# Helpers: Collision queries
+# Helpers: find mesh / collider
 # ====================================================================
+func _get_visual_mesh(root: Node3D) -> MeshInstance3D:
+	if root is MeshInstance3D:
+		return root
+	for child in root.get_children():
+		if child is MeshInstance3D:
+			return child as MeshInstance3D
+	return null
+
 func _find_collision_shape(n: Node) -> CollisionShape3D:
 	var cs: CollisionShape3D = n.get_node_or_null("CollisionShape3D") as CollisionShape3D
 	if cs != null and cs.shape != null:
@@ -202,12 +199,15 @@ func _find_collision_shape(n: Node) -> CollisionShape3D:
 	return null
 
 
+# ====================================================================
+# Helpers: collision queries
+# ====================================================================
 func _intersect_shape_with_transform(grabbed_node: Node3D, cs: CollisionShape3D, xf: Transform3D) -> bool:
 	if cs == null or cs.shape == null:
 		return false
 
 	var space: PhysicsDirectSpaceState3D = get_world_3d().direct_space_state
-	var q: PhysicsShapeQueryParameters3D = PhysicsShapeQueryParameters3D.new()
+	var q := PhysicsShapeQueryParameters3D.new()
 	q.shape = cs.shape
 	q.transform = xf
 
@@ -219,14 +219,12 @@ func _intersect_shape_with_transform(grabbed_node: Node3D, cs: CollisionShape3D,
 
 	return space.intersect_shape(q, 1).size() > 0
 
-
 func _would_collide(grabbed_node: Node3D, cs: CollisionShape3D, motion: Vector3, extra_offset: Vector3 = Vector3.ZERO) -> bool:
 	if cs == null or cs.shape == null:
 		return false
 	var xf: Transform3D = cs.global_transform
 	xf.origin += motion + extra_offset
 	return _intersect_shape_with_transform(grabbed_node, cs, xf)
-
 
 func _apply_motion_safely(grabbed_node: Node3D, cs: CollisionShape3D, motion: Vector3, extra_offset: Vector3 = Vector3.ZERO, steps: int = 8) -> Vector3:
 	if motion == Vector3.ZERO:
@@ -237,11 +235,11 @@ func _apply_motion_safely(grabbed_node: Node3D, cs: CollisionShape3D, motion: Ve
 	if not _would_collide(grabbed_node, cs, motion, extra_offset):
 		return motion
 
-	var lo: float = 0.0
-	var hi: float = 1.0
+	var lo := 0.0
+	var hi := 1.0
 	for _i in range(steps):
-		var mid: float = (lo + hi) * 0.5
-		var test: Vector3 = motion * mid
+		var mid := (lo + hi) * 0.5
+		var test := motion * mid
 		if _would_collide(grabbed_node, cs, test, extra_offset):
 			hi = mid
 		else:
@@ -250,15 +248,15 @@ func _apply_motion_safely(grabbed_node: Node3D, cs: CollisionShape3D, motion: Ve
 
 
 # ====================================================================
-# Helpers: Dynamic ground height under object
+# Helpers: ground height under object
 # ====================================================================
 func _get_ground_y_under(node: Node3D) -> float:
 	var space: PhysicsDirectSpaceState3D = get_world_3d().direct_space_state
 
-	var from: Vector3 = node.global_transform.origin + Vector3(0.0, ground_ray_start_offset, 0.0)
-	var to: Vector3 = from - Vector3(0.0, ground_ray_length, 0.0)
+	var from := node.global_transform.origin + Vector3(0.0, ground_ray_start_offset, 0.0)
+	var to := from - Vector3(0.0, ground_ray_length, 0.0)
 
-	var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(from, to)
+	var q := PhysicsRayQueryParameters3D.create(from, to)
 
 	var excludes: Array[RID] = []
 	if node is CollisionObject3D:
@@ -268,17 +266,100 @@ func _get_ground_y_under(node: Node3D) -> float:
 	q.exclude = excludes
 	q.collision_mask = 0xFFFFFFFF
 
-	var hit: Dictionary = space.intersect_ray(q)
+	var hit := space.intersect_ray(q)
 	if not hit.is_empty() and hit.has("position"):
 		return (hit["position"] as Vector3).y
 
 	return floor_height
 
+func _get_bottom_y(node: Node3D) -> float:
+	var mesh := _get_visual_mesh(node)
+	if mesh == null:
+		return node.global_position.y
+	var aabb := mesh.get_aabb()
+	var local_bottom := aabb.position + Vector3(aabb.size.x * 0.5, 0.0, aabb.size.z * 0.5)
+	var global_bottom := mesh.global_transform * local_bottom
+	return global_bottom.y
+
 
 # ====================================================================
-# Aura + Beam init
+# Aura: get/duplicate material (NO style overrides)
+# ====================================================================
+func _get_aura_material(aura: MeshInstance3D) -> StandardMaterial3D:
+	if aura == null:
+		return null
+
+	# Try surface material first (common on imported GLBs)
+	var mat: Material = aura.get_surface_override_material(0)
+	if mat == null:
+		mat = aura.material_override
+	if mat == null:
+		mat = aura.get_active_material(0)
+	if mat == null:
+		_dbg_aura("No material found on aura " + _node_path_safe(aura))
+		return null
+
+	_dbg_aura("FOUND aura material: " + _mat_summary(mat))
+
+	if not (mat is StandardMaterial3D):
+		_dbg_aura("Aura material is NOT StandardMaterial3D (it's " + mat.get_class() + ") -> aura won't fade with this script")
+		return null
+
+	# Always duplicate so aura never shares with the real mesh (fix disappearing)
+	var dup := mat.duplicate(true) as Material
+	dup.resource_local_to_scene = true
+	aura.material_override = dup
+
+	var sm := dup as StandardMaterial3D
+
+	# Make sure alpha can fade (your albedo is transparent; we only animate alpha)
+	sm.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	sm.alpha_scissor_threshold = 0.0
+
+	# Prevent the aura from "covering" the object (safe for overlays)
+	sm.depth_draw_mode = BaseMaterial3D.DEPTH_DRAW_DISABLED
+	sm.render_priority = 1
+
+	# Record original emission energy once (keeps your per-object glow tuning)
+	if not aura_base_energy.has(aura):
+		aura_base_energy[aura] = sm.emission_energy_multiplier
+		_dbg_aura("BASE energy stored: %.3f for %s" % [sm.emission_energy_multiplier, _node_path_safe(aura)])
+
+	_dbg_aura("DUP aura material now: " + _mat_summary(sm))
+	return sm
+
+
+func _init_aura_for_target(t: Node3D) -> void:
+	var aura := t.find_child(AURA_NAME, true, false) as MeshInstance3D
+	if aura == null:
+		_dbg_aura("INIT: target has NO SelectionAura: " + _node_path_safe(t))
+		return
+
+	aura.top_level = false
+
+	var sm := _get_aura_material(aura)
+	if sm == null:
+		_dbg_aura("INIT: aura material failed for " + _node_path_safe(aura))
+		return
+
+	# Start hidden: alpha=0, emission energy=0
+	var c := sm.albedo_color
+	c.a = 0.0
+	sm.albedo_color = c
+
+	var base_energy: float = float(aura_base_energy.get(aura, sm.emission_energy_multiplier))
+	sm.emission_energy_multiplier = 0.0
+
+	aura.visible = false
+
+	_dbg_aura("INIT DONE: aura vis=false alpha=0 energy 0 (base=%.3f) node=%s" % [base_energy, _node_path_safe(aura)])
+
+
+# ====================================================================
+# Ready
 # ====================================================================
 func _ready() -> void:
+	_dbg("READY")
 	if wand_ray == null:
 		push_error("[WAND] wand_ray is NULL (bad path?)")
 		return
@@ -311,17 +392,19 @@ func _ready() -> void:
 	aabb.size = Vector3(beam_max_length, beam_max_length, beam_max_length)
 	wand_magic.visibility_aabb = aabb
 
-	# Ensure all auras start hidden
-	for node in get_tree().get_nodes_in_group(TARGET_GROUP):
+	# Init existing targets
+	var targets := get_tree().get_nodes_in_group(TARGET_GROUP)
+	_dbg("Targets in group '%s': %d" % [TARGET_GROUP, targets.size()])
+	for node in targets:
 		if node is Node3D:
-			var aura := (node as Node3D).get_node_or_null(AURA_NAME) as MeshInstance3D
-			if aura:
-				var mat := _get_aura_material(aura)
-				if mat:
-					var c := mat.albedo_color
-					c.a = 0.0
-					mat.albedo_color = c
-				aura.visible = false
+			_init_aura_for_target(node as Node3D)
+
+	# Init targets spawned later
+	get_tree().node_added.connect(func(n: Node) -> void:
+		if n is Node3D and (n as Node3D).is_in_group(TARGET_GROUP):
+			_dbg("node_added target=" + (n as Node3D).name + " path=" + _node_path_safe(n))
+			_init_aura_for_target(n as Node3D)
+	)
 
 
 # ====================================================================
@@ -335,7 +418,6 @@ func _input(event: InputEvent) -> void:
 	elif event.is_action_pressed("wand_rotate_r"):
 		_start_rotation_tween(1)
 
-
 func _start_rotation_tween(dir: int) -> void:
 	if grabbed == null:
 		return
@@ -343,7 +425,7 @@ func _start_rotation_tween(dir: int) -> void:
 		rotate_tween.kill()
 		rotate_tween = null
 
-	var target_rot: Vector3 = grabbed.rotation_degrees
+	var target_rot := grabbed.rotation_degrees
 	target_rot.y += rad_to_deg(ROTATE_STEP) * dir
 
 	rotate_tween = get_tree().create_tween()
@@ -355,8 +437,6 @@ func _start_rotation_tween(dir: int) -> void:
 # Main loop
 # ====================================================================
 func _physics_process(delta: float) -> void:
-	frame_counter += 1
-
 	_update_hover()
 
 	if Input.is_action_just_pressed("wand_grab"):
@@ -373,15 +453,11 @@ func _physics_process(delta: float) -> void:
 func _check_player_distance() -> void:
 	if grabbed == null:
 		return
-
 	var ref_pos: Vector3
 	var player_node := player as Node3D
-	if player_node != null:
-		ref_pos = player_node.global_transform.origin
-	else:
-		ref_pos = global_transform.origin
-
+	ref_pos = player_node.global_transform.origin if player_node != null else global_transform.origin
 	if ref_pos.distance_to(grabbed.global_transform.origin) > max_grab_distance:
+		_dbg("Too far -> force deselect")
 		_force_deselect()
 
 
@@ -389,13 +465,9 @@ func _force_deselect() -> void:
 	if grabbed == null:
 		return
 
-	if rotate_tween and rotate_tween.is_valid():
-		rotate_tween.kill()
-		rotate_tween = null
-
+	_dbg("DESELECT " + grabbed.name)
 	_set_aura_visible(grabbed, false)
 
-	# Restore RigidBody state
 	if grabbed_is_rb and grabbed is RigidBody3D:
 		var rb := grabbed as RigidBody3D
 		rb.freeze = false
@@ -421,7 +493,7 @@ func _update_hover() -> void:
 	var wand_pos := wand_ray.global_transform.origin
 
 	var new_hover: Node3D = null
-	var best_px: float = mouse_pick_radius_px
+	var best_px := mouse_pick_radius_px
 
 	for node in get_tree().get_nodes_in_group(TARGET_GROUP):
 		if not (node is Node3D):
@@ -436,15 +508,19 @@ func _update_hover() -> void:
 
 		var screen_pos := camera.unproject_position(world_pos)
 		var d_px := screen_pos.distance_to(mouse_pos)
-
 		if d_px < best_px:
 			best_px = d_px
 			new_hover = n
+
+	if new_hover != hovered:
+		_dbg("HOVER %s -> %s" % [hovered.name if hovered else "NULL", new_hover.name if new_hover else "NULL"])
 
 	hovered = new_hover
 
 
 func _toggle_select() -> void:
+	_dbg("TOGGLE grabbed=%s hovered=%s" % [grabbed.name if grabbed else "NULL", hovered.name if hovered else "NULL"])
+
 	if grabbed and hovered == grabbed:
 		_force_deselect()
 		return
@@ -459,7 +535,7 @@ func _toggle_select() -> void:
 
 		grabbed = hovered
 
-		# --- RigidBody: freeze as KINEMATIC so it can be moved and push others ---
+		# RB: freeze as kinematic so it can push
 		grabbed_is_rb = false
 		if grabbed is RigidBody3D:
 			var rb := grabbed as RigidBody3D
@@ -470,78 +546,97 @@ func _toggle_select() -> void:
 			rb.linear_velocity = Vector3.ZERO
 			rb.angular_velocity = Vector3.ZERO
 
-		# --- capture "base" scales so scaling is RELATIVE ---
-		grabbed_scale_factor = 1.0
+		# Capture base scales (relative scaling)
+		# --- Capture ORIGINAL scales (persist across grabs) ---
+		_ensure_original_scales(grabbed)
 
 		var mesh := _get_visual_mesh(grabbed)
-		grabbed_base_mesh_scale = mesh.scale if mesh else Vector3.ONE
-
 		var cs := _find_collision_shape(grabbed)
-		grabbed_base_cs_scale = cs.scale if cs else Vector3.ONE
+		var aura_node := grabbed.find_child(AURA_NAME, true, false) as Node3D
 
-		var aura_node := grabbed.get_node_or_null(AURA_NAME) as Node3D
-		grabbed_base_aura_scale = aura_node.scale if aura_node else Vector3.ONE
+		# Always base on ORIGINAL, not current
+		grabbed_base_mesh_scale = orig_mesh_scale.get(grabbed, mesh.scale) if mesh else Vector3.ONE
+		grabbed_base_cs_scale = orig_cs_scale.get(grabbed, cs.scale) if cs else Vector3.ONE
+		grabbed_base_aura_scale = orig_aura_scale.get(grabbed, aura_node.scale) if aura_node else Vector3.ONE
 
+		# Initialize factor from current scale (so it doesn't jump), but clamp it
+		if mesh:
+			var fx: float = mesh.scale.x / maxf(grabbed_base_mesh_scale.x, 0.0001)
+			var fy: float = mesh.scale.y / maxf(grabbed_base_mesh_scale.y, 0.0001)
+			var fz: float = mesh.scale.z / maxf(grabbed_base_mesh_scale.z, 0.0001)
+			grabbed_scale_factor = clampf((fx + fy + fz) / 3.0, min_scale, max_scale)
+		else:
+			grabbed_scale_factor = 1.0
+
+
+		_dbg("SELECT " + grabbed.name)
 		_set_aura_visible(grabbed, true)
 
 
 # ====================================================================
-# Aura
+# Aura show/hide (fade alpha + emission energy)
 # ====================================================================
 func _set_aura_visible(target: Node3D, visible: bool) -> void:
 	if target == null:
 		return
 
-	var aura := target.get_node_or_null(AURA_NAME) as MeshInstance3D
+	var aura := target.find_child(AURA_NAME, true, false) as MeshInstance3D
 	if aura == null:
+		_dbg_aura("SET visible=%s: NO SelectionAura under %s" % [str(visible), _node_path_safe(target)])
 		return
 
-	var mat := _get_aura_material(aura)
-	if mat == null:
+	aura.top_level = false
+
+	var sm := _get_aura_material(aura)
+	if sm == null:
+		_dbg_aura("SET visible=%s: material failed for %s" % [str(visible), _node_path_safe(aura)])
 		return
 
 	if aura_tweens.has(aura):
-		var old_tween := aura_tweens[aura] as Tween
-		if old_tween and old_tween.is_valid():
-			old_tween.kill()
+		var old_tw := aura_tweens[aura] as Tween
+		if old_tw and old_tw.is_valid():
+			old_tw.kill()
 		aura_tweens.erase(aura)
 
-	var to_col := mat.albedo_color
-	to_col.a = aura_max_alpha if visible else 0.0
+	var base_energy: float = float(aura_base_energy.get(aura, sm.emission_energy_multiplier))
+	base_energy *= aura_energy_boost
 
-	# keep emission as-is; only set energy (optional)
-	mat.emission_energy_multiplier = aura_emission
+	var from_alpha := sm.albedo_color.a
+	var to_alpha := aura_max_alpha if visible else 0.0
 
-	# IMPORTANT: keep RGB at 0, only fade alpha
-	to_col.r = 0.0
-	to_col.g = 0.0
-	to_col.b = 0.0
+	# Energy follows alpha so your emission-based glow fades with it
+	var from_energy := sm.emission_energy_multiplier
+	var to_energy := base_energy if visible else 0.0
 
-	var duration := aura_fade_time
+	var to_col := sm.albedo_color
+	to_col.a = to_alpha
+
+	_dbg_aura("SET aura %s visible=%s  alpha %.3f->%.3f  energy %.3f->%.3f  mat=%s" % [
+		_node_path_safe(aura), str(visible),
+		from_alpha, to_alpha,
+		from_energy, to_energy,
+		_mat_summary(sm)
+	])
+
+	aura.visible = true
+	aura.scale = grabbed_base_aura_scale * grabbed_scale_factor * (aura_scale_boost if visible else 1.0)
+
+	var dur := aura_fade_time
 	if not visible:
-		duration *= 0.4
+		dur *= 0.4
 
 	var tw := get_tree().create_tween()
 	tw.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-	tw.tween_property(mat, "albedo_color", to_col, duration)
+	tw.parallel().tween_property(sm, "albedo_color", to_col, dur)
+	tw.parallel().tween_property(sm, "emission_energy_multiplier", to_energy, dur)
 
 	if not visible:
-		tw.tween_callback(Callable(aura, "set_visible").bind(false))
+		tw.tween_callback(func() -> void:
+			aura.visible = false
+			_dbg_aura("HIDE DONE " + _node_path_safe(aura))
+		)
 
 	aura_tweens[aura] = tw
-
-
-# ====================================================================
-# Bottom helper
-# ====================================================================
-func _get_bottom_y(node: Node3D) -> float:
-	var mesh := _get_visual_mesh(node)
-	if mesh == null:
-		return node.global_position.y
-	var aabb := mesh.get_aabb()
-	var local_bottom := aabb.position + Vector3(aabb.size.x * 0.5, 0.0, aabb.size.z * 0.5)
-	var global_bottom := mesh.global_transform * local_bottom
-	return global_bottom.y
 
 
 # ====================================================================
@@ -592,7 +687,7 @@ func _update_move(delta: float) -> void:
 			var right := basis.x
 			right.y = 0.0
 			right = right.normalized()
-			move_dir = (right * input_dir.x + forward * input_dir.y)
+			move_dir = right * input_dir.x + forward * input_dir.y
 			if move_dir.length() > 0.0:
 				move_dir = move_dir.normalized()
 		else:
@@ -637,7 +732,7 @@ func _update_scale(delta: float) -> void:
 		return
 
 	var cs := _find_collision_shape(grabbed)
-	var aura_node := grabbed.get_node_or_null(AURA_NAME) as Node3D
+	var aura_node := grabbed.find_child(AURA_NAME, true, false) as Node3D
 
 	var ground_y := _get_ground_y_under(grabbed) + floor_offset
 	var current_bottom := maxf(_get_bottom_y(grabbed), ground_y)
@@ -651,7 +746,6 @@ func _update_scale(delta: float) -> void:
 		new_factor *= (1.0 - scale_speed * delta)
 
 	new_factor = clampf(new_factor, min_scale, max_scale)
-
 	if is_equal_approx(new_factor, old_factor):
 		return
 
@@ -663,10 +757,8 @@ func _update_scale(delta: float) -> void:
 	if aura_node:
 		aura_node.scale = grabbed_base_aura_scale * grabbed_scale_factor * aura_scale_boost
 
-	var aabb := mesh.get_aabb()
-	var half_h := aabb.size.y * 0.5
-	var new_dist_to_bottom := half_h * mesh.scale.y
-	grabbed.global_position.y = current_bottom + new_dist_to_bottom
+	var new_bottom := _get_bottom_y(grabbed)
+	grabbed.global_position.y += (current_bottom - new_bottom)
 
 
 # ====================================================================
@@ -701,3 +793,18 @@ func _update_magic_beam(target: Node3D) -> void:
 	wand_magic.lifetime = beam_lifetime
 	wand_magic.preprocess = beam_lifetime
 	wand_magic.emitting = true
+
+func _ensure_original_scales(t: Node3D) -> void:
+	if t == null:
+		return
+
+	var mesh := _get_visual_mesh(t)
+	var cs := _find_collision_shape(t)
+	var aura_node := t.find_child(AURA_NAME, true, false) as Node3D
+
+	if mesh and not orig_mesh_scale.has(t):
+		orig_mesh_scale[t] = mesh.scale
+	if cs and not orig_cs_scale.has(t):
+		orig_cs_scale[t] = cs.scale
+	if aura_node and not orig_aura_scale.has(t):
+		orig_aura_scale[t] = aura_node.scale

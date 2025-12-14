@@ -1,0 +1,71 @@
+[gd_scene load_steps=7 format=3 uid="uid://cbxwsd5rrggev"]
+
+[ext_resource type="Script" uid="uid://c15cwsqqfv5lc" path="res://level_select.gd" id="1_sf6f5"]
+[ext_resource type="PackedScene" uid="uid://ycwewugt1u05" path="res://level_btn_scene.tscn" id="2_ardn0"]
+[ext_resource type="PackedScene" uid="uid://c2yhmnhr6c5po" path="res://Level1.tscn" id="3_0bmyu"]
+[ext_resource type="PackedScene" uid="uid://dfmvbxfnwxw4p" path="res://cave.tscn" id="4_nb57j"]
+[ext_resource type="Texture2D" uid="uid://6m1xcwi7p8go" path="res://pUaluZ - Copy.png" id="5_gyrbw"]
+[ext_resource type="Texture2D" uid="uid://cot1nx8fast0b" path="res://textures/mage_logo.png" id="5_nb57j"]
+
+[node name="LevelSelect" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_sf6f5")
+level_btn_scene = ExtResource("2_ardn0")
+all_levels = Array[PackedScene]([ExtResource("3_0bmyu"), ExtResource("4_nb57j"), null])
+
+[node name="Background" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(200, 400)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -172.0
+offset_top = -9.0
+offset_right = 1148.0
+offset_bottom = 664.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("5_gyrbw")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(150, 200)
+layout_mode = 0
+offset_left = 435.0
+offset_top = 167.0
+offset_right = 1482.0
+offset_bottom = 542.0
+texture = ExtResource("5_nb57j")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_right = 1149.0
+offset_bottom = 327.0
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(400, 200)
+layout_mode = 2
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 0
+
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+columns = 5
+
+[node name="TextureRect2" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0

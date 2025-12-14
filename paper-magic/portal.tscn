@@ -1,0 +1,32 @@
+[gd_scene load_steps=6 format=3 uid="uid://do2qy7cu70qeb"]
+
+[ext_resource type="Shader" uid="uid://s7qukld76lr2" path="res://portal.gdshader" id="1_0r486"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ef3v5"]
+size = Vector2(600, 1288.695)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_0r486"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ef3v5"]
+noise = SubResource("FastNoiseLite_0r486")
+seamless = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_grrij"]
+render_priority = 0
+shader = ExtResource("1_0r486")
+shader_parameter/size = 0.5
+shader_parameter/size_inner = 0.17500000761398
+shader_parameter/noise = SubResource("NoiseTexture2D_ef3v5")
+shader_parameter/noise_scale = 3.0
+shader_parameter/noise_speed = 0.6
+shader_parameter/noise_warp = 0.12
+shader_parameter/edge_softness = 0.04
+shader_parameter/portalFrameColor = Color(0, 0, 0, 1)
+shader_parameter/portalHighlightColor = Color(0.42379507, 0.2451, 0.57, 1)
+shader_parameter/inner = Color(0, 0, 0, 1)
+
+[node name="Portal" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_ef3v5")
+surface_material_override/0 = SubResource("ShaderMaterial_grrij")

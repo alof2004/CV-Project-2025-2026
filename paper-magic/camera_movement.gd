@@ -5,16 +5,16 @@ extends Camera3D
 @export var subviewport_path: NodePath          # SubViewport that renders the 3D scene
 
 # 2D (side) view
-@export var height_2d: float = 0.8
+@export var height_2d: float = 0
 @export var distance_z_2d: float = 9.0
 @export var x_offset_2d: float = -3.0
 @export var fov_2d: float = 55.0
 
 # 3D view (left-side)
 @export var height_3d: float = 1.5
-@export var side_distance_3d: float = 4.0
-@export var min_distance_3d: float = 4.0
-@export var fov_3d: float = 70.0
+@export var side_distance_3d: float = 6.0
+@export var min_distance_3d: float = 6.0
+@export var fov_3d: float = 80.0
 
 @export var follow_speed: float = 5.0
 @export var rotation_speed: float = 5.0

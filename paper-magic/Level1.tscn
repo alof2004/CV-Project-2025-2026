@@ -1,11 +1,12 @@
-[gd_scene load_steps=22 format=3 uid="uid://c2yhmnhr6c5po"]
+[gd_scene load_steps=23 format=3 uid="uid://c2yhmnhr6c5po"]
 
 [ext_resource type="Script" uid="uid://d0fmx80seh18a" path="res://camera_movement.gd" id="1_1cqoy"]
 [ext_resource type="Script" uid="uid://bxkwr7fohigl0" path="res://floor_level1.gd" id="1_g04si"]
 [ext_resource type="Script" uid="uid://fbeyq6uxf32o" path="res://objects_level1.gd" id="1_nh60g"]
 [ext_resource type="Shader" uid="uid://n1eam1wn670j" path="res://outliner.gdshader" id="1_svp3w"]
 [ext_resource type="PackedScene" uid="uid://bwveaoetdbncr" path="res://Scenes/magician.tscn" id="3_g04si"]
-[ext_resource type="PackedScene" uid="uid://c24h815i4a8ql" path="res://Scenes/woodtile_scene.tscn" id="3_ymjn4"]
+[ext_resource type="PackedScene" uid="uid://c2e2i2uevrl1w" path="res://wooden_plank.tscn" id="3_ymjn4"]
+[ext_resource type="PackedScene" uid="uid://5dkf6x7sqao6" path="res://gate.tscn" id="4_4nelp"]
 [ext_resource type="Texture2D" uid="uid://ci0csk0mn566y" path="res://Assets/forest_sprites/forest_long.png" id="6_u82ko"]
 [ext_resource type="Script" uid="uid://bat3srnpdiw03" path="res://parallax_background.gd" id="6_wdd02"]
 [ext_resource type="MeshLibrary" uid="uid://d2u2045t6cgcx" path="res://cubes_mesh_lib9.tres" id="7_ai2ps"]
@@ -52,6 +53,7 @@ box_template_path = NodePath("SubViewportContainer/SubViewport/Box")
 subviewport_path = NodePath("SubViewportContainer/SubViewport")
 spike_scene = ExtResource("16_ymjn4")
 wood_tile_scene = ExtResource("3_ymjn4")
+gate_scene = ExtResource("4_4nelp")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -127,7 +129,7 @@ script = ExtResource("1_g04si")
 metadata/_editor_floor_ = Vector3(0, 0, 0)
 
 [node name="CharacterBody3D" parent="SubViewportContainer/SubViewport" groups=["player"] instance=ExtResource("3_g04si")]
-transform = Transform3D(-0.13571563, 0, 0.9907478, 0, 1, 0, -0.9907478, 0, -0.13571563, 32.088287, 14.162161, -0.5380964)
+transform = Transform3D(-0.13571563, 0, 0.9907478, 0, 1, 0, -0.9907478, 0, -0.13571563, 51.948574, 14.162161, -0.5380964)
 
 [node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport"]
 transform = Transform3D(-0.13571565, 0, 0.99074787, 0, 1, 0, -0.99074787, 0, -0.13571565, 8.038721, 1.6311646, 3.5629895)
