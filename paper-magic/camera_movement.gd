@@ -18,7 +18,7 @@ extends Camera3D
 @export var fixed_z_rail: float = 0.0     
 @export var height_2d: float = 10.0
 @export var distance_z_2d: float = 9.0
-@export var x_offset_2d: float = -3.0
+@export var x_offset_2d: float = 3.0
 @export var fov_2d: float = 55.0
 
 @export_group("3D View Settings")

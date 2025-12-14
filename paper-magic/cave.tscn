@@ -14,7 +14,7 @@
 [ext_resource type="Environment" uid="uid://d16t207osgbm2" path="res://Environment/environment_level1.tres" id="9_q41cu"]
 [ext_resource type="MeshLibrary" uid="uid://c8ta2xr53wxr" path="res://cubes_mesh_lib3.tres" id="11_cxskf"]
 [ext_resource type="PackedScene" uid="uid://xnd1qv10g2i" path="res://lighted_torch.tscn" id="15_8eeko"]
-[ext_resource type="PackedScene" path="res://Fireball.tscn" id="15_q41cu"]
+[ext_resource type="PackedScene" uid="uid://c5ujynq6dvk6v" path="res://Fireball.tscn" id="15_q41cu"]
 [ext_resource type="PackedScene" uid="uid://5dkf6x7sqao6" path="res://gate.tscn" id="16_q41cu"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_na6ls"]
@@ -112,8 +112,8 @@ render_target_update_mode = 4
 transform = Transform3D(7.81, 0, 0, 0, 7.81, 0, 0, 0, 7.81, 0.014282227, -0.10852051, 0.059814453)
 visible = false
 
-[node name="CharacterBody3D" parent="SubViewportContainer/SubViewport" instance=ExtResource("6_xifcx")]
-transform = Transform3D(-0.13571563, 0, 0.9907478, 0, 1, 0, -0.9907478, 0, -0.13571563, 0.9741516, 2.550293, 4.1676025)
+[node name="CharacterBody3D" parent="SubViewportContainer/SubViewport" groups=["player"] instance=ExtResource("6_xifcx")]
+transform = Transform3D(-0.13571563, 0, 0.9907478, 0, 1, 0, -0.9907478, 0, -0.13571563, 4.4359264, 2.550293, 4.53236)
 fireball_scene = ExtResource("15_q41cu")
 
 [node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport"]
