@@ -1,9 +1,15 @@
 extends CharacterBody3D
 
-# ---------------- Movement ----------------
+# --- New Variables for Magic ---
+@export var fireball_scene: PackedScene 
+const MAGIC_ANIM := "magic controlling"
+const MAGIC_ANIM_SPEED := 3.0 
+var is_casting: bool = false
+# -------------------------------
+
 const SPEED := 4.0
-const JUMP_FORCE := 5.0
-const RUN_JUMP_FORCE := 6.0
+const JUMP_FORCE := 5.0          
+const RUN_JUMP_FORCE := 6.0      
 const GRAVITY := 15.0
 const ROTATION_SPEED := 10.0
 
@@ -70,18 +76,27 @@ func set_2d_mode(enabled: bool) -> void:
 		plane_z = global_transform.origin.z
 		velocity.z = 0.0
 
-
 func _physics_process(delta: float) -> void:
 	if dead:
 		return
 
 	var input_dir := Vector2.ZERO
 
+	if is_casting:
+		velocity.x = move_toward(velocity.x, 0, SPEED * delta)
+		velocity.z = move_toward(velocity.z, 0, SPEED * delta)
+		move_and_slide()
+		return 
+
+	if Input.is_action_just_pressed("fireball") and is_on_floor():
+		cast_spell()
+		return
+
+	# --- STANDARD MOVEMENT ---
 	if Input.is_action_pressed("move_left"):
 		input_dir.x -= 1.0
 	if Input.is_action_pressed("move_right"):
 		input_dir.x += 1.0
-
 	if not is_2d:
 		if Input.is_action_pressed("move_north"):
 			input_dir.y += 1.0
@@ -140,6 +155,38 @@ func _physics_process(delta: float) -> void:
 
 	_handle_animation(move_dir)
 
+func cast_spell():
+	is_casting = true
+	_play(MAGIC_ANIM, 0.1) 
+	
+	# 1. WAIT FOR SPAWN
+	await get_tree().create_timer(0.3).timeout
+	spawn_fireball()
+
+	# 2. WAIT FOR ANIMATION CUT (1.7s mark)
+	var total_real_time = 1.7 / MAGIC_ANIM_SPEED
+	var remaining_wait = total_real_time - 0.3
+	
+	if remaining_wait > 0:
+		await get_tree().create_timer(remaining_wait).timeout
+
+	# 3. SLOW RETURN TO IDLE
+	is_casting = false
+	
+	# I changed 0.15 (BLEND_TIME) to 0.5 here.
+	# This means it takes half a second to smooth back to idle.
+	# Increase this number (e.g. to 0.8 or 1.0) if you want it even slower.
+	_play(IDLE_ANIM, 0.5)
+
+func spawn_fireball():
+	if fireball_scene:
+		var fireball = fireball_scene.instantiate()
+		get_parent().add_child(fireball)
+		
+		# --- YOUR EXACT COORDINATES ---
+		fireball.global_transform = global_transform
+		fireball.global_position.y -= 0.5 
+		fireball.translate_object_local(Vector3(0, 0, 0.8))
 
 # Called by your KillArea
 func die_and_respawn(respawn_pos: Vector3) -> void:
@@ -248,6 +295,10 @@ func _handle_animation(move_dir: Vector3) -> void:
 func _on_animation_finished(name: StringName) -> void:
 	if dead:
 		return
+		
+	if name == MAGIC_ANIM and is_casting:
+		is_casting = false
+		_playsafe(IDLE_ANIM)
 
 	if (name == JUMP_ANIM or name == RUN_JUMP_ANIM) and is_on_floor():
 		var horizontal_speed := Vector2(velocity.x, velocity.z).length()
@@ -256,14 +307,18 @@ func _on_animation_finished(name: StringName) -> void:
 		else:
 			_playsafe(IDLE_ANIM)
 
-
 func _play(name: String, blend_time: float = BLEND_TIME) -> void:
 	if anim.current_animation == name and anim.is_playing():
 		return
 
-	anim.speed_scale = JUMP_ANIM_SPEED if (name == JUMP_ANIM or name == RUN_JUMP_ANIM) else 1.0
-	anim.play(name, blend_time)
+	if name == JUMP_ANIM or name == RUN_JUMP_ANIM:
+		anim.speed_scale = JUMP_ANIM_SPEED
+	elif name == MAGIC_ANIM:
+		anim.speed_scale = MAGIC_ANIM_SPEED  
+	else:
+		anim.speed_scale = 1.0
 
+	anim.play(name, blend_time)
 
 func _playsafe(name: String) -> void:
 	_play(name, BLEND_TIME)

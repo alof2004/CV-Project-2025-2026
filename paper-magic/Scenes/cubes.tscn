@@ -1,10 +1,11 @@
-[gd_scene load_steps=15 format=4 uid="uid://vb2gw7cf54s5"]
+[gd_scene load_steps=19 format=4 uid="uid://vb2gw7cf54s5"]
 
 [ext_resource type="PackedScene" uid="uid://cssfykhhlsyd1" path="res://Blender Files/cube.glb" id="1_6yhm0"]
 [ext_resource type="Texture2D" uid="uid://d1dynsvnu08tu" path="res://Assets/cave_ground_1.png" id="2_yvb3w"]
 [ext_resource type="Texture2D" uid="uid://b1yu38xba0whq" path="res://Assets/cave_ground_2.png" id="3_dunqq"]
 [ext_resource type="Texture2D" uid="uid://bh88oluaqr57q" path="res://Assets/cave_ground_3.png" id="4_umucf"]
 [ext_resource type="Texture2D" uid="uid://d3v3oelus1iib" path="res://Blender Files/cube_dirt2_image (2).png" id="5_dunqq"]
+[ext_resource type="Texture2D" uid="uid://3m20t361cqpn" path="res://Blender Files/cave_wall_2.png" id="6_umucf"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_40sgn"]
 resource_name = "Material.001"
@@ -155,12 +156,59 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_pji0u")
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_75knr"]
+resource_name = "Material.001"
+cull_mode = 2
+albedo_texture = ExtResource("6_umucf")
+roughness = 0.5
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_5i1c7"]
+_surfaces = [{
+"aabb": AABB(-1, -1, -1, 2, 2, 2),
+"format": 34896613377,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAwACAAEAAAAEAAEAAwAFAAIABQAAAAIABgAEAAAABQAGAAAABwABAAQABwADAAEABgAHAAQABQADAAcABQAHAAYA"),
+"name": "Material.001",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 8,
+"vertex_data": PackedByteArray("/////wAAAAAAAP////8AAAAA//8AAAAAAAAAAP//AAD///////8AAAAAAAAAAAAA//8AAAAAAAD//wAA//8AAA==")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_e1k13"]
+resource_name = "cave_wall_Cube"
+_surfaces = [{
+"aabb": AABB(-1, -1, -1, 2, 2, 2),
+"attribute_data": PackedByteArray("AAD/////AAD/////AAAAAAAA/////wAA/////wAAAAAAAP////8AAP////8AAAAAAAD/////AAD/////AAAAAAAA/////wAA/////wAAAAAAAP////8AAP////8AAAAA"),
+"format": 34896613399,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEAFAAVABYAFAAXABUA"),
+"material": SubResource("StandardMaterial3D_75knr"),
+"name": "Material.001",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("/////wAA//8AAP///////wAA//8AAP///////////////wAA////vwAA//////+//////////78AAAAA////vwAAAAD//1TVAAD//wAAVNUAAP////9U1QAAAAAAAFTVAAAAAAAA/7///wAA////v///AAAAAP+/AAAAAP///7///wAAAABU1f///////1TV/////wAAVNX//wAA//9U1QAAAAAAAP///////wAA//8AAP//AAD/////AAAAAP///3//v/9//7//f/+//3//v/////////////////////9U1VTVVNVU1VTVVNVU1VTVAAD/fwAA/38AAP9/AAD/f6oqqiqqKqoqqiqqKqoqqir/v/+//7//v/+//7//v/+/")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_5i1c7")
+
 [node name="cube" instance=ExtResource("1_6yhm0")]
 
+[node name="Cube" parent="." index="0"]
+visible = false
+
 [node name="Cube2" type="MeshInstance3D" parent="." index="1"]
+visible = false
 mesh = SubResource("ArrayMesh_kfrfq")
 skeleton = NodePath("")
 
 [node name="Cube3" type="MeshInstance3D" parent="." index="2"]
+visible = false
 mesh = SubResource("ArrayMesh_umucf")
+skeleton = NodePath("")
+
+[node name="Cube4" type="MeshInstance3D" parent="." index="3"]
+mesh = SubResource("ArrayMesh_e1k13")
 skeleton = NodePath("")
