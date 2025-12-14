@@ -7,7 +7,7 @@ extends GridMap
 
 # --- AUTO-LOAD BOX (No dragging needed) ---
 # Make sure your file is named exactly "box.tscn" in the FileSystem!
-const BOX_SCENE = preload("res://box.tscn") 
+const BOX_SCENE = preload("res://mini_box.tscn") 
 
 @export var level_length: int = 40
 @export var level_width: int = 5
@@ -39,8 +39,8 @@ func _ready() -> void:
 func generate_level() -> void:
 	
 	# --- 1. SPAWN FLOATING BOXES AT START ---
-	# Spawns 3 boxes at x=2, x=4, x=6
-	for i in range(3):
+	# Spawns 2 boxes at x=2, x=4
+	for i in range(2):
 		var box_x = 2 + (i * 2) 
 		spawn_floating_box(box_x)
 
@@ -61,18 +61,28 @@ func generate_level() -> void:
 	build_end_wall()
 
 func spawn_floating_box(x: int):
+	# 1. Instantiate the box directly
 	var box = BOX_SCENE.instantiate()
 	add_child(box)
 	
-	# Position: Center of the path (z=2), but HIGH UP (y + 2)
-	# Change '2' to however high you want them floating
-	var grid_pos = Vector3i(x, height_y + 2, 2) 
+	# 2. Position the box
+	var grid_pos = Vector3i(x, height_y + 2, 1)
 	var world_pos = map_to_local(grid_pos)
-	
 	box.position = world_pos
-
-# --- Existing Helper Functions ---
-
+	
+	# 3. FORCE SCALE THE INSIDES
+	# We cannot scale 'box' (the RigidBody). We must scale its children.
+	var mini_scale = Vector3(0.4, 0.4, 0.4)
+	
+	for child in box.get_children():
+		# Check if it is a visual mesh or a collision shape
+		if child is MeshInstance3D or child is CollisionShape3D:
+			child.scale = mini_scale
+			
+			var new_shape = child.shape.duplicate()
+			if new_shape is BoxShape3D:
+				new_shape.size *= 0.1
+			child.shape = new_shape
 func build_pillar(x: int, height: int, z: int):
 	for y in range(height_y, height_y + height):
 		set_cell_item(Vector3i(x, y, z), column_id)
@@ -87,7 +97,7 @@ func spawn_torch(x: int, pillar_height: int, z: int):
 	var world_pos = map_to_local(grid_pos)
 	
 	world_pos.z += 1.2 
-	world_pos.y += 0.2 
+	world_pos.y -= 0.5
 	
 	torch.position = world_pos
 	torch.rotation_degrees.y = 0

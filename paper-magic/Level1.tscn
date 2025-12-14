@@ -18,7 +18,7 @@
 [ext_resource type="Environment" uid="uid://d16t207osgbm2" path="res://Environment/environment_level1.tres" id="14_na6ls"]
 [ext_resource type="PackedScene" uid="uid://eljyas0it7cv" path="res://Scenes/spike_scene.tscn" id="16_ymjn4"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_lmhyn"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_na6ls"]
 render_priority = 0
 shader = ExtResource("1_svp3w")
 shader_parameter/depth_threshold = 0.05
@@ -30,7 +30,7 @@ shader_parameter/normal_edge_bias = Vector3(1, 1, 1)
 shader_parameter/light_direction = Vector3(-0.96, -0.18, 0.2)
 
 [sub_resource type="QuadMesh" id="QuadMesh_g04si"]
-material = SubResource("ShaderMaterial_lmhyn")
+material = SubResource("ShaderMaterial_na6ls")
 size = Vector2(2, 2)
 
 [node name="Node3D" type="Node3D"]
