@@ -1,8 +1,7 @@
-[gd_scene load_steps=23 format=3 uid="uid://dfmvbxfnwxw4p"]
+[gd_scene load_steps=16 format=3 uid="uid://dfmvbxfnwxw4p"]
 
 [ext_resource type="Script" uid="uid://bat3srnpdiw03" path="res://parallax_background.gd" id="1_3ayon"]
 [ext_resource type="Texture2D" uid="uid://dyha3p76kp0sy" path="res://Assets/purple/purple_L1.png" id="1_23xot"]
-[ext_resource type="MeshLibrary" uid="uid://bxmqrqjd78hqy" path="res://cubes_mesh_lib2.tres" id="1_ads45"]
 [ext_resource type="Script" uid="uid://crxribpscxxol" path="res://floor_cave_level.gd" id="2_shk3w"]
 [ext_resource type="Texture2D" uid="uid://do3uk3clcyc4p" path="res://Assets/purple/purple_L2.png" id="2_xtwoi"]
 [ext_resource type="Texture2D" uid="uid://c1l7gymv6ng6n" path="res://Assets/purple/purple_L3.png" id="3_dnhvd"]
@@ -11,14 +10,9 @@
 [ext_resource type="Script" uid="uid://d0fmx80seh18a" path="res://camera_movement.gd" id="7_cxskf"]
 [ext_resource type="Shader" uid="uid://n1eam1wn670j" path="res://outliner.gdshader" id="8_rxq2d"]
 [ext_resource type="PackedScene" uid="uid://mxnvrd8e46n2" path="res://cube1.tscn" id="9_8eeko"]
-[ext_resource type="Shader" uid="uid://jd0se4xxg7np" path="res://fireball.gdshader" id="13_cxskf"]
-[ext_resource type="Shader" uid="uid://t0agfcetw44j" path="res://torch_fire.gdshader" id="14_rxq2d"]
+[ext_resource type="MeshLibrary" uid="uid://dwsek2a0bjrbd" path="res://cubes_mesh_lib3.tres" id="11_cxskf"]
 [ext_resource type="PackedScene" uid="uid://xnd1qv10g2i" path="res://lighted_torch.tscn" id="15_8eeko"]
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_q41cu"]
-
-[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_0nfne"]
-data = PackedVector3Array(1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, -1, 0, -1, 1, 0, -1)
+[ext_resource type="PackedScene" uid="uid://c5ujynq6dvk6v" path="res://Fireball.tscn" id="15_q41cu"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_1cqoy"]
 render_priority = 0
@@ -34,27 +28,6 @@ shader_parameter/light_direction = Vector3(-0.96, -0.18, 0.2)
 [sub_resource type="QuadMesh" id="QuadMesh_qjwoy"]
 material = SubResource("ShaderMaterial_1cqoy")
 size = Vector2(2, 2)
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_8eeko"]
-render_priority = 0
-shader = ExtResource("13_cxskf")
-shader_parameter/color_core = Color(1, 0.8, 0, 1)
-shader_parameter/color_edge = Color(1, 0.1, 0, 1)
-shader_parameter/noise_scale = 2.0
-shader_parameter/displacement_amount = 0.2
-shader_parameter/speed = 2.0
-
-[sub_resource type="SphereMesh" id="SphereMesh_rxq2d"]
-radius = 0.25
-height = 0.5
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_rxq2d"]
-render_priority = 0
-shader = ExtResource("14_rxq2d")
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_8eeko"]
-radius = 0.15
-height = 0.6
 
 [node name="Cave" type="Node3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0027113855, 0, -0.0037532747)
@@ -126,18 +99,11 @@ render_target_update_mode = 4
 
 [node name="StaticBody3D" type="StaticBody3D" parent="SubViewportContainer/SubViewport"]
 transform = Transform3D(7.81, 0, 0, 0, 7.81, 0, 0, 0, 7.81, 0.014282227, -0.10852051, 0.059814453)
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/StaticBody3D"]
-transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0)
-mesh = SubResource("PlaneMesh_q41cu")
-skeleton = NodePath("../../../..")
-
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="SubViewportContainer/SubViewport/StaticBody3D"]
-transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0)
-shape = SubResource("ConcavePolygonShape3D_0nfne")
+visible = false
 
 [node name="CharacterBody3D" parent="SubViewportContainer/SubViewport" instance=ExtResource("6_xifcx")]
 transform = Transform3D(-0.13571563, 0, 0.9907478, 0, 1, 0, -0.9907478, 0, -0.13571563, 0.9741516, 2.550293, 4.1676025)
+fireball_scene = ExtResource("15_q41cu")
 
 [node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport"]
 transform = Transform3D(-0.13571565, 0, 0.99074787, 0, 1, 0, -0.99074787, 0, -0.13571565, 8.038721, 1.6311646, 3.5629895)
@@ -160,26 +126,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.0545216, 0.8914795, -2.4002
 visible = false
 
 [node name="GridMap2" type="GridMap" parent="SubViewportContainer/SubViewport"]
-mesh_library = ExtResource("1_ads45")
+mesh_library = ExtResource("11_cxskf")
 script = ExtResource("2_shk3w")
 torch_scene = ExtResource("15_8eeko")
 metadata/_editor_floor_ = Vector3(0, 0, 0)
-
-[node name="Fireball" type="MeshInstance3D" parent="SubViewportContainer/SubViewport"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6015048, 0)
-visible = false
-material_override = SubResource("ShaderMaterial_8eeko")
-transparency = 1.0
-cast_shadow = 0
-mesh = SubResource("SphereMesh_rxq2d")
-
-[node name="Torch Fire" type="MeshInstance3D" parent="SubViewportContainer/SubViewport"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3132093, 1.1511424, -0.028447032)
-visible = false
-material_override = SubResource("ShaderMaterial_rxq2d")
-transparency = 1.0
-cast_shadow = 0
-mesh = SubResource("CapsuleMesh_8eeko")
-
-[node name="TorchInteractable" parent="SubViewportContainer/SubViewport" instance=ExtResource("15_8eeko")]
-visible = false

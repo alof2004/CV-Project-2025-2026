@@ -1,9 +1,10 @@
 extends Node3D
 
-@onready var flame = $Flame # Points to the MeshInstance3D you just named "Flame"
+@onready var flame = $Flame 
 
 func _ready():
-	flame.visible = false # Starts unlit
+	flame.visible = false 
 
 func ignite():
-	flame.visible = true # Lights up
+	print("TORCH IGNITED!") # Check the 'Output' tab at the bottom of Godot
+	flame.visible = true
