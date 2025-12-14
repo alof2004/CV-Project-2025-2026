@@ -351,7 +351,6 @@ script = ExtResource("1_2x3hs")
 wand_ray_path = NodePath("../Armature/GeneralSkeleton/BoneAttachment3D/WandRay")
 magic_particles_path = NodePath("../Armature/GeneralSkeleton/BoneAttachment3D/WandMagic")
 player_path = NodePath("..")
-mouse_pick_radius_px = 50.0
 
 [node name="Armature" type="Node3D" parent="."]
 transform = Transform3D(0.07774134, 0.0021813884, -0.18357602, 0.0005189311, 0.19935316, 0.002588621, 0.1835883, -0.0014872114, 0.077728815, 0.071591154, -0.20662944, 0.0059307837)

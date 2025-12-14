@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://dfmvbxfnwxw4p"]
+[gd_scene load_steps=19 format=3 uid="uid://dfmvbxfnwxw4p"]
 
 [ext_resource type="Script" uid="uid://bat3srnpdiw03" path="res://parallax_background.gd" id="1_3ayon"]
 [ext_resource type="Texture2D" uid="uid://dyha3p76kp0sy" path="res://Assets/purple/purple_L1.png" id="1_23xot"]
@@ -15,8 +15,9 @@
 [ext_resource type="MeshLibrary" uid="uid://c8ta2xr53wxr" path="res://cubes_mesh_lib3.tres" id="11_cxskf"]
 [ext_resource type="PackedScene" uid="uid://xnd1qv10g2i" path="res://lighted_torch.tscn" id="15_8eeko"]
 [ext_resource type="PackedScene" path="res://Fireball.tscn" id="15_q41cu"]
+[ext_resource type="PackedScene" uid="uid://5dkf6x7sqao6" path="res://gate.tscn" id="16_q41cu"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_1cqoy"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_na6ls"]
 render_priority = 0
 shader = ExtResource("8_rxq2d")
 shader_parameter/depth_threshold = 0.05
@@ -27,8 +28,8 @@ shader_parameter/lighten_amount = 1.5
 shader_parameter/normal_edge_bias = Vector3(1, 1, 1)
 shader_parameter/light_direction = Vector3(-0.96, -0.18, 0.2)
 
-[sub_resource type="QuadMesh" id="QuadMesh_qjwoy"]
-material = SubResource("ShaderMaterial_1cqoy")
+[sub_resource type="QuadMesh" id="QuadMesh_8eeko"]
+material = SubResource("ShaderMaterial_na6ls")
 size = Vector2(2, 2)
 
 [node name="Cave" type="Node3D"]
@@ -39,7 +40,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0027113855, 0, -0.00375327
 [node name="ParallaxBackground" type="ParallaxBackground" parent="CanvasLayer"]
 follow_viewport_enabled = true
 script = ExtResource("1_3ayon")
-camera_3d_path = NodePath("../../SubViewportContainer/SubViewport/Camera3D")
 
 [node name="ParallaxLayer6" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
 motion_scale = Vector2(-0.5, 0)
@@ -117,16 +117,24 @@ transform = Transform3D(-0.13571563, 0, 0.9907478, 0, 1, 0, -0.9907478, 0, -0.13
 fireball_scene = ExtResource("15_q41cu")
 
 [node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport"]
-transform = Transform3D(-0.13571565, 0, 0.99074787, 0, 1, 0, -0.99074787, 0, -0.13571565, 8.038721, 1.6311646, 3.5629895)
+unique_name_in_owner = true
+transform = Transform3D(-0.96316254, 2.4289228e-09, -0.26891994, -7.4505815e-09, 1, 3.5717115e-08, 0.26891994, 3.6404998e-08, -0.96316254, 3.4131951, 4.181465, -4.2802944)
 environment = ExtResource("9_q41cu")
 far = 56.0
 script = ExtResource("7_cxskf")
 player_path = NodePath("../CharacterBody3D")
+parallax_2d_path = NodePath("../../../CanvasLayer/ParallaxBackground")
+subviewport_path = NodePath("../CharacterBody3D")
+height_2d = 0.5
+distance_z_2d = 30.0
+fov_2d = 16.335
+height_3d = 1.415
+side_distance_3d = 5.02
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/Camera3D"]
 transform = Transform3D(0.9999999, 0, -1.4901161e-08, 0, 1, 0, 1.4901161e-08, 0, 0.9999999, 0.06796551, 0, -0.49615955)
 extra_cull_margin = 16384.0
-mesh = SubResource("QuadMesh_qjwoy")
+mesh = SubResource("QuadMesh_8eeko")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport"]
 transform = Transform3D(-0.89885336, 0.4342035, 0.059413314, -0.33135426, -0.7620626, 0.5562957, 0.2868222, 0.48034137, 0.8288577, 0, 100, 30.232)
@@ -141,4 +149,5 @@ visible = false
 mesh_library = ExtResource("11_cxskf")
 script = ExtResource("2_shk3w")
 torch_scene = ExtResource("15_8eeko")
+gate_scene = ExtResource("16_q41cu")
 metadata/_editor_floor_ = Vector3(0, 0, 0)

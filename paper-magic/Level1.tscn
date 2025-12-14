@@ -116,7 +116,7 @@ script = ExtResource("1_g04si")
 metadata/_editor_floor_ = Vector3(0, 0, 0)
 
 [node name="CharacterBody3D" parent="SubViewportContainer/SubViewport" groups=["player"] instance=ExtResource("3_g04si")]
-transform = Transform3D(-0.13571563, 0, 0.9907478, 0, 1, 0, -0.9907478, 0, -0.13571563, 51.948574, 14.162161, -0.5380964)
+transform = Transform3D(-0.13571563, 0, 0.9907478, 0, 1, 0, -0.9907478, 0, -0.13571563, 51.948574, 10.902273, -0.5380964)
 
 [node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport"]
 transform = Transform3D(-0.13571565, 0, 0.99074787, 0, 1, 0, -0.99074787, 0, -0.13571565, 8.038721, 1.6311646, 3.5629895)
