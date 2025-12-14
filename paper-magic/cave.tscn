@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://dfmvbxfnwxw4p"]
+[gd_scene load_steps=18 format=3 uid="uid://dfmvbxfnwxw4p"]
 
 [ext_resource type="Script" uid="uid://bat3srnpdiw03" path="res://parallax_background.gd" id="1_3ayon"]
 [ext_resource type="Texture2D" uid="uid://dyha3p76kp0sy" path="res://Assets/purple/purple_L1.png" id="1_23xot"]
@@ -11,6 +11,7 @@
 [ext_resource type="Script" uid="uid://d0fmx80seh18a" path="res://camera_movement.gd" id="7_cxskf"]
 [ext_resource type="Shader" uid="uid://n1eam1wn670j" path="res://outliner.gdshader" id="8_rxq2d"]
 [ext_resource type="PackedScene" uid="uid://mxnvrd8e46n2" path="res://cube1.tscn" id="9_8eeko"]
+[ext_resource type="Environment" uid="uid://d16t207osgbm2" path="res://Environment/environment_level1.tres" id="9_q41cu"]
 [ext_resource type="MeshLibrary" uid="uid://c8ta2xr53wxr" path="res://cubes_mesh_lib3.tres" id="11_cxskf"]
 [ext_resource type="PackedScene" uid="uid://xnd1qv10g2i" path="res://lighted_torch.tscn" id="15_8eeko"]
 [ext_resource type="PackedScene" path="res://Fireball.tscn" id="15_q41cu"]
@@ -117,6 +118,7 @@ fireball_scene = ExtResource("15_q41cu")
 
 [node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport"]
 transform = Transform3D(-0.13571565, 0, 0.99074787, 0, 1, 0, -0.99074787, 0, -0.13571565, 8.038721, 1.6311646, 3.5629895)
+environment = ExtResource("9_q41cu")
 far = 56.0
 script = ExtResource("7_cxskf")
 player_path = NodePath("../CharacterBody3D")
