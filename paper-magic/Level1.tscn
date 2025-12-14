@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://c2yhmnhr6c5po"]
+[gd_scene load_steps=20 format=3 uid="uid://c2yhmnhr6c5po"]
 
 [ext_resource type="Script" uid="uid://d0fmx80seh18a" path="res://camera_movement.gd" id="1_1cqoy"]
 [ext_resource type="Script" uid="uid://bxkwr7fohigl0" path="res://floor_level1.gd" id="1_g04si"]
@@ -13,23 +13,10 @@
 [ext_resource type="Texture2D" uid="uid://dlne5lifbpwda" path="res://Assets/forest_sprites/forest_mid.png" id="7_wdd02"]
 [ext_resource type="Texture2D" uid="uid://o656lp5r0xg0" path="res://Assets/forest_sprites/forest_back.png" id="8_u82ko"]
 [ext_resource type="Texture2D" uid="uid://coaqybjci1d3q" path="res://Assets/forest_sprites/forest_mountain.png" id="9_ai2ps"]
-[ext_resource type="Texture2D" uid="uid://bgfmkc3s0q3yy" path="res://sky.png" id="10_lmhyn"]
 [ext_resource type="Texture2D" uid="uid://bs3y7r0htq73u" path="res://Assets/forest_sprites/forest_sky.png" id="10_nh60g"]
 [ext_resource type="PackedScene" uid="uid://fj2wnd5hej5a" path="res://box.tscn" id="13_ai2ps"]
+[ext_resource type="Environment" uid="uid://d16t207osgbm2" path="res://Environment/environment_level1.tres" id="14_na6ls"]
 [ext_resource type="PackedScene" uid="uid://eljyas0it7cv" path="res://Scenes/spike_scene.tscn" id="16_ymjn4"]
-
-[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_nh60g"]
-panorama = ExtResource("10_lmhyn")
-
-[sub_resource type="Sky" id="Sky_nh60g"]
-sky_material = SubResource("PanoramaSkyMaterial_nh60g")
-radiance_size = 6
-
-[sub_resource type="Environment" id="Environment_ymjn4"]
-background_mode = 2
-sky = SubResource("Sky_nh60g")
-sky_custom_fov = 114.7
-sky_rotation = Vector3(0, 0.7853982, 0.17453292)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lmhyn"]
 render_priority = 0
@@ -133,7 +120,7 @@ transform = Transform3D(-0.13571563, 0, 0.9907478, 0, 1, 0, -0.9907478, 0, -0.13
 
 [node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport"]
 transform = Transform3D(-0.13571565, 0, 0.99074787, 0, 1, 0, -0.99074787, 0, -0.13571565, 8.038721, 1.6311646, 3.5629895)
-environment = SubResource("Environment_ymjn4")
+environment = ExtResource("14_na6ls")
 far = 56.0
 script = ExtResource("1_1cqoy")
 player_path = NodePath("../CharacterBody3D")
