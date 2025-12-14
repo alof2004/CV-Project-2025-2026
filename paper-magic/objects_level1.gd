@@ -16,7 +16,6 @@ extends Node3D
 @export var spike_depth_cells: int = 5
 @export var spikes_y_offset: int = 6
 @export var spike_world_y_offset: float = -0.4
-
 # --- remove GridMap blocks to create a pit (Mario hole) ---
 @export var make_spike_pit: bool = true
 @export var pit_clear_from_y: int = -5
@@ -200,16 +199,25 @@ func spawn_gate(world_pos: Vector3) -> Node3D:
 	g.global_position = world_pos
 	g.rotation.y = deg_to_rad(gate_rotation_y_degrees)
 	
-	# "Select" internal nodes and scale them directly (similar to how Spike finds KillArea)
-	# This ensures we scale the actual Meshes and StaticBodies, not just the container.
+	# --- HARDCODED LOAD ---
+	# We force the script to load the file directly by name.
+	# MAKE SURE THE PATH MATCHES YOUR FILE EXACTLY!
+	var manual_scene = load("res://LevelSelect.tscn")
+	
+	if manual_scene:
+		print("[Spawner] Loaded LevelSelect.tscn manually. Assigning to Gate...")
+		g.target_scene = manual_scene
+	else:
+		print("[Spawner] CRITICAL ERROR: Could not find 'res://LevelSelect.tscn'. Check spelling!")
+	# ----------------------
+
+	# ... existing scaling code ...
 	for child in g.get_children():
 		if child is Node3D:
 			child.scale = gate_scale_mult
-			# If the parts are not at (0,0,0), we must also scale their position
 			child.position *= gate_scale_mult
 			
 	return g
-
 func scale_wood_tile_everything(wood_root: Node3D, scale_mult: Vector3) -> void:
 	var body := wood_root.get_node_or_null("StaticBody3D2") as Node3D
 	if body == null:

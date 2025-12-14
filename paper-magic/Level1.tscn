@@ -126,6 +126,9 @@ script = ExtResource("1_1cqoy")
 player_path = NodePath("../CharacterBody3D")
 parallax_2d_path = NodePath("../../../CanvasLayer/ParallaxBackground")
 subviewport_path = NodePath("..")
+height_2d = 2.0
+distance_z_2d = 30.0
+fov_2d = 16.335
 height_3d = 1.415
 side_distance_3d = 5.02
 
@@ -142,3 +145,4 @@ light_indirect_energy = 9.0
 visible = false
 
 [node name="Spike" parent="SubViewportContainer/SubViewport" instance=ExtResource("16_ymjn4")]
+visible = false
