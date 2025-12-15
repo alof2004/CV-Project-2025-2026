@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://qrguwadm2121"]
+
+[ext_resource type="Script" uid="uid://cga37rqrovxip" path="res://decoder.gd" id="1_kt4t0"]
+[ext_resource type="PackedScene" uid="uid://dms2117my43oi" path="res://Assets/Computer.glb" id="1_umdk0"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kt4t0"]
+
+[node name="Decoder" type="Node3D"]
+script = ExtResource("1_kt4t0")
+
+[node name="Computer2" parent="." instance=ExtResource("1_umdk0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.18659496, 1.1920929e-07, -0.18858528)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Computer2/Computer" index="0"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Computer2/Computer/StaticBody3D"]
+shape = SubResource("BoxShape3D_kt4t0")
+
+[editable path="Computer2"]
