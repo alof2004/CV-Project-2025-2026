@@ -1,0 +1,17 @@
+[gd_resource type="Environment" load_steps=4 format=3 uid="uid://biyofk878tcm8"]
+
+[ext_resource type="Texture2D" uid="uid://7jn4jvcgox3c" path="res://Assets/moon/beautiful-view-stars-night-sky.jpg" id="1_agwdb"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_nnmy7"]
+panorama = ExtResource("1_agwdb")
+
+[sub_resource type="Sky" id="Sky_nh60g"]
+sky_material = SubResource("PanoramaSkyMaterial_nnmy7")
+process_mode = 2
+radiance_size = 6
+
+[resource]
+background_mode = 2
+sky = SubResource("Sky_nh60g")
+sky_custom_fov = 101.5
+sky_rotation = Vector3(0, 0.7853982, 0.17453292)

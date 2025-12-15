@@ -21,27 +21,29 @@ func _on_body_entered(body: Node) -> void:
 	if busy:
 		return
 
-	var p := body as Node3D
-	if p == null:
-		return
+	# body might be a child collider; find the actual player Node3D
+	var p: Node3D = null
+	if body is Node3D and (body as Node3D).is_in_group("player"):
+		p = body as Node3D
+	else:
+		var parent := body.get_parent()
+		if parent is Node3D and (parent as Node3D).is_in_group("player"):
+			p = parent as Node3D
 
-	if not p.is_in_group("player"):
+	if p == null:
 		return
 
 	if respawn_point == null:
 		push_warning("[KillArea] respawn_point is NULL (not set).")
 		return
 
-	# Use dissolve if available
 	if p.has_method("die_and_respawn"):
 		busy = true
 		p.call("die_and_respawn", respawn_point.global_position)
-		# Prevent re-trigger spam while overlapping
 		await get_tree().create_timer(0.2).timeout
 		busy = false
 		return
 
-	# Fallback: old instant respawn
 	p.set_deferred("global_transform", respawn_point.global_transform)
 	if p is CharacterBody3D:
 		(p as CharacterBody3D).velocity = Vector3.ZERO

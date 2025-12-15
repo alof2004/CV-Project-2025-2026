@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=4 uid="uid://fj2wnd5hej5a"]
+[gd_scene load_steps=7 format=4 uid="uid://fj2wnd5hej5a"]
 
 [ext_resource type="Texture2D" uid="uid://7m22vdyw0d16" path="res://Assets/wood_box_2d_box.png" id="1_bqn3j"]
 [ext_resource type="Material" uid="uid://dm4p7ybrqa42j" path="res://Scenes/glowing.tres" id="2_oq5cr"]
@@ -44,11 +44,6 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_bqn3j")
 
-[sub_resource type="Environment" id="Environment_7jpco"]
-glow_enabled = true
-glow_intensity = 1.0
-glow_strength = 0.66
-
 [node name="Node3D" type="Node3D"]
 
 [node name="StaticBody3D2" type="RigidBody3D" parent="." groups=["wand_target"]]
@@ -69,6 +64,3 @@ skeleton = NodePath("")
 mesh = SubResource("ArrayMesh_ghxij")
 skeleton = NodePath("")
 surface_material_override/0 = ExtResource("2_oq5cr")
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="StaticBody3D2"]
-environment = SubResource("Environment_7jpco")

@@ -23,6 +23,7 @@ import/blender/enabled=false
 
 wand_target=""
 player=""
+islands=""
 
 [input]
 

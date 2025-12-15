@@ -10,7 +10,7 @@ layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_sf6f5")
 level_btn_scene = ExtResource("2_ardn0")
-all_levels = Array[String](["uid://c2yhmnhr6c5po", "uid://dfmvbxfnwxw4p"])
+all_levels = Array[String](["uid://c2yhmnhr6c5po", "uid://dfmvbxfnwxw4p", "uid://c1wm2hlalersx"])
 
 [node name="Background" type="TextureRect" parent="."]
 custom_minimum_size = Vector2(200, 400)
