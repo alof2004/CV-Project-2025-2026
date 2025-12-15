@@ -1,7 +1,9 @@
-[gd_scene load_steps=10 format=4 uid="uid://d3o3tp5m42f1m"]
+[gd_scene load_steps=11 format=4 uid="uid://d3o3tp5m42f1m"]
+
+[ext_resource type="Script" uid="uid://bjaiqyajxcwkl" path="res://spot_light_3d.gd" id="1_bekw5"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_hjuyy"]
-size = Vector3(0.68880415, 1.5432739, 0.68714905)
+size = Vector3(0.6121826, 1.3342285, 0.50927734)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2kxou"]
 resource_name = "brown"
@@ -197,25 +199,25 @@ freeze_mode = 1
 continuous_cd = true
 
 [node name="SpotLight3D" type="SpotLight3D" parent="RigidBody3D"]
-transform = Transform3D(-4.371139e-08, -1, -4.371139e-08, 0, -4.371139e-08, 1, -1, 4.371139e-08, 1.9106855e-15, -0.44764698, 5.794187, 0.18185641)
+transform = Transform3D(-1.11150955e-08, -0.76604444, 0.6427877, -3.2567525e-16, 0.64278764, 0.76604444, -1, 8.514657e-09, -7.1446467e-09, 0.125, 3.089, -0.328)
 light_energy = 16.0
-light_indirect_energy = 9.38
-light_volumetric_fog_energy = 7.7
+light_volumetric_fog_energy = 4.86
 light_specular = 2.0
 shadow_enabled = true
 shadow_normal_bias = 6.286
 spot_range = 15.399
+script = ExtResource("1_bekw5")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
-transform = Transform3D(3.505, 0, 0, 0, 3.505, 0, 0, 0, 3.505, 0.5200856, 3.547, -0.002)
+transform = Transform3D(1.785, 0, 0, 0, 1.785, 0, 0, 0, 1.785, 0.367521, 2.1478844, -0.33569157)
 shape = SubResource("BoxShape3D_hjuyy")
 
 [node name="Cylinder398" type="MeshInstance3D" parent="RigidBody3D"]
-transform = Transform3D(-2.1690388, -3.8148425, 0.38246006, 0.7649194, 5.136773e-07, 4.3380785, -3.7568867, 2.2024996, 0.6624394, 0.3257339, 1.0910214, 1.4971693)
+transform = Transform3D(-0.8789407, -1.5458555, 0.15498097, 0.30996165, 2.0815298e-07, 1.7578819, -1.5223706, 0.8924998, 0.26843458, 0.3257339, 0.779528, -0.505308)
 mesh = SubResource("ArrayMesh_luot5")
 skeleton = NodePath("")
 
 [node name="Cylinder400" type="MeshInstance3D" parent="RigidBody3D"]
-transform = Transform3D(0.0734032, -3.5042312, 0, 3.5042312, 0.0734032, 0, 0, 0, 3.505, 0.86178976, 7.0432563, 2.1276743)
+transform = Transform3D(1.5458554, -0.8924999, 7.7955434e-08, 0.8924999, 1.5458554, 1.045334e-08, -7.2738054e-08, 2.9924852e-08, 1.785, 0.585, 3.044, -0.3309675)
 mesh = SubResource("ArrayMesh_rv3xg")
 skeleton = NodePath("")
