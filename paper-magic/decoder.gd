@@ -3,14 +3,13 @@ extends Node3D
 # Signal sent to the GridMap when code is correct
 signal puzzle_solved
 
-# --- FIX: Load the .tscn file, NOT the .gd file ---
-var ui_scene = preload("res://SecretCodeUi.tscn") 
+# Ensure this matches your file name exactly in the FileSystem!
+var ui_scene = preload("res://SecretCodeUI.tscn") 
 
 var ui_instance = null
 var is_player_near = false
 var is_solved = false
 
-# Ensure your Decoder scene actually has a Label3D child named "Label3D"
 @onready var prompt_label = $Label3D 
 
 func _ready():
@@ -20,26 +19,26 @@ func _ready():
 		add_child(ui_instance)
 		ui_instance.visible = false
 		
-		# Connect UI signals
 		if ui_instance.has_signal("code_success"):
 			ui_instance.code_success.connect(_on_success)
 		if ui_instance.has_signal("code_closed"):
 			ui_instance.code_closed.connect(_on_ui_closed)
 	else:
-		print("ERROR: Could not load UI scene. Check the filename.")
+		print("ERROR: UI Scene failed to load. Check the file path.")
 
 	# Setup Area detection
-	# Ensure your Decoder scene has an Area3D child named "Area3D"
 	var area = $Area3D 
 	if area:
 		area.body_entered.connect(_on_body_entered)
 		area.body_exited.connect(_on_body_exited)
+	else:
+		print("ERROR: Area3D node is missing in Decoder scene.")
 	
-	if prompt_label: 
-		prompt_label.visible = false
+	if prompt_label: prompt_label.visible = false
 
 func _input(event):
-	if is_player_near and not is_solved and Input.is_action_just_pressed("interact"):
+	# "Interact" must match your Input Map exactly (Capital I)
+	if is_player_near and not is_solved and Input.is_action_just_pressed("Interact"):
 		open_computer()
 
 func open_computer():
@@ -48,7 +47,6 @@ func open_computer():
 
 func _on_success():
 	is_solved = true
-	print("Computer: Access Granted. Bridge Activating...")
 	emit_signal("puzzle_solved") 
 	if prompt_label: prompt_label.text = "ACTIVE"
 
@@ -57,9 +55,11 @@ func _on_ui_closed():
 		prompt_label.visible = true
 
 func _on_body_entered(body):
-	if body.is_in_group("player") and not is_solved:
-		is_player_near = true
-		if prompt_label: prompt_label.visible = true
+	# Check if the object has the correct group
+	if body.is_in_group("player"):
+		if not is_solved:
+			is_player_near = true
+			if prompt_label: prompt_label.visible = true
 
 func _on_body_exited(body):
 	if body.is_in_group("player"):

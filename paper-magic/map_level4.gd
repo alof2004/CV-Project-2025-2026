@@ -148,13 +148,13 @@ func _spawn_computer():
 	
 	# Z = -1 puts it slightly to the side of the center path (-2 is center)
 	# This ensures the player doesn't trip over it while walking.
-	var z_pos = -1 
+	var z_pos = -3
 	
 	var grid_pos = Vector3i(x_pos, height_y, z_pos)
 	var world_pos = map_to_local(grid_pos)
 	
 	# Lift it slightly to sit on top of the block
-	world_pos.y += 0.1
+	world_pos.y -= 1
 	
 	c.position = world_pos
 	# Rotate to face the path (adjust as needed based on your model)
