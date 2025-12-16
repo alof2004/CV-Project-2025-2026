@@ -236,17 +236,25 @@ func _spawn_grass():
 func _spawn_trees():
 	if tree_scene == null: return
 	var tree_count = 0
+	
+	# Calculate wall positions in Grid coordinates
 	var wall_gap_idx = local_to_map(Vector3(15.0, 0, 0)).x
 	var wall_big_idx = local_to_map(Vector3(25.0, 0, 0)).x
 	var wall_last_idx = local_to_map(Vector3(35.0, 0, 0)).x
+	
 	for x in range(size_x):
 		for z in range(size_z):
+			# --- CHANGED: Skip everything before the first wall (plus a small buffer) ---
+			if x <= wall_gap_idx + 2: continue 
+
+			# Skip the Abyss area
 			if x >= (abyss_start_index - 2) and x <= (abyss_end_index + 2): continue
-			if x >= wall_gap_idx - 2 and x <= wall_gap_idx + 2: continue 
+			
+			# Skip other specific walls
 			if x >= wall_big_idx - 2 and x <= wall_big_idx + 2: continue
 			if x >= wall_last_idx - 2 and x <= wall_last_idx + 2: continue
-			if x <= 2: continue 
 			if x >= size_x - 3: continue
+
 			var noise_val = noise.get_noise_2d(x, z * 10) 
 			if noise_val > 0.15:
 				if randf() > 0.75: 
@@ -265,17 +273,25 @@ func _spawn_trees():
 func _spawn_bushes():
 	if bush_scene == null: return
 	var bush_count = 0
+	
+	# Calculate wall positions in Grid coordinates
 	var wall_gap_idx = local_to_map(Vector3(15.0, 0, 0)).x
 	var wall_big_idx = local_to_map(Vector3(25.0, 0, 0)).x
 	var wall_last_idx = local_to_map(Vector3(35.0, 0, 0)).x
+	
 	for x in range(size_x):
 		for z in range(size_z):
+			# --- CHANGED: Skip everything before the first wall (plus a small buffer) ---
+			if x <= wall_gap_idx + 2: continue
+
+			# Skip the Abyss area
 			if x >= (abyss_start_index - 2) and x <= (abyss_end_index + 2): continue
-			if x >= wall_gap_idx - 2 and x <= wall_gap_idx + 2: continue 
+			
+			# Skip other specific walls
 			if x >= wall_big_idx - 2 and x <= wall_big_idx + 2: continue
 			if x >= wall_last_idx - 2 and x <= wall_last_idx + 2: continue
-			if x <= 2: continue 
 			if x >= size_x - 3: continue
+
 			var noise_val = noise.get_noise_2d(x, z * 10) 
 			if noise_val > -0.1:
 				if randf() > 0.4: 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://c01he1vgrnpvu"]
+[gd_scene load_steps=24 format=3 uid="uid://c01he1vgrnpvu"]
 
 [ext_resource type="Script" uid="uid://bat3srnpdiw03" path="res://parallax_background.gd" id="1_cbmc8"]
 [ext_resource type="Texture2D" uid="uid://bs3y7r0htq73u" path="res://Assets/forest_sprites/forest_sky.png" id="2_872hp"]
@@ -19,6 +19,7 @@
 [ext_resource type="PackedScene" uid="uid://kg6i50v6qld1" path="res://grass.tscn" id="11_vtyjd"]
 [ext_resource type="Shader" uid="uid://n1eam1wn670j" path="res://outliner.gdshader" id="12_jie6j"]
 [ext_resource type="PackedScene" uid="uid://qrguwadm2121" path="res://Assets/decoder.tscn" id="13_rnkmw"]
+[ext_resource type="Script" uid="uid://21n7dn68s4mo" path="res://Scenes/kill_spikes.gd" id="20_q4xp6"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_na6ls"]
 render_priority = 0
@@ -34,6 +35,9 @@ shader_parameter/light_direction = Vector3(-0.96, -0.18, 0.2)
 [sub_resource type="QuadMesh" id="QuadMesh_xyeot"]
 material = SubResource("ShaderMaterial_na6ls")
 size = Vector2(2, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wlwhd"]
+size = Vector3(571.80176, 0.001, 666.19214)
 
 [node name="Level4" type="Node3D"]
 
@@ -144,3 +148,26 @@ mesh = SubResource("QuadMesh_xyeot")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport"]
 transform = Transform3D(0.7671651, 0.45357332, -0.45357335, 0, 0.70710677, 0.7071067, 0.64144963, -0.5424676, 0.54246765, -19.464, 20.23, 0)
 light_indirect_energy = 9.0
+
+[node name="Area3D" type="Area3D" parent="SubViewportContainer/SubViewport"]
+script = ExtResource("20_q4xp6")
+respawn_point_path = NodePath("../RespawnPoint")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SubViewportContainer/SubViewport/Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -157.122, -10, -258.124)
+shape = SubResource("BoxShape3D_wlwhd")
+
+[node name="RespawnPoint" type="Node3D" parent="SubViewportContainer/SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.818, 0, -3)
+
+[node name="Area3D2" type="Area3D" parent="SubViewportContainer/SubViewport"]
+transform = Transform3D(0.02, 0, 0, 0, 0.02, 0, 0, 0, 0.02, 66, -2, 2)
+script = ExtResource("20_q4xp6")
+respawn_point_path = NodePath("../RespawnBridge")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SubViewportContainer/SubViewport/Area3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -157.122, -10, -258.124)
+shape = SubResource("BoxShape3D_wlwhd")
+
+[node name="RespawnBridge" type="Node3D" parent="SubViewportContainer/SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 55.636, 0, -3)
