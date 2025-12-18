@@ -1,0 +1,183 @@
+[gd_scene load_steps=26 format=3 uid="uid://c1wm2hlalersx"]
+
+[ext_resource type="Script" uid="uid://bat3srnpdiw03" path="res://parallax_background.gd" id="1_bptnd"]
+[ext_resource type="Script" uid="uid://dtfofqwlgace1" path="res://level3_objects.gd" id="1_kah4x"]
+[ext_resource type="Texture2D" uid="uid://c1igsq54onmcg" path="res://Assets/moon/moon_sky.png" id="2_bptnd"]
+[ext_resource type="Shader" uid="uid://bg8c1uykvkc8x" path="res://large_island.gdshader" id="3_8jspn"]
+[ext_resource type="Texture2D" uid="uid://00yu41qe2uwc" path="res://Assets/moon/moon_earth.png" id="3_gp5y5"]
+[ext_resource type="PackedScene" uid="uid://5dkf6x7sqao6" path="res://gate.tscn" id="3_vje1a"]
+[ext_resource type="Texture2D" uid="uid://dkobgnn5jsixo" path="res://Assets/moon/moon_back.png" id="4_kah4x"]
+[ext_resource type="PackedScene" uid="uid://cbxwsd5rrggev" path="res://LevelSelect.tscn" id="4_qb3ey"]
+[ext_resource type="Texture2D" uid="uid://bm0oyi0pbta75" path="res://Assets/moon/moon_mid.png" id="5_8jspn"]
+[ext_resource type="Texture2D" uid="uid://c3rxyjuf44iw1" path="res://Assets/moon/moon_front.png" id="6_80vsr"]
+[ext_resource type="MeshLibrary" uid="uid://d2u2045t6cgcx" path="res://cubes_mesh_lib9.tres" id="7_vje1a"]
+[ext_resource type="Script" uid="uid://bm17kkq57g2lu" path="res://floor_level3.gd" id="8_bptnd"]
+[ext_resource type="PackedScene" uid="uid://bwveaoetdbncr" path="res://Scenes/magician.tscn" id="9_8d7kt"]
+[ext_resource type="Environment" uid="uid://biyofk878tcm8" path="res://Environment/environment_level3.tres" id="10_bptnd"]
+[ext_resource type="PackedScene" path="res://Fireball.tscn" id="10_gp5y5"]
+[ext_resource type="Script" uid="uid://d0fmx80seh18a" path="res://camera_movement.gd" id="11_ulu3c"]
+[ext_resource type="Shader" uid="uid://n1eam1wn670j" path="res://outliner.gdshader" id="12_jr02t"]
+[ext_resource type="PackedScene" uid="uid://d3o3tp5m42f1m" path="res://lamp.tscn" id="16_kah4x"]
+[ext_resource type="PackedScene" uid="uid://cu13py3mjk8m1" path="res://large_island.tscn" id="17_8jspn"]
+[ext_resource type="PackedScene" uid="uid://d3xr2ec1j7jy3" path="res://light_bulb.tscn" id="18_80vsr"]
+[ext_resource type="Script" uid="uid://21n7dn68s4mo" path="res://Scenes/kill_spikes.gd" id="19_kyqi5"]
+
+[sub_resource type="Environment" id="Environment_bptnd"]
+glow_intensity = 1.0
+glow_strength = 0.66
+fog_light_energy = 5.35
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6v2wh"]
+render_priority = 0
+shader = ExtResource("12_jr02t")
+shader_parameter/depth_threshold = 0.05
+shader_parameter/reverse_depth_threshold = 0.25
+shader_parameter/normal_threshold = 0.6
+shader_parameter/darken_amount = 0.3
+shader_parameter/lighten_amount = 1.5
+shader_parameter/normal_edge_bias = Vector3(1, 1, 1)
+shader_parameter/light_direction = Vector3(-0.96, -0.18, 0.2)
+
+[sub_resource type="QuadMesh" id="QuadMesh_qbl2b"]
+material = SubResource("ShaderMaterial_6v2wh")
+size = Vector2(2, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_80vsr"]
+size = Vector3(571.80176, 0.001, 666.19214)
+
+[node name="Level3" type="Node3D" node_paths=PackedStringArray("lamp_node")]
+script = ExtResource("1_kah4x")
+island_scene = ExtResource("17_8jspn")
+gate_scene = ExtResource("3_vje1a")
+portal_target_scene = ExtResource("4_qb3ey")
+grid_path = NodePath("SubViewportContainer/SubViewport/GridMap")
+subviewport_path = NodePath("SubViewportContainer/SubViewport")
+lamp_node = NodePath("SubViewportContainer/SubViewport/LightBulb")
+reveal_shader = ExtResource("3_8jspn")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="CanvasLayer"]
+follow_viewport_enabled = true
+script = ExtResource("1_bptnd")
+camera_3d_path = NodePath("../../SubViewportContainer/SubViewport/Camera3D")
+
+[node name="ParallaxLayer5" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
+motion_scale = Vector2(-0.1, 0)
+motion_mirroring = Vector2(807, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/ParallaxBackground/ParallaxLayer5"]
+modulate = Color(0.39, 0.39, 0.39, 1)
+position = Vector2(790.99994, 47.99997)
+scale = Vector2(0.85, 0.85)
+texture = ExtResource("2_bptnd")
+
+[node name="ParallaxLayer4" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
+motion_scale = Vector2(-0.2, 0)
+motion_mirroring = Vector2(1615, 0)
+
+[node name="Sprite2D2" type="Sprite2D" parent="CanvasLayer/ParallaxBackground/ParallaxLayer4"]
+position = Vector2(810.5, 261.985)
+scale = Vector2(0.425, 0.425)
+texture = ExtResource("3_gp5y5")
+
+[node name="ParallaxLayer3" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
+motion_scale = Vector2(-0.4, 0)
+motion_mirroring = Vector2(1615, 0)
+
+[node name="Sprite2D2" type="Sprite2D" parent="CanvasLayer/ParallaxBackground/ParallaxLayer3"]
+position = Vector2(811.50006, 261.985)
+scale = Vector2(0.425, 0.425)
+texture = ExtResource("4_kah4x")
+
+[node name="ParallaxLayer2" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
+motion_scale = Vector2(-0.5, 0)
+motion_mirroring = Vector2(1615, 0)
+
+[node name="Sprite2D2" type="Sprite2D" parent="CanvasLayer/ParallaxBackground/ParallaxLayer2"]
+position = Vector2(808.5, 261.985)
+scale = Vector2(0.425, 0.425)
+texture = ExtResource("5_8jspn")
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
+motion_scale = Vector2(-0.6, 0)
+motion_mirroring = Vector2(1615, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/ParallaxBackground/ParallaxLayer"]
+position = Vector2(813.5, 261.985)
+scale = Vector2(0.425, 0.425)
+texture = ExtResource("6_80vsr")
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+texture_filter = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+stretch_shrink = 3
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+handle_input_locally = false
+size = Vector2i(384, 216)
+render_target_clear_mode = 1
+render_target_update_mode = 4
+
+[node name="WorldEnvironment2" type="WorldEnvironment" parent="SubViewportContainer/SubViewport"]
+environment = SubResource("Environment_bptnd")
+
+[node name="GridMap" type="GridMap" parent="SubViewportContainer/SubViewport"]
+mesh_library = ExtResource("7_vje1a")
+script = ExtResource("8_bptnd")
+metadata/_editor_floor_ = Vector3(0, 0, 0)
+
+[node name="CharacterBody3D" parent="SubViewportContainer/SubViewport" groups=["player"] instance=ExtResource("9_8d7kt")]
+transform = Transform3D(-0.13571563, 0, 0.9907478, 0, 1, 0, -0.9907478, 0, -0.13571563, 0, 0, 0)
+fireball_scene = ExtResource("10_gp5y5")
+
+[node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport"]
+transform = Transform3D(-0.13571565, 0, 0.99074787, 0, 1, 0, -0.99074787, 0, -0.13571565, 8.038721, 1.6311646, 3.5629895)
+environment = ExtResource("10_bptnd")
+far = 56.0
+script = ExtResource("11_ulu3c")
+player_path = NodePath("../CharacterBody3D")
+parallax_2d_path = NodePath("../../../CanvasLayer/ParallaxBackground")
+subviewport_path = NodePath("..")
+height_2d = 2.0
+distance_z_2d = 30.0
+fov_2d = 16.335
+height_3d = 1.415
+side_distance_3d = 5.02
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/Camera3D"]
+transform = Transform3D(0.9999999, 0, -1.4901161e-08, 0, 1, 0, 1.4901161e-08, 0, 0.9999999, 0.06796551, 0, -0.49615955)
+extra_cull_margin = 16384.0
+mesh = SubResource("QuadMesh_qbl2b")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport"]
+transform = Transform3D(0.7671651, 0.45357332, -0.45357335, 0, 0.70710677, 0.7071067, 0.64144963, -0.5424676, 0.54246765, -19.464, 20.23, 0)
+visible = false
+light_indirect_energy = 9.0
+
+[node name="Lamp" parent="SubViewportContainer/SubViewport" groups=["wand_target"] instance=ExtResource("16_kah4x")]
+transform = Transform3D(-0.124222904, 0, 3.387723, 0, 3.39, 0, -3.387723, 0, -0.124222904, 88.59591, -1.046, 0.249)
+visible = false
+
+[node name="LightBulb" parent="SubViewportContainer/SubViewport" groups=["wand_target"] instance=ExtResource("18_80vsr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.192, 4.625)
+
+[node name="Large Island" parent="SubViewportContainer/SubViewport" instance=ExtResource("17_8jspn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.464, 0, -0.151)
+visible = false
+
+[node name="RespawnPoint" type="Node3D" parent="SubViewportContainer/SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.7555246, 0, 0)
+
+[node name="Area3D" type="Area3D" parent="SubViewportContainer/SubViewport"]
+script = ExtResource("19_kyqi5")
+respawn_point_path = NodePath("../RespawnPoint")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SubViewportContainer/SubViewport/Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -157.122, -10, -258.124)
+shape = SubResource("BoxShape3D_80vsr")

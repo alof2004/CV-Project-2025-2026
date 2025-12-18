@@ -1,13 +1,31 @@
-[gd_scene load_steps=5 format=3 uid="uid://ycwewugt1u05"]
+[gd_scene load_steps=11 format=3 uid="uid://ycwewugt1u05"]
 
-[ext_resource type="Texture2D" uid="uid://c8ja4vsk0vih0" path="res://textures/gameButton (2).png" id="1_24r1r"]
+[ext_resource type="Texture2D" uid="uid://bgkabpy3lb45b" path="res://Assets/level_select.png" id="1_66tco"]
 [ext_resource type="Script" uid="uid://cg10piomrw8qk" path="res://levelBtnScript.gd" id="1_nhor4"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_66tco"]
-texture = ExtResource("1_24r1r")
+texture = ExtResource("1_66tco")
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_24r1r"]
-texture = ExtResource("1_24r1r")
+texture = ExtResource("1_66tco")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_l0mdg"]
+texture = ExtResource("1_66tco")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_dn406"]
+texture = ExtResource("1_66tco")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_18p0f"]
+texture = ExtResource("1_66tco")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_g13b8"]
+texture = ExtResource("1_66tco")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_m7763"]
+texture = ExtResource("1_66tco")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_e8j87"]
+texture = ExtResource("1_66tco")
 
 [node name="LevelBtn" type="Button"]
 custom_minimum_size = Vector2(200, 200)
@@ -16,6 +34,12 @@ offset_bottom = 200.0
 pivot_offset = Vector2(100, 100)
 theme_override_styles/normal = SubResource("StyleBoxTexture_66tco")
 theme_override_styles/hover = SubResource("StyleBoxTexture_24r1r")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxTexture_l0mdg")
+theme_override_styles/hover_pressed = SubResource("StyleBoxTexture_dn406")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxTexture_18p0f")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_g13b8")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxTexture_m7763")
+theme_override_styles/focus = SubResource("StyleBoxTexture_e8j87")
 script = ExtResource("1_nhor4")
 
 [node name="Label" type="Label" parent="."]
