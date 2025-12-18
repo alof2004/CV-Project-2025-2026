@@ -26,10 +26,9 @@ shader_parameter/outline_color = Color(0, 0, 0, 1)
 shader_parameter/depth_threshold = 0.05
 shader_parameter/reverse_depth_threshold = 0.25
 shader_parameter/normal_threshold = 0.6
-shader_parameter/darken_amount = 0.3
-shader_parameter/lighten_amount = 1.5
+shader_parameter/thickness = 6.0
+shader_parameter/smoothness = 0.01
 shader_parameter/normal_edge_bias = Vector3(1, 1, 1)
-shader_parameter/light_direction = Vector3(-0.96, -0.18, 0.2)
 
 [sub_resource type="QuadMesh" id="QuadMesh_g04si"]
 material = SubResource("ShaderMaterial_na6ls")
@@ -53,7 +52,7 @@ camera_3d_path = NodePath("../../SubViewportContainer/SubViewport/Camera3D")
 
 [node name="ParallaxLayer5" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
 motion_scale = Vector2(-0.05, 0)
-motion_mirroring = Vector2(807, 0)
+motion_mirroring = Vector2(1615, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/ParallaxBackground/ParallaxLayer5"]
 position = Vector2(812, 243.69)
@@ -89,11 +88,11 @@ texture = ExtResource("7_wdd02")
 
 [node name="ParallaxLayer" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
 motion_scale = Vector2(-0.5, 0)
-motion_mirroring = Vector2(1195.41, 0)
+motion_mirroring = Vector2(1216, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/ParallaxBackground/ParallaxLayer"]
-position = Vector2(813.5, 138.535)
-scale = Vector2(0.315, 0.315)
+position = Vector2(609.32, 142)
+scale = Vector2(0.32, 0.32)
 texture = ExtResource("11_3jhf0")
 
 [node name="ParallaxLayer6" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
@@ -146,7 +145,6 @@ side_distance_3d = 5.02
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/Camera3D"]
 transform = Transform3D(0.9999999, 0, -1.4901161e-08, 0, 1, 0, 1.4901161e-08, 0, 0.9999999, 0.06796551, 0, -0.49615955)
-visible = false
 extra_cull_margin = 16384.0
 mesh = SubResource("QuadMesh_g04si")
 

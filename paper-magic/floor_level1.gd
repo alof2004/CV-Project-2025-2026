@@ -38,7 +38,7 @@ func _ready() -> void:
 	_generate_floor()
 
 func _generate_floor() -> void:
-	for x in range(size_x):
+	for x in range(-30,size_x):
 		# Determine the floor height for this column (X)
 		var current_floor_y = height_y - 1
 		
