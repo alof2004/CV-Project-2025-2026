@@ -13,7 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://mxnvrd8e46n2" path="res://cube1.tscn" id="9_8eeko"]
 [ext_resource type="Environment" uid="uid://d16t207osgbm2" path="res://Environment/environment_level1.tres" id="9_q41cu"]
 [ext_resource type="MeshLibrary" uid="uid://c8ta2xr53wxr" path="res://cubes_mesh_lib3.tres" id="11_cxskf"]
-[ext_resource type="PackedScene" uid="uid://xnd1qv10g2i" path="res://lighted_torch.tscn" id="15_8eeko"]
+[ext_resource type="PackedScene" uid="uid://xnd1qv10g2i" path="res://lighted_torch.tscn" id="15_0nfne"]
 [ext_resource type="PackedScene" uid="uid://c5ujynq6dvk6v" path="res://Fireball.tscn" id="15_q41cu"]
 [ext_resource type="PackedScene" uid="uid://5dkf6x7sqao6" path="res://gate.tscn" id="16_q41cu"]
 
@@ -148,6 +148,6 @@ visible = false
 [node name="GridMap2" type="GridMap" parent="SubViewportContainer/SubViewport"]
 mesh_library = ExtResource("11_cxskf")
 script = ExtResource("2_shk3w")
-torch_scene = ExtResource("15_8eeko")
+torch_scene = ExtResource("15_0nfne")
 gate_scene = ExtResource("16_q41cu")
 metadata/_editor_floor_ = Vector3(0, 0, 0)

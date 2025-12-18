@@ -96,6 +96,19 @@ func _ready() -> void:
 	var low_floor_y: int = base_y
 	var high_floor_y: int = base_y + high_h
 
+	# 0) START GATE (New request)
+	if gate_scene != null:
+		var start_gate_x := 0 # Hardcoded X position as requested
+		# Use 'base_y' (low floor) so it sits on the starting ground level
+		var start_gate_cell := Vector3i(start_gate_x, base_y + gate_y_offset, mid_z)
+		var start_gate_pos := grid.to_global(grid.map_to_local(start_gate_cell))
+		
+		# Apply generic offsets
+		start_gate_pos += gate_world_offset
+		
+		var sg = spawn_gate(start_gate_pos)
+		sg.name = "StartGate"
+
 	# 1) BOXES
 	for i in range(boxes_count):
 		var x := start_x - 1 - i * boxes_gap_cells
@@ -218,6 +231,7 @@ func spawn_gate(world_pos: Vector3) -> Node3D:
 			child.position *= gate_scale_mult
 			
 	return g
+
 func scale_wood_tile_everything(wood_root: Node3D, scale_mult: Vector3) -> void:
 	var body := wood_root.get_node_or_null("StaticBody3D2") as Node3D
 	if body == null:

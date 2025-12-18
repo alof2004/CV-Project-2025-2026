@@ -25,7 +25,7 @@ extends Camera3D
 @export var height_3d: float = 1.5
 @export var side_distance_3d: float = 6.0
 @export var min_distance_3d: float = 6.0
-@export var fov_3d: float = 80.0
+@export var fov_3d: float = 70.0
 
 @export_group("Smoothing")
 @export var follow_speed: float = 5.0

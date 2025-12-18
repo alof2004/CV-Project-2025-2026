@@ -30,7 +30,7 @@ layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_sf6f5")
 level_btn_scene = ExtResource("2_ardn0")
-all_levels = Array[String](["uid://c2yhmnhr6c5po", "uid://dfmvbxfnwxw4p", "uid://c1wm2hlalersx"])
+all_levels = Array[String](["uid://c01he1vgrnpvu", "uid://c2yhmnhr6c5po", "uid://dfmvbxfnwxw4p", "uid://c1wm2hlalersx"])
 
 [node name="PostProcessLayer" type="CanvasLayer" parent="."]
 
