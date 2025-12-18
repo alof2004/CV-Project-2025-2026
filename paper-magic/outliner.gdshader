@@ -4,6 +4,7 @@ render_mode unshaded;
 uniform sampler2D screen_texture : source_color, hint_screen_texture, filter_nearest;
 uniform sampler2D depth_texture : source_color, hint_depth_texture, filter_nearest;
 uniform sampler2D normal_texture : source_color, hint_normal_roughness_texture, filter_nearest;
+uniform vec3 outline_color : source_color = vec3(0.0);
 
 uniform float depth_threshold : hint_range(0, 1) = 0.05;
 uniform float reverse_depth_threshold : hint_range(0, 1) = 0.25;
@@ -73,18 +74,14 @@ void fragment() {
 	float normal_edge = step(normal_threshold, indicator - reverse_depth_edge);
 	
 	vec3 original = texture(screen_texture, SCREEN_UV).rgb;
-	vec3 nearest = texture(screen_texture, nearest_uv).rgb;
-	
-	mat3 view_to_world_normal_mat = mat3(
-            INV_VIEW_MATRIX[0].xyz, 
-            INV_VIEW_MATRIX[1].xyz,
-            INV_VIEW_MATRIX[2].xyz
-	);
-	float ld = dot((view_to_world_normal_mat * normal), normalize(light_direction));
-	
-	vec3 depth_col = nearest * darken_amount;
-	vec3 normal_col = original * (ld > 0.0 ? darken_amount : lighten_amount);
-	vec3 edge_mix = mix(normal_col, depth_col, depth_edge);
-	
-	ALBEDO = mix(original, edge_mix, (depth_edge > 0.0 ? depth_edge : normal_edge));
+
+	vec3 edge_col = outline_color; // pure black by default
+
+	// Or, keep your existing depth/normal logic but force both to black:
+	vec3 depth_col  = outline_color;
+	vec3 normal_col = outline_color;
+	vec3 edge_mix = outline_color;
+
+	float edge = max(depth_edge, normal_edge);
+	ALBEDO = mix(original, edge_mix, edge);
 }

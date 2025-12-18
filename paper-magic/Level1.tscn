@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://c2yhmnhr6c5po"]
+[gd_scene load_steps=21 format=3 uid="uid://c2yhmnhr6c5po"]
 
 [ext_resource type="Script" uid="uid://d0fmx80seh18a" path="res://camera_movement.gd" id="1_1cqoy"]
 [ext_resource type="Script" uid="uid://bxkwr7fohigl0" path="res://floor_level1.gd" id="1_g04si"]
@@ -7,13 +7,14 @@
 [ext_resource type="PackedScene" uid="uid://bwveaoetdbncr" path="res://Scenes/magician.tscn" id="3_g04si"]
 [ext_resource type="PackedScene" uid="uid://c2e2i2uevrl1w" path="res://wooden_plank.tscn" id="3_ymjn4"]
 [ext_resource type="PackedScene" uid="uid://5dkf6x7sqao6" path="res://gate.tscn" id="4_4nelp"]
-[ext_resource type="Texture2D" uid="uid://ci0csk0mn566y" path="res://Assets/forest_sprites/forest_long.png" id="6_u82ko"]
 [ext_resource type="Script" uid="uid://bat3srnpdiw03" path="res://parallax_background.gd" id="6_wdd02"]
 [ext_resource type="MeshLibrary" uid="uid://d2u2045t6cgcx" path="res://cubes_mesh_lib9.tres" id="7_ai2ps"]
 [ext_resource type="Texture2D" uid="uid://dlne5lifbpwda" path="res://Assets/forest_sprites/forest_mid.png" id="7_wdd02"]
 [ext_resource type="Texture2D" uid="uid://o656lp5r0xg0" path="res://Assets/forest_sprites/forest_back.png" id="8_u82ko"]
 [ext_resource type="Texture2D" uid="uid://coaqybjci1d3q" path="res://Assets/forest_sprites/forest_mountain.png" id="9_ai2ps"]
 [ext_resource type="Texture2D" uid="uid://bs3y7r0htq73u" path="res://Assets/forest_sprites/forest_sky.png" id="10_nh60g"]
+[ext_resource type="Texture2D" uid="uid://bkq4w6rfg84d8" path="res://Assets/forest_sprites/forest_short.png" id="11_3jhf0"]
+[ext_resource type="Texture2D" uid="uid://b12x0viw2ehws" path="res://Assets/background_forest.png" id="11_fjxbk"]
 [ext_resource type="PackedScene" uid="uid://fj2wnd5hej5a" path="res://box.tscn" id="13_ai2ps"]
 [ext_resource type="Environment" uid="uid://d16t207osgbm2" path="res://Environment/environment_level1.tres" id="14_na6ls"]
 [ext_resource type="PackedScene" uid="uid://eljyas0it7cv" path="res://Scenes/spike_scene.tscn" id="16_ymjn4"]
@@ -21,6 +22,7 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_na6ls"]
 render_priority = 0
 shader = ExtResource("1_svp3w")
+shader_parameter/outline_color = Color(0, 0, 0, 1)
 shader_parameter/depth_threshold = 0.05
 shader_parameter/reverse_depth_threshold = 0.25
 shader_parameter/normal_threshold = 0.6
@@ -50,49 +52,59 @@ script = ExtResource("6_wdd02")
 camera_3d_path = NodePath("../../SubViewportContainer/SubViewport/Camera3D")
 
 [node name="ParallaxLayer5" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
-motion_scale = Vector2(-0.1, 0)
+motion_scale = Vector2(-0.05, 0)
 motion_mirroring = Vector2(807, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/ParallaxBackground/ParallaxLayer5"]
-position = Vector2(811.99994, 272)
+position = Vector2(812, 243.69)
 scale = Vector2(0.85, 0.85)
 texture = ExtResource("10_nh60g")
 
 [node name="ParallaxLayer4" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
-motion_scale = Vector2(-0.2, 0)
+motion_scale = Vector2(-0.1, 0)
 motion_mirroring = Vector2(1615, 0)
 
 [node name="Sprite2D2" type="Sprite2D" parent="CanvasLayer/ParallaxBackground/ParallaxLayer4"]
-position = Vector2(810.5, 207)
+position = Vector2(810.5, 183.555)
 scale = Vector2(0.425, 0.425)
 texture = ExtResource("9_ai2ps")
 
 [node name="ParallaxLayer3" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
-motion_scale = Vector2(-0.4, 0)
+motion_scale = Vector2(-0.2, 0)
 motion_mirroring = Vector2(1615, 0)
 
 [node name="Sprite2D2" type="Sprite2D" parent="CanvasLayer/ParallaxBackground/ParallaxLayer3"]
-position = Vector2(811.50006, 140.99997)
+position = Vector2(811.5, 131.05)
 scale = Vector2(0.425, 0.425)
 texture = ExtResource("8_u82ko")
 
 [node name="ParallaxLayer2" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
-motion_scale = Vector2(-0.5, 0)
+motion_scale = Vector2(-0.3, 0)
 motion_mirroring = Vector2(1615, 0)
 
 [node name="Sprite2D2" type="Sprite2D" parent="CanvasLayer/ParallaxBackground/ParallaxLayer2"]
-position = Vector2(808.5, 126.99998)
+position = Vector2(808.5, 152.81)
 scale = Vector2(0.425, 0.425)
 texture = ExtResource("7_wdd02")
 
 [node name="ParallaxLayer" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
-motion_scale = Vector2(-0.6, 0)
-motion_mirroring = Vector2(1615, 0)
+motion_scale = Vector2(-0.5, 0)
+motion_mirroring = Vector2(1195.41, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/ParallaxBackground/ParallaxLayer"]
-position = Vector2(813.5, 148.26)
-scale = Vector2(0.425, 0.425)
-texture = ExtResource("6_u82ko")
+position = Vector2(813.5, 156.13)
+scale = Vector2(0.315, 0.315)
+texture = ExtResource("11_3jhf0")
+
+[node name="ParallaxLayer6" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
+position = Vector2(25, 5)
+motion_scale = Vector2(-0.6, 0)
+motion_mirroring = Vector2(401.635, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/ParallaxBackground/ParallaxLayer6"]
+position = Vector2(218, 692.195)
+scale = Vector2(21.84, 0.425)
+texture = ExtResource("11_fjxbk")
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="."]
 texture_filter = 1
@@ -116,7 +128,7 @@ script = ExtResource("1_g04si")
 metadata/_editor_floor_ = Vector3(0, 0, 0)
 
 [node name="CharacterBody3D" parent="SubViewportContainer/SubViewport" groups=["player"] instance=ExtResource("3_g04si")]
-transform = Transform3D(-0.13571563, 0, 0.9907478, 0, 1, 0, -0.9907478, 0, -0.13571563, 15.949, 10.902, -3)
+transform = Transform3D(-0.13571562, 0, 0.99074775, 0, 1, 0, -0.99074775, 0, -0.13571562, 15.949, 10.902, -3)
 
 [node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport"]
 transform = Transform3D(-0.13571565, 0, 0.99074787, 0, 1, 0, -0.99074787, 0, -0.13571565, 8.038721, 1.6311646, 3.5629895)
@@ -134,6 +146,7 @@ side_distance_3d = 5.02
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/Camera3D"]
 transform = Transform3D(0.9999999, 0, -1.4901161e-08, 0, 1, 0, 1.4901161e-08, 0, 0.9999999, 0.06796551, 0, -0.49615955)
+visible = false
 extra_cull_margin = 16384.0
 mesh = SubResource("QuadMesh_g04si")
 

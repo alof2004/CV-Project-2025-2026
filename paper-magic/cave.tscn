@@ -14,12 +14,13 @@
 [ext_resource type="Environment" uid="uid://d16t207osgbm2" path="res://Environment/environment_level1.tres" id="9_q41cu"]
 [ext_resource type="MeshLibrary" uid="uid://c8ta2xr53wxr" path="res://cubes_mesh_lib3.tres" id="11_cxskf"]
 [ext_resource type="PackedScene" uid="uid://xnd1qv10g2i" path="res://lighted_torch.tscn" id="15_0nfne"]
-[ext_resource type="PackedScene" uid="uid://c5ujynq6dvk6v" path="res://Fireball.tscn" id="15_q41cu"]
+[ext_resource type="PackedScene" path="res://Fireball.tscn" id="15_q41cu"]
 [ext_resource type="PackedScene" uid="uid://5dkf6x7sqao6" path="res://gate.tscn" id="16_q41cu"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_na6ls"]
 render_priority = 0
 shader = ExtResource("8_rxq2d")
+shader_parameter/outline_color = Color(0, 0, 0, 1)
 shader_parameter/depth_threshold = 0.05
 shader_parameter/reverse_depth_threshold = 0.25
 shader_parameter/normal_threshold = 0.6
@@ -40,6 +41,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0027113855, 0, -0.00375327
 [node name="ParallaxBackground" type="ParallaxBackground" parent="CanvasLayer"]
 follow_viewport_enabled = true
 script = ExtResource("1_3ayon")
+camera_3d_path = NodePath("../../SubViewportContainer/SubViewport/Camera3D")
+parallax_strength = 40.0
 
 [node name="ParallaxLayer6" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
 motion_scale = Vector2(-0.5, 0)
