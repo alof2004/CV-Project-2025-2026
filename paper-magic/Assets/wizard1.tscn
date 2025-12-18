@@ -353,7 +353,7 @@ magic_particles_path = NodePath("../Armature/GeneralSkeleton/BoneAttachment3D/Wa
 player_path = NodePath("..")
 
 [node name="Armature" type="Node3D" parent="."]
-transform = Transform3D(0.19344786, 0.023958946, 0.041863285, -0.045593947, 0.03436192, 0.19102113, 0.01574035, -0.19492018, 0.038820267, -0.19518887, -0.18481384, -0.19794054)
+transform = Transform3D(0.19937061, 0, 0, 0, 0.19937064, 0, 0, 0, 0.19937056, -0.19518887, -0.18481384, -0.19794054)
 
 [node name="GeneralSkeleton" type="Skeleton3D" parent="Armature"]
 unique_name_in_owner = true

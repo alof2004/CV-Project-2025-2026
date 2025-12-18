@@ -141,6 +141,7 @@ mesh = SubResource("QuadMesh_8eeko")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport"]
 transform = Transform3D(-0.89885336, 0.4342035, 0.059413314, -0.33135426, -0.7620626, 0.5562957, 0.2868222, 0.48034137, 0.8288577, 0, 100, 30.232)
+visible = false
 light_color = Color(0.59350556, 0.6596805, 0.79592276, 1)
 light_indirect_energy = 9.0
 

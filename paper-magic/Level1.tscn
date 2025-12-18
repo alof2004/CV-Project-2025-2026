@@ -92,7 +92,7 @@ motion_scale = Vector2(-0.5, 0)
 motion_mirroring = Vector2(1195.41, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/ParallaxBackground/ParallaxLayer"]
-position = Vector2(813.5, 156.13)
+position = Vector2(813.5, 138.535)
 scale = Vector2(0.315, 0.315)
 texture = ExtResource("11_3jhf0")
 
@@ -102,7 +102,7 @@ motion_scale = Vector2(-0.6, 0)
 motion_mirroring = Vector2(401.635, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/ParallaxBackground/ParallaxLayer6"]
-position = Vector2(218, 692.195)
+position = Vector2(218, 676.295)
 scale = Vector2(21.84, 0.425)
 texture = ExtResource("11_fjxbk")
 
