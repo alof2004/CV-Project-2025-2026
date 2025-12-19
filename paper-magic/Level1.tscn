@@ -22,13 +22,13 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_na6ls"]
 render_priority = 0
 shader = ExtResource("1_svp3w")
-shader_parameter/outline_color = Color(0, 0, 0, 1)
 shader_parameter/depth_threshold = 0.05
 shader_parameter/reverse_depth_threshold = 0.25
 shader_parameter/normal_threshold = 0.6
-shader_parameter/thickness = 6.0
-shader_parameter/smoothness = 0.01
+shader_parameter/darken_amount = 0.3
+shader_parameter/lighten_amount = 1.5
 shader_parameter/normal_edge_bias = Vector3(1, 1, 1)
+shader_parameter/light_direction = Vector3(-0.96, -0.18, 0.2)
 
 [sub_resource type="QuadMesh" id="QuadMesh_g04si"]
 material = SubResource("ShaderMaterial_na6ls")

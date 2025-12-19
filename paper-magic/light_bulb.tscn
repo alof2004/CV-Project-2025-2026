@@ -136,7 +136,7 @@ light_volumetric_fog_energy = 7.7
 light_specular = 2.0
 shadow_enabled = true
 shadow_normal_bias = 6.286
-spot_range = 33.439
+spot_range = 10.191
 spot_angle = 55.29
 spot_angle_attenuation = 0.5176318
 

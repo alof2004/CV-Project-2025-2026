@@ -20,6 +20,8 @@ extends Camera3D
 @export var distance_z_2d: float = 9.0
 @export var x_offset_2d: float = 3.0
 @export var fov_2d: float = 55.0
+# Ortho size used when in 2D mode
+@export var ortho_size_2d: float = 10.0
 
 @export_group("3D View Settings")
 @export var height_3d: float = 1.5
@@ -36,6 +38,8 @@ extends Camera3D
 @onready var game_viewport: SubViewport = get_node_or_null(subviewport_path) as SubViewport
 
 var is_side: bool = true
+var is_ortho_2d: bool = true
+var is_ortho_3d: bool = false
 var current_extra_height: float = 0.0 # Tracks how high we are currently raised
 
 func _ready() -> void:
@@ -57,6 +61,10 @@ func _ready() -> void:
 		game_viewport.transparent_bg = true
 
 	fov = fov_2d
+	var use_orthographic := is_ortho_2d if is_side else is_ortho_3d
+	projection = Camera3D.PROJECTION_ORTHOGONAL if use_orthographic else Camera3D.PROJECTION_PERSPECTIVE
+	if use_orthographic:
+		size = ortho_size_2d
 
 func _process(delta: float) -> void:
 	if player == null:
@@ -74,6 +82,13 @@ func _process(delta: float) -> void:
 
 		if game_viewport:
 			game_viewport.transparent_bg = is_side
+
+	# --- Toggle Projection ---
+	if Input.is_action_just_pressed("change perspective") or Input.is_action_just_pressed("change_perspective"):
+		if is_side:
+			is_ortho_2d = not is_ortho_2d
+		else:
+			is_ortho_3d = not is_ortho_3d
 
 	# --- Calculate Target Position ---
 	var p: Vector3 = player.global_position
@@ -126,6 +141,14 @@ func _process(delta: float) -> void:
 	# --- Apply FOV Smoothing ---
 	var target_fov: float = fov_2d if is_side else fov_3d
 	fov = lerp(fov, target_fov, rotation_speed * delta)
+
+	# --- Apply Projection ---
+	var use_orthographic := is_ortho_2d if is_side else is_ortho_3d
+	var target_projection := Camera3D.PROJECTION_ORTHOGONAL if use_orthographic else Camera3D.PROJECTION_PERSPECTIVE
+	if projection != target_projection:
+		projection = target_projection
+	if use_orthographic:
+		size = ortho_size_2d
 
 # --- Helper: Check for Wall ---
 func check_wall_collision(from_pos: Vector3, to_pos: Vector3) -> bool:
