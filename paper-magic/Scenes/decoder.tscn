@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://qrguwadm2121"]
+
+[ext_resource type="Script" uid="uid://cga37rqrovxip" path="res://decoder.gd" id="1_kt4t0"]
+[ext_resource type="PackedScene" uid="uid://dms2117my43oi" path="res://Assets/Computer.glb" id="1_umdk0"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kt4t0"]
+size = Vector3(43.995132, 67.42105, 47.310593)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_3cv27"]
+size = Vector3(167.75586, 95.5332, 157.20508)
+
+[node name="Decoder" type="Node3D"]
+transform = Transform3D(0.016, 0, 0, 0, 0.016, 0, 0, 0, 0.016, 0, 0, 0)
+script = ExtResource("1_kt4t0")
+
+[node name="Computer2" parent="." instance=ExtResource("1_umdk0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.18659496, 1.1920929e-07, -0.18858528)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Computer2/Computer" index="0"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Computer2/Computer/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2269537, 30.634832, 0.86815643)
+shape = SubResource("BoxShape3D_kt4t0")
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 42.63584, 0)
+shape = SubResource("BoxShape3D_3cv27")
+
+[editable path="Computer2"]

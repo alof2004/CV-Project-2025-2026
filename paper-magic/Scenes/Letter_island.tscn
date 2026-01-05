@@ -1,0 +1,38 @@
+[gd_scene load_steps=6 format=3 uid="uid://emyqh4w7yj63"]
+
+[ext_resource type="Script" uid="uid://gric5nu5qm14" path="res://letter_island.gd" id="1_8utfg"]
+[ext_resource type="PackedScene" uid="uid://bru8nh5u4av3m" path="res://Assets/Floating Island.glb" id="1_ry5i5"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_8utfg"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ry5i5"]
+albedo_color = Color(0.43529412, 0.30588236, 0.21568628, 1)
+roughness = 0.1
+
+[sub_resource type="TextMesh" id="TextMesh_ry5i5"]
+material = SubResource("StandardMaterial3D_ry5i5")
+text = "A"
+pixel_size = 0.04
+depth = 0.1
+
+[node name="LetterIsland" type="StaticBody3D"]
+script = ExtResource("1_8utfg")
+
+[node name="Root Scene" parent="." instance=ExtResource("1_ry5i5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.13227355, 0, 0.26872468)
+
+[node name="RootNode" parent="Root Scene" index="0"]
+transform = Transform3D(100, 0, 0, 0, 100, 0, 0, 0, 100, 0, 0, 0)
+
+[node name="IslandSmall" parent="Root Scene/RootNode" index="0"]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Root Scene/RootNode" index="1"]
+transform = Transform3D(100, 0, 0, 0, -1.1920931e-05, 100, 0, -100, -1.1920931e-05, 0, 0, 0)
+shape = SubResource("BoxShape3D_8utfg")
+
+[node name="LetterMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.09474528, 0.38264757, -0.46743417)
+mesh = SubResource("TextMesh_ry5i5")
+
+[editable path="Root Scene"]

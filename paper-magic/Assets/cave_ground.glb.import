@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://c7jm4x3uu2x7a"
-path="res://.godot/imported/cave_ground.glb-41ab06eea380d75e614a15e1fb185656.scn"
+uid="uid://dpthdqhovmnal"
+path="res://.godot/imported/cave_ground.glb-2bc5009ae74775e9228d483a9a822c24.scn"
 
 [deps]
 
-source_file="res://Assets/cave_ground.glb"
-dest_files=["res://.godot/imported/cave_ground.glb-41ab06eea380d75e614a15e1fb185656.scn"]
+source_file="res://Blender Files/cave_ground.glb"
+dest_files=["res://.godot/imported/cave_ground.glb-2bc5009ae74775e9228d483a9a822c24.scn"]
 
 [params]
 

@@ -1,0 +1,8 @@
+[gd_resource type="GradientTexture2D" load_steps=2 format=3 uid="uid://brnjt63v1fijd"]
+
+[ext_resource type="Gradient" uid="uid://3uxtbo6hhca2" path="res://Textures/gradient.tres" id="1_clmsm"]
+
+[resource]
+gradient = ExtResource("1_clmsm")
+width = 256
+height = 1

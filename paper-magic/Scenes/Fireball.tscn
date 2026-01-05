@@ -1,0 +1,40 @@
+[gd_scene load_steps=6 format=3 uid="uid://5sf1605d56kp"]
+
+[ext_resource type="Shader" uid="uid://jd0se4xxg7np" path="res://Shaders/fireball.gdshader" id="1_e3tp1"]
+[ext_resource type="Script" uid="uid://c7ulerclfxe3y" path="res://Scripts/fireball.gd" id="2_llehy"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mqswd"]
+render_priority = 0
+shader = ExtResource("1_e3tp1")
+shader_parameter/color_core = Color(1, 0.8, 0, 1)
+shader_parameter/color_edge = Color(1, 0.1, 0, 1)
+shader_parameter/noise_scale = 2.0
+shader_parameter/displacement_amount = 0.2
+shader_parameter/speed = 2.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_ifppd"]
+radius = 0.25
+height = 0.5
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_e3tp1"]
+
+[node name="Fireball" type="Area3D"]
+script = ExtResource("2_llehy")
+
+[node name="Fireball" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6015048, 0)
+material_override = SubResource("ShaderMaterial_mqswd")
+transparency = 1.0
+cast_shadow = 0
+mesh = SubResource("SphereMesh_ifppd")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 0.0077982545, 1.6078697, 0.008301225)
+shape = SubResource("SphereShape3D_e3tp1")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0017110705, 1.5934073, -0.00070923567)
+light_color = Color(0.9490196, 0.54901963, 0.15686275, 1)
+light_energy = 3.0
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]

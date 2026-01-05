@@ -1,0 +1,171 @@
+[gd_scene load_steps=15 format=3 uid="uid://cbxwsd5rrggev"]
+
+[ext_resource type="Script" uid="uid://c15cwsqqfv5lc" path="res://Scripts/level_select.gd" id="1_sf6f5"]
+[ext_resource type="PackedScene" uid="uid://ycwewugt1u05" path="res://Scenes/level_btn_scene.tscn" id="2_ardn0"]
+[ext_resource type="Script" uid="uid://fi6lvb5n1odd" path="res://Scripts/continue_horizontal.gd" id="3_hvlej"]
+[ext_resource type="Shader" uid="uid://snt35fhwy4k" path="res://Shaders/dissolve_shader.gdshader" id="3_il1aw"]
+[ext_resource type="Shader" uid="uid://c1c4xmskusfqh" path="res://Shaders/scrolling_background.gdshader" id="3_nb57j"]
+[ext_resource type="Texture2D" uid="uid://bs3y7r0htq73u" path="res://Assets/forest_sprites/forest_sky.png" id="4_il1aw"]
+[ext_resource type="Texture2D" uid="uid://coaqybjci1d3q" path="res://Assets/forest_sprites/forest_mountain.png" id="5_clf2l"]
+[ext_resource type="Texture2D" uid="uid://6m1xcwi7p8go" path="res://Textures/background.png" id="5_gyrbw"]
+[ext_resource type="Texture2D" uid="uid://o656lp5r0xg0" path="res://Assets/forest_sprites/forest_back.png" id="6_0a771"]
+[ext_resource type="Texture2D" uid="uid://dlne5lifbpwda" path="res://Assets/forest_sprites/forest_mid.png" id="7_7o85a"]
+[ext_resource type="Texture2D" uid="uid://ci0csk0mn566y" path="res://Assets/forest_sprites/forest_long.png" id="8_gc2n2"]
+[ext_resource type="Texture2D" uid="uid://bydb1lg08b280" path="res://Assets/logo.png" id="11_hvlej"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_clf2l"]
+shader = ExtResource("3_il1aw")
+shader_parameter/progress = 0.0
+shader_parameter/meltiness = 1.0
+shader_parameter/top_bias = 2.5
+shader_parameter/max_block_px = 16.0
+shader_parameter/pixelate_start = 0.1
+shader_parameter/fade_start = 0.2
+shader_parameter/fade_end = 0.5
+shader_parameter/fade_power = 1.5
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gyrbw"]
+shader = ExtResource("3_nb57j")
+shader_parameter/scroll_uv_per_sec = Vector2(0.1, 0)
+
+[node name="LevelSelect" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_sf6f5")
+level_btn_scene = ExtResource("2_ardn0")
+all_levels = Array[String](["uid://c01he1vgrnpvu", "uid://c2yhmnhr6c5po", "uid://dfmvbxfnwxw4p", "uid://c1wm2hlalersx"])
+
+[node name="PostProcessLayer" type="CanvasLayer" parent="."]
+
+[node name="BackBufferCopy" type="BackBufferCopy" parent="PostProcessLayer"]
+copy_mode = 2
+
+[node name="ColorRect" type="ColorRect" parent="PostProcessLayer"]
+material = SubResource("ShaderMaterial_clf2l")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="CanvasLayer"]
+offset = Vector2(0, 250)
+transform = Transform2D(1, 0, 0, 1, 0, 250)
+follow_viewport_enabled = true
+script = ExtResource("3_hvlej")
+
+[node name="ParallaxLayer5" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
+motion_scale = Vector2(-0.1, 0)
+motion_mirroring = Vector2(807, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/ParallaxBackground/ParallaxLayer5"]
+position = Vector2(811.99994, 262.5)
+scale = Vector2(0.85, 0.8658334)
+texture = ExtResource("4_il1aw")
+
+[node name="ParallaxLayer4" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
+motion_scale = Vector2(-0.2, 0)
+motion_mirroring = Vector2(1615, 0)
+
+[node name="Sprite2D2" type="Sprite2D" parent="CanvasLayer/ParallaxBackground/ParallaxLayer4"]
+position = Vector2(810.5, 207)
+scale = Vector2(0.425, 0.425)
+texture = ExtResource("5_clf2l")
+
+[node name="ParallaxLayer3" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
+motion_scale = Vector2(-0.4, 0)
+motion_mirroring = Vector2(1615, 0)
+
+[node name="Sprite2D2" type="Sprite2D" parent="CanvasLayer/ParallaxBackground/ParallaxLayer3"]
+position = Vector2(811.50006, 140.99997)
+scale = Vector2(0.425, 0.425)
+texture = ExtResource("6_0a771")
+
+[node name="ParallaxLayer2" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
+motion_scale = Vector2(-0.5, 0)
+motion_mirroring = Vector2(1615, 0)
+
+[node name="Sprite2D2" type="Sprite2D" parent="CanvasLayer/ParallaxBackground/ParallaxLayer2"]
+position = Vector2(808.5, 126.99998)
+scale = Vector2(0.425, 0.425)
+texture = ExtResource("7_7o85a")
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
+motion_scale = Vector2(-0.6, 0)
+motion_mirroring = Vector2(1615, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/ParallaxBackground/ParallaxLayer"]
+position = Vector2(813.5, 148.26)
+scale = Vector2(0.425, 0.425)
+texture = ExtResource("8_gc2n2")
+
+[node name="Background" type="TextureRect" parent="."]
+visible = false
+material = SubResource("ShaderMaterial_gyrbw")
+custom_minimum_size = Vector2(200, 400)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -172.0
+offset_top = -9.0
+offset_right = 1148.0
+offset_bottom = 664.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("5_gyrbw")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(150, 200)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 259.0
+offset_top = 22.525
+offset_right = 957.0
+offset_bottom = 306.52502
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("11_hvlej")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_left = -1.0
+offset_top = 175.0
+offset_right = 1148.0
+offset_bottom = 502.0
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(400, 200)
+layout_mode = 2
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 0
+
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+columns = 4
+
+[node name="TextureRect2" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="CanvasLayer2" type="CanvasLayer" parent="."]

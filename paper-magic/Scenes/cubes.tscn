@@ -1,6 +1,6 @@
 [gd_scene load_steps=19 format=4 uid="uid://vb2gw7cf54s5"]
 
-[ext_resource type="PackedScene" uid="uid://cssfykhhlsyd1" path="res://Blender Files/cube.glb" id="1_6yhm0"]
+[ext_resource type="PackedScene" uid="uid://cssfykhhlsyd1" path="res://Assets/cube.glb" id="1_6yhm0"]
 [ext_resource type="Texture2D" uid="uid://d1dynsvnu08tu" path="res://Assets/cave_ground_1.png" id="2_yvb3w"]
 [ext_resource type="Texture2D" uid="uid://b1yu38xba0whq" path="res://Assets/cave_ground_2.png" id="3_dunqq"]
 [ext_resource type="Texture2D" uid="uid://bh88oluaqr57q" path="res://Assets/cave_ground_3.png" id="4_umucf"]

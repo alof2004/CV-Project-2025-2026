@@ -1,0 +1,143 @@
+[gd_scene load_steps=18 format=3 uid="uid://dfmvbxfnwxw4p"]
+
+[ext_resource type="Script" uid="uid://bat3srnpdiw03" path="res://Scripts/parallax_background.gd" id="1_hx0pg"]
+[ext_resource type="Texture2D" uid="uid://cv4h4cv1vqn42" path="res://Assets/purple/background_cave.png" id="2_uyp6w"]
+[ext_resource type="Texture2D" uid="uid://dyha3p76kp0sy" path="res://Assets/purple/purple_L1.png" id="3_t21pv"]
+[ext_resource type="Texture2D" uid="uid://do3uk3clcyc4p" path="res://Assets/purple/purple_L2.png" id="4_xc3xs"]
+[ext_resource type="Texture2D" uid="uid://c1l7gymv6ng6n" path="res://Assets/purple/purple_L3.png" id="5_tqo56"]
+[ext_resource type="Texture2D" uid="uid://dkrh1mf6aavtd" path="res://Assets/purple/purple_L4.png" id="6_4hxla"]
+[ext_resource type="PackedScene" uid="uid://bwveaoetdbncr" path="res://Scenes/magician.tscn" id="7_suhnr"]
+[ext_resource type="PackedScene" uid="uid://5sf1605d56kp" path="res://Scenes/Fireball.tscn" id="8_gej81"]
+[ext_resource type="Environment" uid="uid://d16t207osgbm2" path="res://Environment/environment_level1.tres" id="9_2xbb2"]
+[ext_resource type="Script" uid="uid://d0fmx80seh18a" path="res://Scripts/camera_movement.gd" id="10_4x4h4"]
+[ext_resource type="Shader" uid="uid://n1eam1wn670j" path="res://Shaders/outliner.gdshader" id="11_2ef6l"]
+[ext_resource type="MeshLibrary" uid="uid://c8ta2xr53wxr" path="res://cubes_mesh_lib3.tres" id="12_ijr61"]
+[ext_resource type="Script" uid="uid://crxribpscxxol" path="res://Scripts/floor_cave_level.gd" id="13_preed"]
+[ext_resource type="PackedScene" uid="uid://xnd1qv10g2i" path="res://Scenes/lighted_torch.tscn" id="14_tf1wj"]
+[ext_resource type="PackedScene" uid="uid://5dkf6x7sqao6" path="res://Scenes/gate.tscn" id="15_y4skv"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_na6ls"]
+render_priority = 0
+shader = ExtResource("11_2ef6l")
+shader_parameter/depth_threshold = 0.05
+shader_parameter/reverse_depth_threshold = 0.25
+shader_parameter/normal_threshold = 0.6
+shader_parameter/darken_amount = 0.3
+shader_parameter/lighten_amount = 1.5
+shader_parameter/normal_edge_bias = Vector3(1, 1, 1)
+shader_parameter/light_direction = Vector3(-0.96, -0.18, 0.2)
+
+[sub_resource type="QuadMesh" id="QuadMesh_8eeko"]
+material = SubResource("ShaderMaterial_na6ls")
+size = Vector2(2, 2)
+
+[node name="Cave" type="Node3D"]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="CanvasLayer"]
+follow_viewport_enabled = true
+script = ExtResource("1_hx0pg")
+camera_3d_path = NodePath("../../SubViewportContainer/SubViewport/Camera3D")
+parallax_strength = 40.0
+
+[node name="ParallaxLayer6" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
+motion_scale = Vector2(-0.5, 0)
+motion_mirroring = Vector2(1187.2, 0)
+
+[node name="Sprite2D2" type="Sprite2D" parent="CanvasLayer/ParallaxBackground/ParallaxLayer6"]
+position = Vector2(554.5, 255)
+scale = Vector2(1.8546873, 1.5279999)
+texture = ExtResource("2_uyp6w")
+
+[node name="ParallaxLayer5" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
+motion_scale = Vector2(-0.05, 0)
+motion_mirroring = Vector2(1191.68, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/ParallaxBackground/ParallaxLayer5"]
+position = Vector2(556, 253.49998)
+scale = Vector2(1.8624998, 1.556)
+texture = ExtResource("3_t21pv")
+
+[node name="ParallaxLayer4" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
+motion_scale = Vector2(-0.1, 0)
+motion_mirroring = Vector2(1164.8, 0)
+
+[node name="Sprite2D2" type="Sprite2D" parent="CanvasLayer/ParallaxBackground/ParallaxLayer4"]
+position = Vector2(569.5, 255.99998)
+scale = Vector2(1.8203125, 1.5439998)
+texture = ExtResource("4_xc3xs")
+
+[node name="ParallaxLayer3" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
+motion_scale = Vector2(-0.2, 0)
+motion_mirroring = Vector2(1187.84, 0)
+
+[node name="Sprite2D2" type="Sprite2D" parent="CanvasLayer/ParallaxBackground/ParallaxLayer3"]
+position = Vector2(558, 254.49998)
+scale = Vector2(1.85625, 1.548)
+texture = ExtResource("5_tqo56")
+
+[node name="ParallaxLayer2" type="ParallaxLayer" parent="CanvasLayer/ParallaxBackground"]
+motion_scale = Vector2(-0.5, 0)
+motion_mirroring = Vector2(1187.2, 0)
+
+[node name="Sprite2D2" type="Sprite2D" parent="CanvasLayer/ParallaxBackground/ParallaxLayer2"]
+position = Vector2(554.5, 248.49998)
+scale = Vector2(1.8546873, 1.6039999)
+texture = ExtResource("6_4hxla")
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+texture_filter = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+stretch_shrink = 3
+metadata/_edit_use_anchors_ = true
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(384, 216)
+render_target_clear_mode = 1
+render_target_update_mode = 4
+
+[node name="CharacterBody3D" parent="SubViewportContainer/SubViewport" groups=["player"] instance=ExtResource("7_suhnr")]
+transform = Transform3D(-0.13571563, 0, 0.9907478, 0, 1, 0, -0.9907478, 0, -0.13571563, 4.4359264, 2.550293, 4.53236)
+fireball_scene = ExtResource("8_gej81")
+
+[node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport"]
+unique_name_in_owner = true
+transform = Transform3D(-0.96316254, 2.4289228e-09, -0.26891994, -7.4505815e-09, 1, 3.5717115e-08, 0.26891994, 3.6404998e-08, -0.96316254, 3.4131951, 4.181465, -4.2802944)
+environment = ExtResource("9_2xbb2")
+far = 56.0
+script = ExtResource("10_4x4h4")
+player_path = NodePath("../CharacterBody3D")
+parallax_2d_path = NodePath("../../../CanvasLayer/ParallaxBackground")
+subviewport_path = NodePath("../CharacterBody3D")
+fixed_z_rail = 8.0
+height_2d = 2.5
+distance_z_2d = 28.0
+fov_2d = 15.335
+height_3d = 1.415
+side_distance_3d = 5.02
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="SubViewportContainer/SubViewport/Camera3D"]
+transform = Transform3D(0.9999999, 0, -1.4901161e-08, 0, 1, 0, 1.4901161e-08, 0, 0.9999999, 0.06796551, 0, -0.49615955)
+extra_cull_margin = 16384.0
+mesh = SubResource("QuadMesh_8eeko")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport"]
+transform = Transform3D(-0.89885336, 0.4342035, 0.059413314, -0.33135426, -0.7620626, 0.5562957, 0.2868222, 0.48034137, 0.8288577, 0, 100, 30.232)
+visible = false
+light_color = Color(0.59350556, 0.6596805, 0.79592276, 1)
+light_indirect_energy = 9.0
+
+[node name="GridMap2" type="GridMap" parent="SubViewportContainer/SubViewport"]
+mesh_library = ExtResource("12_ijr61")
+script = ExtResource("13_preed")
+torch_scene = ExtResource("14_tf1wj")
+gate_scene = ExtResource("15_y4skv")
+metadata/_editor_floor_ = Vector3(0, 0, 0)

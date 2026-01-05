@@ -1,7 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://cooo08pkorpsg"]
-
-[ext_resource type="PackedScene" uid="uid://bx11sutinmp8w" path="res://Blender Files/cube_dirt.glb" id="1_lpaap"]
-
-[node name="Node3D" type="Node3D"]
-
-[node name="cube_dirt" parent="." instance=ExtResource("1_lpaap")]

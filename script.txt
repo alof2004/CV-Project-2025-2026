@@ -1,0 +1,45 @@
+[0:00-0:35] On screen: Title card, quick montage of 2D and 3D flips, wand beam, portal.
+Narration: "Welcome to Mage Chronicles, a platformer where a wizard bends reality by switching between 2D and 3D perspectives, controlling objects and casting spells. This project was mainly done using the Godot Engine, but we also used Blender to create some 3D assets and Mixamo for character animations.
+
+[0:35-1:20] What will be covered, general explanation of the project.
+Narration: "Our game consists of 5 levels with each introducing a new mechanic that uses visual computing techniques. To easily cover everything, I'll break down the core mechanics first, then walk through each level highlighting the main features and how they were implemented and also some challenges we faced along the way."
+
+Parallax and Skybox:
+Narration: "To start, we wanted each level to feel immersive and have it's own environment. We achieved this by using a ParallaxBackground with multiple ParallaxLayer nodes, each holding its own Sprite2D. By tuning the motion scale per layer, we created a convincing parallax effect as the player moves. The tricky part was keeping it consistent while switching between 2D and 3D camera modes. To solve this, we only show the ParallaxBackground in 2D mode. When the camera switches to 3D, we hide the parallax background and rely on a skybox instead. The skybox is a panoramic texture of the environment to try and match the parallax art style. This way, we maintain the immersive feel in both modes with only a slight visual mismatch".
+
+[1:20-2:35] On screen: Camera toggle, orthographic vs perspective, smooth transitions, debug view of raycast.
+Narration: "First we will be going over the mechanic which is used in all the levels and is the foundation of our project: the camera system. The camera is basically controlled by a script applied to a Camera3D node. Then using two different inputs from our we can toggle between 2D/3D and orthographic/perspective modes.
+In 2D mode, the camera behaves like it’s on a rail: it follows the player’s movement, but it stays locked to a fixed depth so the shot stays consistent like a side-scroller. The camera also stays level — it doesn’t need to yaw or pitch to track the player, because the framing is always straight-on.
+When we switch into 3D mode, the camera stops being a rail camera and becomes a follow camera. It moves to an offset behind and above the player, and it starts rotating to actively look at the player, so the framing is maintained from a third-person angle.
+After that, we can swap between orthographic and perspective projection. In orthographic, distance doesn’t affect scale, so the scene reads flatter and we “zoom” by changing the camera’s ortho size. In perspective, distance affects scale again, and the lens is controlled through FOV, which gives the scene depth.
+And at the end, to stop walls from blocking the view, we run an occlusion check: we raycast from the player toward the ideal camera position, and if something is in the way, we smoothly raise the camera until the line of sight is clear.
+
+[2:35-3:25] On screen: Wizard movement, jump animation, 2D plane lock, animation blend graph.
+Narration: "The wizard is a CharacterBody3D that works in both modes. In 2D, we freeze the Z axis and lock the body to a constant plane so it behaves like a classic platformer. In 3D, we remap input relative to the camera basis, so forward is always into the scene. This is a practical use of coordinate transforms and camera space. Jump force and run-jump force are tuned separately, and we blend animations for running, jumping, and casting. The animation speed is scaled per state to keep movement and visuals consistent."
+
+[3:25-4:40] On screen: Wand targeting, aura highlight, object scaling and rotation, collision debug.
+Narration: "The second core mechanic is object manipulation with the wand. We use a raycast plus screen-space selection, measuring the mouse distance to projected object positions inside a pick radius. This highlights spatial reasoning in screen space. Hovered targets get a glowing aura, and we force each aura to use a unique material so fading never hides the real mesh. When selected, objects can rotate, scale, and move. Before applying motion, we do collision checks with PhysicsShapeQuery to prevent interpenetration, and when scaling we re-anchor the bottom of the object to the ground so it never sinks. A GPU particle beam stretches from the wand tip to the target with a dynamic lifetime based on distance."
+
+[4:40-5:35] On screen: Procedural generation, GridMap, noise-based vegetation.
+Narration: "Most of the world is generated through GridMap scripts. We use a MeshLibrary to place terrain blocks, raise high ground, carve gaps, and build caves. Objects like boxes, spikes, torches, and gates are spawned at runtime using map-to-local conversions, so everything aligns to the grid. For vegetation we use FastNoiseLite with a consistent seed to scatter bushes, trees, and grass. This is a CV-style use of procedural noise as a sampling function. A wind-sway shader offsets grass vertices based on time, direction, and per-instance noise to avoid uniform motion."
+
+[5:35-6:40] On screen: Shader reel - portal, death/respawn, outlines, pixelation.
+Narration: "Shaders are where the visual computing focus really shows. The portal uses animated noise in UV space to wobble the edge and a smooth mask for the ring, which is a spatial distortion problem. The death and respawn effect is a burn shader that erodes the character outward from a world-space center using layered noise and a color curve, then reverses to reform the mesh. We also apply a Sobel edge detection post-process for outlines and a pixelation pass for a retro look. These post effects run in screen space and are tuned by threshold and kernel strength for a clean silhouette."
+
+[6:40-7:20] On screen: Level select menu, dissolve transition, shader parameters.
+Narration: "Even the UI uses shaders. The level select menu builds buttons dynamically, and transitions with a pixelated melting dissolve that samples the screen texture, quantizes UVs, and shifts columns downward with noise. This is image sampling and quantization applied to UI. The dissolve is driven by a progress parameter so we can tween it for a smooth fade before loading a new scene."
+
+[7:20-8:20] On screen: Level 1 and Level 2 gameplay, object manipulation puzzles.
+Narration: "Level 1 introduces movement, the 2D to 3D switch, and how perspective changes obstacle solving. Spikes, boxes, and gates are scripted onto the GridMap, and respawn is handled by the burn shader so the reset feels physical instead of instant. Level 2 expands the wand system: you scale boxes to reach higher ground, stack objects into stairs, and rotate or resize wooden boards to cross hazards. This level is where camera projection and object scaling are the core CV-driven puzzles."
+
+[8:20-9:15] On screen: Level 3 cave, fireballs, torches, flickering lights.
+Narration: "Level 3 is about fire and lighting. The wizard casts fireballs with a custom shader that adds noise-based displacement and a fresnel glow. Fireballs are Area3D projectiles that ignite torches on collision, and each torch emits a signal. Flicker is driven by FastNoiseLite to modulate light energy over time, which is a simple stochastic signal model. Once all torches are lit, we clear the blocking wall in the GridMap and spawn the exit gate, so lighting and gameplay logic are tightly connected."
+
+[9:15-10:05] On screen: Level 4 spotlight reveal, hidden platforms, collision toggles.
+Narration: "Level 4 focuses on projection and visibility. A spotlight reveals hidden islands by passing light position, direction, and cone angles into a custom fragment shader. The shader computes cone attenuation and distance falloff, and we only enable collisions once the light intensity crosses a threshold. This is a direct link between illumination models and gameplay, showing how visibility can be computed and applied."
+
+[10:05-10:40] On screen: Secret code puzzle, UI input, bridge reveal.
+Narration: "There is also a secret code puzzle. A computer terminal opens a UI where you type the word MAGIC, and we block input so gameplay controls do not interfere. When the code is correct, we reveal a hidden bridge by enabling previously disabled bridge nodes. It is a simple UI system, but it connects narrative, interaction, and level progression."
+
+[10:40-11:10] On screen: Problems and future work slide, then closing montage.
+Narration: "We did hit challenges. Building everything through scripts slowed down iteration, and there are still camera and wand control bugs we want to polish. For future work we plan prism puzzles that redirect light beams to unlock doors, plus a missing level that ties the systems together. Overall, Mage Chronicles meets the goal: a playable platformer that demonstrates a wide range of visual computing techniques, and most importantly shows we understand the CV concepts behind them. Thanks for watching."
