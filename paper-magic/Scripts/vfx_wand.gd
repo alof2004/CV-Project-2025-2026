@@ -1,13 +1,13 @@
-# Wand.gd (full) — TRUE closest-to-mouse picking (raycast), + your move/scale/aura/beam logic
+
 extends Node3D
 
-# --------------------------------------------------------------------
-# NODES
-# --------------------------------------------------------------------
+
+
+
 @export var wand_ray_path: NodePath
-@export var magic_particles_path: NodePath   # GPUParticles3D
-@export var player_path: NodePath            # optional
-@export var camera_path: NodePath            # optional
+@export var magic_particles_path: NodePath   
+@export var player_path: NodePath            
+@export var camera_path: NodePath            
 
 @export var mouse_pick_radius_px: float = 120.0
 @export var debug_camera: bool = false
@@ -19,48 +19,48 @@ extends Node3D
 @onready var wand_magic: GPUParticles3D = get_node_or_null(magic_particles_path) as GPUParticles3D
 @onready var player: Node = get_node_or_null(player_path)
 
-# --------------------------------------------------------------------
-# SELECTION / TRANSFORM
-# --------------------------------------------------------------------
+
+
+
 @export var selection_radius: float = 7.0
 @export var rotate_anim_time: float = 0.2
 @export var move_speed: float = 4.0
 @export var max_grab_distance: float = 15.0
 
-# Scaling is RELATIVE multiplier while grabbed
+
 @export var scale_speed: float = 1.0
 @export var min_scale: float = 0.5
 @export var max_scale: float = 2.0
 
-# --------------------------------------------------------------------
-# FLOOR / GROUND
-# --------------------------------------------------------------------
+
+
+
 @export var floor_height: float = 2.0
 @export var floor_offset: float = 0.0
 @export var ground_ray_length: float = 80.0
 @export var ground_ray_start_offset: float = 0.2
 
-# --------------------------------------------------------------------
-# TRUE MOUSE PICK (raycast)
-# --------------------------------------------------------------------
+
+
+
 @export var pick_ray_length: float = 250.0
 @export var pick_collision_mask: int = 0xFFFFFFFF
-# 1=center only, 5=center+cardinals, 9=+diagonals
+
 @export var pick_samples: int = 9
 
-# --------------------------------------------------------------------
-# AURA (SelectionAura mesh under targets)
-#   - forces unique material instance
-#   - tweens ALBEDO alpha + EMISSION energy
-# --------------------------------------------------------------------
+
+
+
+
+
 @export var aura_max_alpha: float = 0.65
 @export var aura_fade_time: float = 0.2
 @export var aura_scale_boost: float = 1.01
 @export var aura_energy_boost: float = 1.0
 
-# --------------------------------------------------------------------
-# BEAM
-# --------------------------------------------------------------------
+
+
+
 @export var beam_amount: int = 3000
 @export var beam_max_length: float = 90.0
 @export var beam_thickness: float = 0.15
@@ -73,39 +73,39 @@ const ROTATE_STEP := PI * 0.25
 const HORIZ_EPS := 0.02
 const DOWN_SOLVE_STEPS := 10
 
-# --------------------------------------------------------------------
-# State
-# --------------------------------------------------------------------
+
+
+
 var magic_mat: ParticleProcessMaterial = null
 var hovered: Node3D = null
 var grabbed: Node3D = null
 
-var aura_tweens: Dictionary = {}             # MeshInstance3D -> Tween
-var aura_base_energy: Dictionary = {}        # MeshInstance3D -> float
+var aura_tweens: Dictionary = {}             
+var aura_base_energy: Dictionary = {}        
 var rotate_tween: Tween = null
 var rotate_target: Vector3 = Vector3.ZERO
 var rotate_target_valid: bool = false
 var rotate_target_owner: Node3D = null
 
-# Relative scaling state
+
 var grabbed_scale_factor: float = 1.0
 var grabbed_base_mesh_scale: Vector3 = Vector3.ONE
 var grabbed_base_cs_scale: Vector3 = Vector3.ONE
 var grabbed_base_aura_scale: Vector3 = Vector3.ONE
 
-# RigidBody grab state
+
 var grabbed_is_rb: bool = false
 var grabbed_rb_prev_freeze_mode: int = RigidBody3D.FREEZE_MODE_STATIC
 
-# Persist original scales across grabs
-var orig_mesh_scale: Dictionary = {} # Node3D -> Vector3
-var orig_cs_scale: Dictionary = {}   # Node3D -> Vector3
-var orig_aura_scale: Dictionary = {} # Node3D -> Vector3
+
+var orig_mesh_scale: Dictionary = {} 
+var orig_cs_scale: Dictionary = {}   
+var orig_aura_scale: Dictionary = {} 
 
 
-# ====================================================================
-# Debug helpers
-# ====================================================================
+
+
+
 func _dbg(msg: String) -> void:
 	if debug_wand:
 		print("[WAND] ", msg)
@@ -135,9 +135,9 @@ func _node_path_safe(n: Node) -> String:
 	return str(n.get_path()) if n != null else "<null>"
 
 
-# ====================================================================
-# Camera & mouse (SubViewport safe)
-# ====================================================================
+
+
+
 func _get_subviewport_camera() -> Camera3D:
 	var root: Node = get_tree().current_scene
 	if root == null:
@@ -184,9 +184,9 @@ func _get_mouse_pos_for_camera(camera: Camera3D) -> Vector2:
 	return m_local
 
 
-# ====================================================================
-# Helpers: find mesh / collider
-# ====================================================================
+
+
+
 func _get_visual_mesh(root: Node3D) -> MeshInstance3D:
 	if root is MeshInstance3D:
 		return root
@@ -205,9 +205,9 @@ func _find_collision_shape(n: Node) -> CollisionShape3D:
 	return null
 
 
-# ====================================================================
-# Helpers: pick target from collider (walk up to wand_target parent)
-# ====================================================================
+
+
+
 func _get_target_from_collider(col: Object) -> Node3D:
 	var n := col as Node
 	while n != null:
@@ -217,9 +217,9 @@ func _get_target_from_collider(col: Object) -> Node3D:
 	return null
 
 
-# ====================================================================
-# Helpers: collision queries
-# ====================================================================
+
+
+
 func _intersect_shape_with_transform(grabbed_node: Node3D, cs: CollisionShape3D, xf: Transform3D) -> bool:
 	if cs == null or cs.shape == null:
 		return false
@@ -244,7 +244,7 @@ func _would_collide(grabbed_node: Node3D, cs: CollisionShape3D, motion: Vector3,
 	xf.origin += motion + extra_offset
 	return _intersect_shape_with_transform(grabbed_node, cs, xf)
 
-# Handles the "object starts overlapped under another object" case.
+
 func _apply_motion_safely(
 	grabbed_node: Node3D,
 	cs: CollisionShape3D,
@@ -259,7 +259,7 @@ func _apply_motion_safely(
 
 	var start_penetrating := _would_collide(grabbed_node, cs, Vector3.ZERO, extra_offset)
 
-	# Normal case: not penetrating
+	
 	if not start_penetrating:
 		if not _would_collide(grabbed_node, cs, motion, extra_offset):
 			return motion
@@ -275,7 +275,7 @@ func _apply_motion_safely(
 				lo = mid
 		return motion * lo
 
-	# Penetrating case: scan forward until we find a non-overlapping point
+	
 	var escape_steps := 24
 	var first_free_t := -1.0
 	var prev_t := 0.0
@@ -287,11 +287,11 @@ func _apply_motion_safely(
 			prev_t = float(i - 1) / float(escape_steps)
 			break
 
-	# If we can't escape within this motion, allow motion so you can pull out from stacks
+	
 	if first_free_t < 0.0:
 		return motion
 
-	# Refine between prev_t (colliding) and first_free_t (free)
+	
 	var lo2 := prev_t
 	var hi2 := first_free_t
 	for _i in range(steps):
@@ -304,9 +304,9 @@ func _apply_motion_safely(
 	return motion * hi2
 
 
-# ====================================================================
-# Helpers: ground height under object
-# ====================================================================
+
+
+
 func _get_ground_y_under(node: Node3D) -> float:
 	var space: PhysicsDirectSpaceState3D = get_world_3d().direct_space_state
 
@@ -339,9 +339,9 @@ func _get_bottom_y(node: Node3D) -> float:
 	return global_bottom.y
 
 
-# ====================================================================
-# Aura: get/duplicate material (NO style overrides)
-# ====================================================================
+
+
+
 func _get_aura_material(aura: MeshInstance3D) -> StandardMaterial3D:
 	if aura == null:
 		return null
@@ -359,7 +359,7 @@ func _get_aura_material(aura: MeshInstance3D) -> StandardMaterial3D:
 		_dbg_aura("Aura material is NOT StandardMaterial3D (it's " + mat.get_class() + ")")
 		return null
 
-	# Always duplicate so aura never shares with the real mesh
+	
 	var dup := mat.duplicate(true) as Material
 	dup.resource_local_to_scene = true
 	aura.material_override = dup
@@ -394,9 +394,9 @@ func _init_aura_for_target(t: Node3D) -> void:
 	aura.visible = false
 
 
-# ====================================================================
-# Ready
-# ====================================================================
+
+
+
 func _ready() -> void:
 	_dbg("READY")
 
@@ -414,7 +414,7 @@ func _ready() -> void:
 		push_error("[WAND] WandMagic has no ParticleProcessMaterial")
 		return
 
-	# Beam setup
+	
 	magic_mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
 	magic_mat.emission_box_extents = Vector3(beam_thickness, beam_thickness, 0.5)
 	magic_mat.initial_velocity_min = 0.0
@@ -433,22 +433,22 @@ func _ready() -> void:
 	aabb.size = Vector3(beam_max_length, beam_max_length, beam_max_length)
 	wand_magic.visibility_aabb = aabb
 
-	# Init existing targets
+	
 	var targets := get_tree().get_nodes_in_group(TARGET_GROUP)
 	for node in targets:
 		if node is Node3D:
 			_init_aura_for_target(node as Node3D)
 
-	# Init targets spawned later
+	
 	get_tree().node_added.connect(func(n: Node) -> void:
 		if n is Node3D and (n as Node3D).is_in_group(TARGET_GROUP):
 			_init_aura_for_target(n as Node3D)
 	)
 
 
-# ====================================================================
-# Rotation input (step tween)
-# ====================================================================
+
+
+
 func _input(event: InputEvent) -> void:
 	if grabbed == null:
 		return
@@ -480,9 +480,9 @@ func _start_rotation_tween(dir: int) -> void:
 	rotate_tween.tween_property(grabbed, "rotation_degrees", rotate_target, rotate_anim_time)
 
 
-# ====================================================================
-# Main loop
-# ====================================================================
+
+
+
 func _physics_process(delta: float) -> void:
 	_update_hover()
 
@@ -529,9 +529,9 @@ func _force_deselect() -> void:
 	_update_magic_beam(null)
 
 
-# ====================================================================
-# Hover (TRUE closest): raycast from camera through mouse (+ radius samples)
-# ====================================================================
+
+
+
 func _update_hover() -> void:
 	var camera := _get_active_camera()
 	if camera == null:
@@ -574,7 +574,7 @@ func _update_hover() -> void:
 		var q := PhysicsRayQueryParameters3D.create(ray_origin, ray_to)
 		q.collision_mask = pick_collision_mask
 
-		# Exclude player so you don't select yourself accidentally
+		
 		var excludes: Array[RID] = []
 		if player is CollisionObject3D:
 			excludes.append((player as CollisionObject3D).get_rid())
@@ -588,11 +588,11 @@ func _update_hover() -> void:
 		if t == null:
 			continue
 
-		# Keep your wand-range rule
+		
 		if (t.global_transform.origin - wand_pos).length() > selection_radius:
 			continue
 
-		# Choose closest cursor sample first, then closest depth
+		
 		var depth := ray_origin.distance_to(hit["position"])
 		var sd := off.length()
 		if sd < best_screen_dist or (is_equal_approx(sd, best_screen_dist) and depth < best_depth):
@@ -600,7 +600,7 @@ func _update_hover() -> void:
 			best_depth = depth
 			best_target = t
 
-	# Fallback: if ray hits nothing (e.g., no colliders), use old screen-space pivot method
+	
 	if best_target == null:
 		var best_px := mouse_pick_radius_px
 		for node in get_tree().get_nodes_in_group(TARGET_GROUP):
@@ -624,18 +624,18 @@ func _update_hover() -> void:
 	hovered = best_target
 
 
-# ====================================================================
-# Selection
-# ====================================================================
+
+
+
 func _toggle_select() -> void:
 	_dbg("TOGGLE grabbed=%s hovered=%s" % [grabbed.name if grabbed else "NULL", hovered.name if hovered else "NULL"])
 
-	# Click same object again -> deselect
+	
 	if grabbed and hovered == grabbed:
 		_force_deselect()
 		return
 
-	# Click empty -> deselect
+	
 	if hovered == null and grabbed:
 		_force_deselect()
 		return
@@ -649,7 +649,7 @@ func _toggle_select() -> void:
 		rotate_target_owner = grabbed
 		rotate_target_valid = true
 
-		# If it's a RigidBody3D, freeze so physics doesn't fight you
+		
 		grabbed_is_rb = false
 		if grabbed is RigidBody3D:
 			var rb := grabbed as RigidBody3D
@@ -660,7 +660,7 @@ func _toggle_select() -> void:
 			rb.linear_velocity = Vector3.ZERO
 			rb.angular_velocity = Vector3.ZERO
 
-		# Capture ORIGINAL scales (persist across grabs)
+		
 		_ensure_original_scales(grabbed)
 
 		var mesh := _get_visual_mesh(grabbed)
@@ -671,7 +671,7 @@ func _toggle_select() -> void:
 		grabbed_base_cs_scale = orig_cs_scale.get(grabbed, cs.scale) if cs else Vector3.ONE
 		grabbed_base_aura_scale = orig_aura_scale.get(grabbed, aura_node.scale) if aura_node else Vector3.ONE
 
-		# Initialize factor from current scale so it doesn't jump
+		
 		if mesh:
 			var fx: float = mesh.scale.x / maxf(grabbed_base_mesh_scale.x, 0.0001)
 			var fy: float = mesh.scale.y / maxf(grabbed_base_mesh_scale.y, 0.0001)
@@ -684,9 +684,9 @@ func _toggle_select() -> void:
 		_set_aura_visible(grabbed, true)
 
 
-# ====================================================================
-# Aura show/hide
-# ====================================================================
+
+
+
 func _set_aura_visible(target: Node3D, visible: bool) -> void:
 	if target == null:
 		return
@@ -701,7 +701,7 @@ func _set_aura_visible(target: Node3D, visible: bool) -> void:
 	if sm == null:
 		return
 
-	# stop old tween
+	
 	if aura_tweens.has(aura):
 		var old_tw := aura_tweens[aura] as Tween
 		if old_tw and old_tw.is_valid():
@@ -737,9 +737,9 @@ func _set_aura_visible(target: Node3D, visible: bool) -> void:
 	aura_tweens[aura] = tw
 
 
-# ====================================================================
-# MOVE
-# ====================================================================
+
+
+
 func _update_move(delta: float) -> void:
 	if grabbed == null:
 		return
@@ -820,9 +820,9 @@ func _update_move(delta: float) -> void:
 			grabbed.global_position.y += (ground_y - bottom_y)
 
 
-# ====================================================================
-# SCALE (relative)
-# ====================================================================
+
+
+
 func _update_scale(delta: float) -> void:
 	if grabbed == null:
 		return
@@ -861,9 +861,9 @@ func _update_scale(delta: float) -> void:
 	grabbed.global_position.y += (current_bottom - new_bottom)
 
 
-# ====================================================================
-# Beam
-# ====================================================================
+
+
+
 func _update_magic_beam(target: Node3D) -> void:
 	if wand_magic == null or magic_mat == null:
 		return

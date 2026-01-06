@@ -1,30 +1,30 @@
-# Wand.gd
+
 extends Node3D
 
-# --------------------------------------------------------------------
-# NODES
-# --------------------------------------------------------------------
-@export var wand_ray_path: NodePath
-@export var magic_particles_path: NodePath   # GPUParticles3D
 
-# --------------------------------------------------------------------
-# SELECTION / TRANSFORM
-# --------------------------------------------------------------------
+
+
+@export var wand_ray_path: NodePath
+@export var magic_particles_path: NodePath   
+
+
+
+
 @export var selection_radius: float = 7.0
 @export var rotate_speed: float = 2.0
 @export var scale_speed: float = 1.0
 @export var min_scale: float = 0.5
 @export var max_scale: float = 2.0
 
-# --------------------------------------------------------------------
-# AURA
-# --------------------------------------------------------------------
+
+
+
 @export var aura_max_alpha: float = 0.4
 @export var aura_fade_time: float = 0.2
 
-# --------------------------------------------------------------------
-# BEAM (GPUParticles3D)
-# --------------------------------------------------------------------
+
+
+
 @export var beam_speed: float = 12.0
 @export var beam_amount: int = 1500
 @export var beam_max_length: float = 10000.0
@@ -34,9 +34,9 @@ extends Node3D
 @export_node_path("Camera3D") var camera_path: NodePath
 @onready var cam: Camera3D = get_node_or_null(camera_path) as Camera3D
 
-# --------------------------------------------------------------------
-# DEBUG
-# --------------------------------------------------------------------
+
+
+
 @export var debug_wand: bool = true
 @export var debug_material_sharing: bool = true
 
@@ -54,7 +54,7 @@ var grabbed: Node3D = null
 var last_colliding: bool = false
 var frame_counter: int = 0
 
-# aura -> Tween
+
 var aura_tweens: Dictionary = {}
 
 func _dbg(msg: String) -> void:
@@ -86,7 +86,7 @@ func _dbg_target(t: Node3D, where: String = "") -> void:
 		+ " aura.mat_id=" + (str(mat.get_instance_id()) if mat else "null")
 		+ " aura.alpha=" + str(alpha))
 
-	# Detect shared material inside the same target (common cause of “tile disappears”)
+	
 	if debug_material_sharing and mat != null:
 		for c in t.get_children():
 			if c is MeshInstance3D and c != aura:
@@ -94,10 +94,10 @@ func _dbg_target(t: Node3D, where: String = "") -> void:
 				if m2 != null and m2.get_instance_id() == mat.get_instance_id():
 					_dbg(where + "  !!! WARNING: aura material is SHARED with mesh '" + c.name + "' -> fading aura will hide the real object")
 
-# -------------------------------------------------------
-# Helper: get a *per-instance* StandardMaterial3D for aura
-# (FORCED UNIQUE so it can’t affect the real tile)
-# -------------------------------------------------------
+
+
+
+
 func _get_aura_material(aura: MeshInstance3D) -> StandardMaterial3D:
 	if aura == null:
 		return null
@@ -110,7 +110,7 @@ func _get_aura_material(aura: MeshInstance3D) -> StandardMaterial3D:
 	if mat == null:
 		return null
 
-	# FORCE a unique material instance for the aura every time
+	
 	mat = mat.duplicate(true)
 	mat.resource_local_to_scene = true
 	aura.material_override = mat
@@ -119,20 +119,20 @@ func _get_aura_material(aura: MeshInstance3D) -> StandardMaterial3D:
 	if sm == null:
 		return null
 
-	# Ensure fade works (no alpha scissor cutout)
+	
 	sm.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	sm.alpha_scissor_threshold = 0.0
 
 	return sm
 
 func _ready() -> void:
-	# Ray
+	
 	if wand_ray == null:
 		push_error("[WAND] ERROR: wand_ray is NULL (bad path?)")
 	else:
 		wand_ray.enabled = true
 
-	# Magic beam
+	
 	if wand_magic == null:
 		push_error("[WAND] ERROR: wand_magic is NULL (bad path?)")
 	else:
@@ -156,13 +156,13 @@ func _ready() -> void:
 		aabb.size = Vector3(beam_max_length, beam_max_length, beam_max_length)
 		wand_magic.visibility_aabb = aabb
 
-	# Init existing targets
+	
 	_dbg("Init existing targets in group '" + TARGET_GROUP + "' count=" + str(get_tree().get_nodes_in_group(TARGET_GROUP).size()))
 	for node in get_tree().get_nodes_in_group(TARGET_GROUP):
 		if node is Node3D:
 			_init_target_aura(node as Node3D)
 
-	# Init targets spawned later
+	
 	get_tree().node_added.connect(_on_node_added)
 
 func _on_node_added(n: Node) -> void:
@@ -194,7 +194,7 @@ func _physics_process(delta: float) -> void:
 
 	frame_counter += 1
 
-	# Ray debug
+	
 	var is_col: bool = wand_ray.is_colliding()
 	if is_col != last_colliding or frame_counter % 30 == 0:
 		if is_col:
@@ -261,7 +261,7 @@ func _toggle_select() -> void:
 	_dbg_target(hovered, "BEFORE ")
 	_dbg_target(grabbed, "BEFORE ")
 
-	# Click empty space → clear selection
+	
 	if hovered == null and grabbed:
 		_set_aura_visible(grabbed, false)
 		grabbed = null
@@ -279,9 +279,9 @@ func _toggle_select() -> void:
 	_dbg_target(hovered, "AFTER  ")
 	_dbg_target(grabbed, "AFTER  ")
 
-# ====================================================================
-# AURA FADE-IN / FADE-OUT
-# ====================================================================
+
+
+
 func _set_aura_visible(target: Node3D, visible: bool) -> void:
 	if target == null:
 		return
@@ -299,7 +299,7 @@ func _set_aura_visible(target: Node3D, visible: bool) -> void:
 		_dbg("No aura material on " + target.name)
 		return
 
-	# Stop old tween
+	
 	if aura_tweens.has(aura):
 		var old_tween: Tween = aura_tweens[aura] as Tween
 		if old_tween and old_tween.is_valid():
@@ -310,7 +310,7 @@ func _set_aura_visible(target: Node3D, visible: bool) -> void:
 	var to_col: Color = from_col
 	to_col.a = aura_max_alpha if visible else 0.0
 
-	# Visible while animating
+	
 	aura.visible = true
 
 	var tw: Tween = get_tree().create_tween()
@@ -324,9 +324,9 @@ func _set_aura_visible(target: Node3D, visible: bool) -> void:
 
 	_dbg_target(target, "POST  ")
 
-# ====================================================================
-# TRANSFORM CONTROLS
-# ====================================================================
+
+
+
 func _update_rotation(delta: float) -> void:
 	if grabbed == null:
 		return
@@ -359,9 +359,9 @@ func _update_scale(delta: float) -> void:
 	if s != orig:
 		grabbed.scale = s
 
-# ====================================================================
-# MAGIC BEAM (STRAIGHT LINE FROM WAND TIP TO TARGET)
-# ====================================================================
+
+
+
 func _update_magic_beam(target: Node3D) -> void:
 	if wand_magic == null or magic_mat == null or wand_ray == null:
 		return

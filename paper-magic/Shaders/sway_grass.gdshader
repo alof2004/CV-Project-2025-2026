@@ -4,7 +4,7 @@ render_mode cull_disabled;
 
 uniform sampler2D albedo_tex : source_color;
 uniform vec4 tint : source_color = vec4(0.4, 0.9, 0.4, 1.0);
-uniform vec2  wind_dir = vec2(1.0, 0.2);        // XZ direction
+uniform vec2  wind_dir = vec2(1.0, 0.2);        
 uniform float wind_strength : hint_range(0, 1.5) = 0.25;
 uniform float wind_speed    : hint_range(0.0, 10.0) = 1.5;
 uniform float wind_freq     : hint_range(0.0, 10.0) = 2.0;
@@ -34,7 +34,7 @@ void vertex() {
 void fragment() {
     vec4 tex = texture(albedo_tex, UV);
 
-    vec4 col = tex * tint;      // tint the texture
+    vec4 col = tex * tint;      
     ALBEDO = col.rgb;
     ALPHA  = col.a;
 

@@ -3,16 +3,16 @@ extends Control
 signal code_success
 signal code_closed
 
-# The secret word to match
+
 const TARGET_CODE = "MAGIC"
 
 @onready var box_container = $HBoxContainer
 
-# --- FIX: This variable was missing! ---
+
 var current_input = "" 
 
 func _ready():
-	visible = false # Hide by default
+	visible = false 
 
 func open_ui():
 	visible = true
@@ -32,19 +32,19 @@ func _input(event):
 	if event is InputEventKey and event.pressed:
 		var key_was_used = false
 		
-		# 1. Handle Backspace
+		
 		if event.keycode == KEY_BACKSPACE:
 			if current_input.length() > 0:
 				current_input = current_input.left(current_input.length() - 1)
 				_update_display()
 			key_was_used = true
 		
-		# 2. Handle Escape (Close)
+		
 		elif event.keycode == KEY_ESCAPE:
 			close_ui()
 			key_was_used = true
 
-		# 3. Handle Typing (A-Z only)
+		
 		elif event.keycode >= KEY_A and event.keycode <= KEY_Z:
 			if current_input.length() < 5:
 				var char_str = OS.get_keycode_string(event.keycode).to_upper()
@@ -53,23 +53,23 @@ func _input(event):
 				_check_code()
 			key_was_used = true
 
-		# --- INPUT BLOCKING FIX ---
-		# This stops the key from triggering other game actions (like movement)
+		
+		
 		if key_was_used:
 			accept_event()
 
 func _update_display():
-	# Loop through the 5 panels and set their label text
+	
 	if box_container:
 		for i in range(5):
 			if i < box_container.get_child_count():
 				var panel = box_container.get_child(i)
-				var label = panel.get_child(0) # Assuming Label is the first child
+				var label = panel.get_child(0) 
 				
 				if i < current_input.length():
 					label.text = current_input[i]
 				else:
-					label.text = "" # Empty box
+					label.text = "" 
 
 func _check_code():
 	if current_input == TARGET_CODE:
@@ -78,4 +78,4 @@ func _check_code():
 		close_ui()
 	elif current_input.length() == 5:
 		print("Wrong Code")
-		# Optional: Add a shake animation or red flash here
+		

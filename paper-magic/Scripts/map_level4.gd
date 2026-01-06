@@ -1,7 +1,7 @@
 @tool
 extends GridMap
 
-# --- Settings ---
+
 @export_group("Terrain")
 @export var tile_name: String = "Cube"
 @export var dirt_tile_name: String = "Cube3"
@@ -15,7 +15,7 @@ extends GridMap
 @export var bush_scene: PackedScene
 @export var tree_scene: PackedScene    
 @export var bridge_scene: PackedScene 
-@export var computer_scene: PackedScene # <--- NEW: Drag your Decoder.tscn here
+@export var computer_scene: PackedScene 
 
 @export_group("Vegetation")
 @export var grass_scene: PackedScene
@@ -34,7 +34,7 @@ extends GridMap
 
 @export var generation_seed: int = 0 
 
-# --- DYNAMIC ABYSS VARIABLES ---
+
 var platform_start_x: float = 60.0
 var platform_spacing: float = 1.0
 
@@ -54,9 +54,9 @@ func _ready() -> void:
 
 	clear()
 	
-	# Cleanup
+	
 	for child in get_children():
-		# Added "Computer_" to cleanup list
+		
 		if child.name.begins_with("Platform_") or child.name.begins_with("Wall_") or \
 		   child.name.begins_with("Bush_") or child.name.begins_with("Gate_") or \
 		   child.name.begins_with("Bridge_") or child.name.begins_with("Tree_") or \
@@ -73,7 +73,7 @@ func _ready() -> void:
 	tile_id = lib.find_item_by_name(tile_name)
 	dirt_tile_id = lib.find_item_by_name(dirt_tile_name)
 	
-	# --- SETUP SEED ---
+	
 	var current_seed = 0
 	if generation_seed == 0:
 		randomize()
@@ -88,20 +88,20 @@ func _ready() -> void:
 	
 	print("--- GENERATING WITH SEED: ", current_seed, " ---")
 
-	# --- 1. CALCULATE ABYSS INDICES ---
+	
 	var start_coords = local_to_map(Vector3(platform_start_x, 0, 0))
 	var end_coords = local_to_map(Vector3(platform_start_x + (PASSWORD_LETTERS.size() * platform_spacing), 0, 0))
 	
 	abyss_start_index = start_coords.x - 1
 	abyss_end_index = end_coords.x + 1
 
-	# --- 2. GENERATE WORLD ---
+	
 	_generate_floor()
 	
 	if Engine.is_editor_hint():
-		# EDITOR MODE: Show bridges visibly so you can design
+		
 		_spawn_magic_platforms()
-		_spawn_bridges(false) # false = NOT hidden
+		_spawn_bridges(false) 
 		_spawn_starting_walls()
 		_spawn_gates()
 		_spawn_computer()
@@ -109,9 +109,9 @@ func _ready() -> void:
 		_spawn_bushes()
 		_spawn_grass()
 	else:
-		# GAME MODE: Hide bridges initially
+		
 		call_deferred("_spawn_magic_platforms")
-		call_deferred("_spawn_bridges", true) # true = HIDDEN
+		call_deferred("_spawn_bridges", true) 
 		call_deferred("_spawn_starting_walls")
 		call_deferred("_spawn_gates")
 		call_deferred("_spawn_computer")
@@ -131,7 +131,7 @@ func _generate_floor() -> void:
 				var tid = tile_id if y == current_floor_y else dirt_tile_id
 				set_cell_item(Vector3i(x, y, -z), tid)
 
-# --- NEW COMPUTER SPAWNER ---
+
 func _spawn_computer():
 	if computer_scene == null: 
 		print("Computer Scene not assigned!")
@@ -141,40 +141,40 @@ func _spawn_computer():
 	c.name = "Computer_Decoder"
 	add_child(c)
 	
-	# PLACEMENT LOGIC:
-	# abyss_start_index is the first EMPTY hole.
-	# abyss_start_index - 1 is the last SOLID ground.
+	
+	
+	
 	var x_pos = abyss_start_index - 1
 	
-	# Z = -1 puts it slightly to the side of the center path (-2 is center)
-	# This ensures the player doesn't trip over it while walking.
+	
+	
 	var z_pos = -3
 	
 	var grid_pos = Vector3i(x_pos, height_y, z_pos)
 	var world_pos = map_to_local(grid_pos)
 	
-	# Lift it slightly to sit on top of the block
+	
 	world_pos.y -= 1
 	
 	c.position = world_pos
-	# Rotate to face the path (adjust as needed based on your model)
+	
 	c.rotation_degrees.y = -90.0
 	
-	# CONNECT SIGNAL
-	# When computer emits "puzzle_solved", call local function to show bridges
+	
+	
 	if c.has_signal("puzzle_solved"):
 		c.puzzle_solved.connect(_on_puzzle_solved)
 
 func _on_puzzle_solved():
 	print("GridMap: Puzzle Solved! Revealing Bridge...")
-	# Find all bridge nodes and enable them
+	
 	for child in get_children():
 		if child.name.begins_with("Bridge_"):
 			child.visible = true
 			child.process_mode = Node.PROCESS_MODE_INHERIT
 
-# --- MODIFIED BRIDGE SPAWNER ---
-# Added 'start_hidden' parameter
+
+
 func _spawn_bridges(start_hidden: bool = false):
 	if bridge_scene == null:
 		print("Bridge Scene not assigned!")
@@ -187,7 +187,7 @@ func _spawn_bridges(start_hidden: bool = false):
 		b.name = "Bridge_" + str(x)
 		add_child(b)
 		
-		# If we are in Game Mode, hide the bridge and disable collisions
+		
 		if start_hidden:
 			b.visible = false
 			b.process_mode = Node.PROCESS_MODE_DISABLED
@@ -202,7 +202,7 @@ func _spawn_bridges(start_hidden: bool = false):
 		b.rotation_degrees.y = 90.0
 		b.scale = Vector3(5.0, 3.0, 3.0)
 
-# ... (Rest of functions remain exactly the same as previous) ...
+
 
 func _spawn_grass():
 	if grass_scene == null: return
@@ -227,8 +227,8 @@ func _spawn_grass():
 					var grid_pos = Vector3i(x, height_y, -z)
 					var world_pos = map_to_local(grid_pos)
 
-					# world_pos is the cell center; +0.5 brings you to the top of a 1-unit cube
-					# then subtract a little if it still looks like it's floating
+					
+					
 					g.global_position = Vector3(world_pos.x, world_pos.y -1, world_pos.z)
 
 					g.rotation_degrees.y = randf_range(0, 360)
@@ -241,20 +241,20 @@ func _spawn_trees():
 	if tree_scene == null: return
 	var tree_count = 0
 	
-	# Calculate wall positions in Grid coordinates
+	
 	var wall_gap_idx = local_to_map(Vector3(15.0, 0, 0)).x
 	var wall_big_idx = local_to_map(Vector3(25.0, 0, 0)).x
 	var wall_last_idx = local_to_map(Vector3(35.0, 0, 0)).x
 	
 	for x in range(size_x):
 		for z in range(size_z):
-			# --- CHANGED: Skip everything before the first wall (plus a small buffer) ---
+			
 			if x <= wall_gap_idx + 2: continue 
 
-			# Skip the Abyss area
+			
 			if x >= (abyss_start_index - 2) and x <= (abyss_end_index + 2): continue
 			
-			# Skip other specific walls
+			
 			if x >= wall_big_idx - 2 and x <= wall_big_idx + 2: continue
 			if x >= wall_last_idx - 2 and x <= wall_last_idx + 2: continue
 			if x >= size_x - 3: continue
@@ -278,20 +278,20 @@ func _spawn_bushes():
 	if bush_scene == null: return
 	var bush_count = 0
 	
-	# Calculate wall positions in Grid coordinates
+	
 	var wall_gap_idx = local_to_map(Vector3(15.0, 0, 0)).x
 	var wall_big_idx = local_to_map(Vector3(25.0, 0, 0)).x
 	var wall_last_idx = local_to_map(Vector3(35.0, 0, 0)).x
 	
 	for x in range(size_x):
 		for z in range(size_z):
-			# --- CHANGED: Skip everything before the first wall (plus a small buffer) ---
+			
 			if x <= wall_gap_idx + 2: continue
 
-			# Skip the Abyss area
+			
 			if x >= (abyss_start_index - 2) and x <= (abyss_end_index + 2): continue
 			
-			# Skip other specific walls
+			
 			if x >= wall_big_idx - 2 and x <= wall_big_idx + 2: continue
 			if x >= wall_last_idx - 2 and x <= wall_last_idx + 2: continue
 			if x >= size_x - 3: continue

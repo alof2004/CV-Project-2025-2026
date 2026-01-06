@@ -7,18 +7,18 @@ extends GridMap
 @export var size_z: int = 5
 @export var height_y: int = 0
 
-# Ground before the gap (start runway)
+
 @export var runway_length: int = 4
 
-# Gap region where there is NO ground (islands go here)
-@export var gap_start_x: int = 4
-@export var gap_end_x: int = 14  # exclusive (no ground for x in [gap_start_x, gap_end_x))
 
-# High ground after the gap
+@export var gap_start_x: int = 4
+@export var gap_end_x: int = 14  
+
+
 @export var high_ground_start_x: int = 14
 @export var high_ground_height: int = 2
 
-# Optional: keep one block column for lamp support
+
 @export var lamp_support_enabled: bool = true
 @export var lamp_x: int = 2
 @export var lamp_z: int = 0
@@ -50,19 +50,19 @@ func _generate_floor() -> void:
 	for x in range(size_x):
 		for z in range(size_z):
 
-			# Always keep the lamp support column if enabled
+			
 			if lamp_support_enabled and x == lamp_x and z == lamp_z:
 				_fill_column(x, z, height_y - 1)
 				continue
 
-			# Gap (no blocks) -> player can fall
+			
 			if x >= gap_start_x and x < gap_end_x:
 				continue
 
-			# Normal ground before gap
+			
 			var floor_y := height_y - 1
 
-			# High ground after a point
+			
 			if x >= high_ground_start_x:
 				floor_y += high_ground_height
 

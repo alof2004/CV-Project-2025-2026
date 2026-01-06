@@ -35,23 +35,23 @@ void fragment() {
     float dist = distance(v_world_pos, burn_center);
     dist += sample_noise_3d(v_world_pos) * burnMult;
 
-    // Cut everything inside radius
-    float cut = step(dist, radius); // 1 inside, 0 outside
+    
+    float cut = step(dist, radius); 
 
-    // Visible burn edge OUTSIDE the cut: 1 at the rim, fades to 0
+    
     float edge = 1.0 - smoothstep(radius, radius + borderWidth, dist);
-    edge *= (1.0 - cut); // keep only outside
+    edge *= (1.0 - cut); 
 
-    // Optional quantization
+    
     float q = floor(edge * blend_steps) / blend_steps;
 
-    // Sample curve safely (y=0.5)
+    
     vec3 curve_rgb = texture(colorCurve, vec2(q, 0.5)).rgb;
 
-    // Mix curve color on the edge
+    
     float mix_amt = pow(edge, 0.4);
     ALBEDO = mix(base.rgb, curve_rgb, mix_amt);
 
-    // Transparency: only the inside is gone
+    
     ALPHA = base.a * (1.0 - cut);
 }

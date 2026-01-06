@@ -23,7 +23,7 @@ func _ready():
 	else:
 		print("ERROR: UI Scene failed to load. Check the file path.")
 
-	# Setup Area detection
+	
 	var area = $Area3D 
 	if area:
 		area.body_entered.connect(_on_body_entered)

@@ -1,19 +1,19 @@
 extends GridMap
 
-# --- Settings ---
+
 @export var floor_tile_name: String = "Cube2"
 @export var column_tile_name: String = "Cube4"
 @export var torch_scene: PackedScene
 
-# --- GATE SETTINGS ---
+
 @export var gate_scene: PackedScene 
 @export var gate_scale_mult: Vector3 = Vector3(0.007, 0.007, 0.007) 
 @export var gate_y_offset: float = -0.7 
 
-# --- BOX SETTINGS ---
+
 @export var box_scene: PackedScene 
 
-# --- DIMENSIONS ---
+
 @export var level_length: int = 28   
 @export var level_width: int = 5
 @export var torch_interval: int = 6  
@@ -22,7 +22,7 @@ extends GridMap
 var floor_id: int = -1
 var column_id: int = -1
 
-# --- COUNTERS ---
+
 var total_torches: int = 0
 var lit_torches_count: int = 0
 
@@ -46,19 +46,19 @@ func generate_level() -> void:
 	total_torches = 0
 	lit_torches_count = 0
 	
-	# 0. Backfill
+	
 	for x in range(-5, 0):
 		for z in range(level_width):
 			set_cell_item(Vector3i(x, height_y - 1, z), floor_id)
 
-	# 1. Start Gate (0.0 rotation)
+	
 	spawn_gate(0, 2, 0.0, "Generated_StartGate") 
 
-	# 2. Boxes (Spawning at x=3 and x=4, center z=2)
+	
 	for i in range(2):
 		spawn_floating_box(3 + i)
 
-	# 3. Main Level
+	
 	for x in range(level_length):
 		for z in range(level_width):
 			set_cell_item(Vector3i(x, height_y - 1, z), floor_id)
@@ -68,12 +68,12 @@ func generate_level() -> void:
 			build_pillar(x, pillar_height, 1) 
 			spawn_torch(x, pillar_height, 1)
 
-	# 4. End Wall
+	
 	build_end_wall()
 	
 	print("Level Ready. Torches to light: ", total_torches)
 
-# --- TORCH LOGIC ---
+
 
 func spawn_torch(x: int, pillar_height: int, z: int):
 	if torch_scene == null: return
@@ -99,12 +99,12 @@ func _on_torch_lit():
 	
 	if lit_torches_count >= total_torches:
 		print("ALL TORCHES LIT! OPENING GATE!")
-		# We call call_deferred to ensure this runs safely on the main thread
+		
 		call_deferred("open_exit_gate")
 
 func open_exit_gate():
-	# 1. CLEAR THE AREA AGGRESSIVELY
-	# We clear from (level_length - 1) to (level_length + 3) to make a big opening
+	
+	
 	var start_clear = level_length - 1
 	var end_clear = level_length + 3
 	
@@ -113,17 +113,17 @@ func open_exit_gate():
 	for x in range(start_clear, end_clear):
 		for y in range(height_y - 1, height_y + 10):
 			for z in range(-1, level_width + 1):
-				# Don't delete the floor under the gate!
+				
 				if y == height_y - 1 and x == (level_length - 1):
 					continue 
-				set_cell_item(Vector3i(x, y, z), -1) # Delete block
+				set_cell_item(Vector3i(x, y, z), -1) 
 
-	# 2. SPAWN GATE
-	# Spawns at level_length - 1 (The last valid floor tile)
-	# Rotation 0.0 (Matches your start gate) or -90.0 if sideways
+	
+	
+	
 	spawn_gate(level_length - 1, 2, 0.0, "Generated_EndGate")
 
-# --- SPAWNERS ---
+
 
 func spawn_gate(x: int, z: int, rotation_deg: float, gate_name: String):
 	if gate_scene == null: 
@@ -141,12 +141,12 @@ func spawn_gate(x: int, z: int, rotation_deg: float, gate_name: String):
 	g.position = world_pos
 	g.rotation_degrees.y = rotation_deg
 	
-	# HARDCODED TARGET SCENE
+	
 	var manual_scene = load("res://LevelSelect.tscn")
 	if manual_scene:
 		g.target_scene = manual_scene
 	
-	# SCALING FIX
+	
 	for child in g.get_children():
 		if child is Node3D:
 			child.scale = gate_scale_mult

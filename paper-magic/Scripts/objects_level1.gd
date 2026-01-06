@@ -6,25 +6,25 @@ extends Node3D
 
 @export var spike_scene: PackedScene
 
-# --- boxes BEFORE wall ---
+
 @export var boxes_count: int = 3
 @export var boxes_gap_cells: int = 2
 @export var boxes_y_offset: int = 1
 
-# --- spikes AFTER wall ---
+
 @export var spike_after_wall_x_offset: int = 4
 @export var spike_depth_cells: int = 5
 @export var spikes_y_offset: int = 6
 @export var spike_world_y_offset: float = -0.4
-# --- remove GridMap blocks to create a pit (Mario hole) ---
+
 @export var make_spike_pit: bool = true
 @export var pit_clear_from_y: int = -5
 
-# --- respawn BEHIND spikes (before them) ---
+
 @export var respawn_before_spikes_cells: int = 2
 @export var respawn_y_offset: int = 1
 
-# --- wood tile BEFORE spikes ---
+
 @export var wood_tile_scene: PackedScene
 @export var wood_before_spikes_cells: int = 1
 @export var wood_y_offset: int = 1
@@ -35,10 +35,10 @@ extends Node3D
 @export var wood_scale_mult: Vector3 = Vector3(5.0, 5.0, 5.0)
 @export var spike_scale_mult: Vector3 = Vector3(1.1, 1.1, 1.1)
 
-# (kept from your script)
+
 @export var wood_world_scale: Vector3 = Vector3(10.5, 20.0, 30.5)
 
-# --- gate AFTER spikes ---
+
 @export var gate_scene: PackedScene
 @export var gate_after_spikes_x_offset: int = 2
 @export var gate_y_offset: int = -0.7
@@ -96,27 +96,27 @@ func _ready() -> void:
 	var low_floor_y: int = base_y
 	var high_floor_y: int = base_y + high_h
 
-	# 0) START GATE (New request)
+	
 	if gate_scene != null:
-		var start_gate_x := 0 # Hardcoded X position as requested
-		# Use 'base_y' (low floor) so it sits on the starting ground level
+		var start_gate_x := 0 
+		
 		var start_gate_cell := Vector3i(start_gate_x, base_y + gate_y_offset, mid_z)
 		var start_gate_pos := grid.to_global(grid.map_to_local(start_gate_cell))
 		
-		# Apply generic offsets
+		
 		start_gate_pos += gate_world_offset
 		
 		var sg = spawn_gate(start_gate_pos)
 		sg.name = "StartGate"
 
-	# 1) BOXES
+	
 	for i in range(boxes_count):
 		var x := start_x - 1 - i * boxes_gap_cells
 		var cell := Vector3i(x, low_floor_y + boxes_y_offset, mid_z)
 		var world_pos := grid.to_global(grid.map_to_local(cell))
 		spawn_box(world_pos)
 
-	# 2) RESPAWN
+	
 	var spike_x := start_x + spike_after_wall_x_offset
 	var respawn_x := spike_x - respawn_before_spikes_cells
 
@@ -127,7 +127,7 @@ func _ready() -> void:
 	var respawn_cell := Vector3i(respawn_x, high_floor_y + respawn_y_offset, mid_z)
 	respawn_marker.global_position = grid.to_global(grid.map_to_local(respawn_cell))
 
-	# 3) WOOD TILE(S)
+	
 	if wood_tile_scene != null:
 		var wood_x := spike_x - wood_before_spikes_cells
 		var wood_cell := Vector3i(wood_x, high_floor_y + wood_y_offset, mid_z)
@@ -142,17 +142,17 @@ func _ready() -> void:
 			var wood := spawn_wood_tile(pos)
 			wood.name = "WoodTile_%d" % i
 
-			# scale EVERYTHING under StaticBody3D2 (mesh + collision + aura)
+			
 			scale_wood_tile_everything(wood, wood_scale_mult)
 
-			# (optional) ensure it can be selected
+			
 			var body := wood.get_node_or_null("StaticBody3D2") as Node3D
 			if body and not body.is_in_group("wand_target"):
 				body.add_to_group("wand_target")
 	else:
 		push_warning("[Spawner] Assign wood_tile_scene in the Inspector.")
 
-	# 4) SPIKES + PIT
+	
 	for dx in range(spike_depth_cells):
 		var x2 := spike_x + dx
 		for zi in range(size_z):
@@ -168,7 +168,7 @@ func _ready() -> void:
 			pos.y += spike_world_y_offset
 			spawn_spike(pos)
 
-	# 5) GATE WITH PORTAL (after spikes)
+	
 	if gate_scene != null:
 		var gate_x := spike_x + spike_depth_cells + gate_after_spikes_x_offset
 		var gate_cell := Vector3i(gate_x, high_floor_y + gate_y_offset, mid_z)
@@ -189,7 +189,7 @@ func spawn_spike(world_pos: Vector3) -> Node3D:
 	viewport.add_child(s)
 	s.global_position = world_pos
 
-	# scale the whole spike scene
+	
 	s.scale *= spike_scale_mult
 
 	var kill := s.find_child("KillArea", true, false)
@@ -212,9 +212,9 @@ func spawn_gate(world_pos: Vector3) -> Node3D:
 	g.global_position = world_pos
 	g.rotation.y = deg_to_rad(gate_rotation_y_degrees)
 	
-	# --- HARDCODED LOAD ---
-	# We force the script to load the file directly by name.
-	# MAKE SURE THE PATH MATCHES YOUR FILE EXACTLY!
+	
+	
+	
 	var manual_scene = load("res://LevelSelect.tscn")
 	
 	if manual_scene:
@@ -222,9 +222,9 @@ func spawn_gate(world_pos: Vector3) -> Node3D:
 		g.target_scene = manual_scene
 	else:
 		print("[Spawner] CRITICAL ERROR: Could not find 'res://LevelSelect.tscn'. Check spelling!")
-	# ----------------------
+	
 
-	# ... existing scaling code ...
+	
 	for child in g.get_children():
 		if child is Node3D:
 			child.scale = gate_scale_mult
@@ -237,17 +237,17 @@ func scale_wood_tile_everything(wood_root: Node3D, scale_mult: Vector3) -> void:
 	if body == null:
 		body = wood_root
 
-	# scale visual mesh
+	
 	var mesh := _find_first_mesh(body)
 	if mesh:
 		mesh.scale *= scale_mult
 
-	# scale collision
+	
 	var cs := _find_first_collision_shape(body)
 	if cs:
 		cs.scale *= scale_mult
 
-	# scale aura too
+	
 	var aura := body.get_node_or_null("SelectionAura") as Node3D
 	if aura:
 		aura.top_level = false

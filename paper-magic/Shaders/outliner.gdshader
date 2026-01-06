@@ -57,7 +57,7 @@ void fragment() {
 		vec3 n = texture(normal_texture, uvs[i]).xyz * 2.0 - 1.0;
 		vec3 normal_diff = normal - n;
 		
-		// Edge pixels should yield to the normal closest to the bias direction
+		
 		float normal_bias_diff = dot(normal_diff, normal_edge_bias);
 		float normal_indicator = smoothstep(-0.01, 0.01, normal_bias_diff);
 		
@@ -65,8 +65,8 @@ void fragment() {
 	}
 	float depth_edge = step(depth_threshold, depth_diff);
 	
-	// The reverse depth sum produces depth lines inside of the object, but they don't look as nice as the normal depth_diff
-	// Instead, we can use this value to mask the normal edge along the outside of the object
+	
+	
 	float reverse_depth_edge = step(reverse_depth_threshold, depth_diff_reversed); 
 	
 	float indicator = sqrt(normal_sum);

@@ -14,7 +14,7 @@ extends GridMap
 
 var dirt_tile_id: int = 0
 
-# -------------------- CRYSTAL SPAWNING --------------------
+
 @export_group("Crystal Spawning")
 @export var crystal_scene: PackedScene
 @export var crystal_group_name: String = "beam_prism"
@@ -49,7 +49,7 @@ var crystal_pattern: String = "ZigZag"
 @export_group("Crystal Transform")
 @export var crystal_rotation_degrees: Vector3 = Vector3.ZERO
 @export var crystal_scale: Vector3 = Vector3.ONE
-# ----------------------------------------------------------
+
 
 @export_group("Beam Emitter Block")
 @export var beam_block_enabled: bool = false
@@ -173,7 +173,7 @@ func _make_zigzag_cells() -> Array[Vector3i]:
 	for i in range(max(zig_count, 0)):
 		var x: int = base.x + i * zig_step_x
 
-		# flip left/right
+		
 		var bucket: int = i / every
 		var flip: bool = (bucket % 2) == 0
 
@@ -196,7 +196,7 @@ func _make_waypoint_cells() -> Array[Vector3i]:
 		var dx: int = b.x - a.x
 		var dz: int = b.z - a.z
 
-		# Only orthogonal segments
+		
 		if dx != 0 and dz != 0:
 			push_warning("Waypoints segment %d->%d is diagonal. Use X-only or Z-only." % [i, i + 1])
 			continue

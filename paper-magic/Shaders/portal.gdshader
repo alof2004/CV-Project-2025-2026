@@ -1,13 +1,13 @@
 shader_type spatial;
 render_mode blend_mix, depth_prepass_alpha, cull_disabled, unshaded, specular_disabled;
 
-uniform float size : hint_range(0.0, 0.5) = 0.5;         // outer radius
-uniform float size_inner : hint_range(0.01, 0.5) = 0.2;  // border thickness
+uniform float size : hint_range(0.0, 0.5) = 0.5;         
+uniform float size_inner : hint_range(0.01, 0.5) = 0.2;  
 
-// Must be a noise texture assigned in the material inspector.
+
 uniform sampler2D noise : repeat_enable, filter_linear;
 
-// Controls for the “smoke” wobble
+
 uniform float noise_scale : hint_range(0.1, 20.0) = 3.0;
 uniform float noise_speed : hint_range(0.0, 5.0) = 0.6;
 uniform float noise_warp  : hint_range(0.0, 0.5) = 0.12;

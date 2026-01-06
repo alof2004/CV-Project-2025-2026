@@ -1,11 +1,11 @@
 extends CharacterBody3D
 
-# --- New Variables for Magic ---
+
 @export var fireball_scene: PackedScene 
 const MAGIC_ANIM := "magic controlling"
 const MAGIC_ANIM_SPEED := 3.0 
 var is_casting: bool = false
-# -------------------------------
+
 
 const SPEED := 4.0
 const JUMP_FORCE := 5.0
@@ -22,11 +22,11 @@ const FALL_ANIM := ""
 const JUMP_ANIM_SPEED := 1.3
 const BLEND_TIME := 0.15
 
-# ---------------- Burn / Respawn ----------------
+
 @export var burn_out_time := 1.2
 @export var burn_in_time := 1.2
-@export var kill_radius := 2.0 # world units; increase if model doesn't fully disappear
-@export var burn_center_offset := Vector3(0.0, 0.5, 0.0) # where burn starts relative to player pos
+@export var kill_radius := 2.0 
+@export var burn_center_offset := Vector3(0.0, 0.5, 0.0) 
 
 @onready var anim: AnimationPlayer = $"wizard/AnimationPlayer"
 @onready var wizard_root: Node = $"wizard"
@@ -64,11 +64,11 @@ func _ready() -> void:
 	burn_mats.clear()
 	_apply_burn_to_all_meshes(wizard_root)
 
-	# Start visible
+	
 	for m in burn_mats:
 		m.set_shader_parameter("radius", 0.0)
 
-	# Optional debug
+	
 	print("[Wizard] burn_mats:", burn_mats.size())
 
 
@@ -94,7 +94,7 @@ func _physics_process(delta: float) -> void:
 		cast_spell()
 		return
 
-	# --- STANDARD MOVEMENT ---
+	
 	if Input.is_action_pressed("move_left"):
 		input_dir.x -= 1.0
 	if Input.is_action_pressed("move_right"):
@@ -161,23 +161,23 @@ func cast_spell():
 	is_casting = true
 	_play(MAGIC_ANIM, 0.1) 
 	
-	# 1. WAIT FOR SPAWN
+	
 	await get_tree().create_timer(0.3).timeout
 	spawn_fireball()
 
-	# 2. WAIT FOR ANIMATION CUT (1.7s mark)
+	
 	var total_real_time = 1.7 / MAGIC_ANIM_SPEED
 	var remaining_wait = total_real_time - 0.3
 	
 	if remaining_wait > 0:
 		await get_tree().create_timer(remaining_wait).timeout
 
-	# 3. SLOW RETURN TO IDLE
+	
 	is_casting = false
 	
-	# I changed 0.15 (BLEND_TIME) to 0.5 here.
-	# This means it takes half a second to smooth back to idle.
-	# Increase this number (e.g. to 0.8 or 1.0) if you want it even slower.
+	
+	
+	
 	_play(IDLE_ANIM, 0.5)
 
 func spawn_fireball():
@@ -185,12 +185,12 @@ func spawn_fireball():
 		var fireball = fireball_scene.instantiate()
 		get_parent().add_child(fireball)
 		
-		# --- YOUR EXACT COORDINATES ---
+		
 		fireball.global_transform = global_transform
 		fireball.global_position.y -= 0.5 
 		fireball.translate_object_local(Vector3(0, 0, 0.8))
 
-# Called by your KillArea
+
 func die_and_respawn(respawn_pos: Vector3) -> void:
 	if dead:
 		return
@@ -199,13 +199,13 @@ func die_and_respawn(respawn_pos: Vector3) -> void:
 	velocity = Vector3.ZERO
 	anim.stop()
 
-	# prevent re-trigger while burning / spawning
+	
 	collision_layer = 0
 	collision_mask = 0
 
 	_set_burn_center(global_position + burn_center_offset)
 
-	# Burn OUT: radius 0 -> kill_radius
+	
 	for m in burn_mats:
 		m.set_shader_parameter("radius", 0.0)
 
@@ -225,7 +225,7 @@ func _respawn_now(respawn_pos: Vector3) -> void:
 
 	_set_burn_center(respawn_pos + burn_center_offset)
 
-	# Burn IN (reverse): start fully cut, then kill_radius -> 0
+	
 	for m in burn_mats:
 		m.set_shader_parameter("radius", kill_radius)
 
@@ -244,7 +244,7 @@ func _respawn_now(respawn_pos: Vector3) -> void:
 
 
 func _set_burn_center(center: Vector3) -> void:
-	# Requires your shader to have: uniform vec3 burn_center;
+	
 	for m in burn_mats:
 		m.set_shader_parameter("burn_center", center)
 
@@ -262,17 +262,17 @@ func _apply_burn_to_all_meshes(node: Node) -> void:
 
 	var surface_count := mi.mesh.get_surface_count()
 	for s in range(surface_count):
-		# Copy template so every mesh (including wand) uses the same burn setup
+		
 		var sm := _burn_template.duplicate(true) as ShaderMaterial
 
-		# If this surface has its own albedo texture, prefer it
+		
 		var base_mat := mi.get_active_material(s)
 		if base_mat is BaseMaterial3D:
 			var albedo := (base_mat as BaseMaterial3D).get_texture(BaseMaterial3D.TEXTURE_ALBEDO)
 			if albedo != null:
 				sm.set_shader_parameter("albedo_texture", albedo)
 
-		# Defaults
+		
 		sm.set_shader_parameter("radius", 0.0)
 
 		mi.set_surface_override_material(s, sm)

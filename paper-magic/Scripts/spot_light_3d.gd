@@ -8,7 +8,7 @@ extends SpotLight3D
 @export var show_collision_threshold: float = 0.4
 
 var targets: Array[Node3D] = []
-var reveal_values: Array[float] = []  # same index as targets
+var reveal_values: Array[float] = []  
 
 func _ready() -> void:
 	targets.clear()
@@ -28,7 +28,7 @@ func _physics_process(dt: float) -> void:
 	var range: float = spot_range
 
 	var outer_cos: float = cos(spot_angle + deg_to_rad(margin_deg))
-	var inner_cos: float = cos(spot_angle * 0.7) # inner cone
+	var inner_cos: float = cos(spot_angle * 0.7) 
 
 	for i in range(targets.size()):
 		var t: Node3D = targets[i]
@@ -43,10 +43,10 @@ func _physics_process(dt: float) -> void:
 		if d > 0.001 and d <= range:
 			var dotv: float = dir.dot(v / d)
 
-			# cone falloff: 0 at edge -> 1 near center
+			
 			var cone_att: float = smoothstep(outer_cos, inner_cos, dotv)
 
-			# distance falloff: 1 near lamp -> 0 at range
+			
 			var dist_att: float = clamp(1.0 - (d / range), 0.0, 1.0)
 
 			target = cone_att * dist_att
@@ -63,7 +63,7 @@ func _apply_alpha(root: Node, a: float) -> void:
 	for child in root.find_children("*", "MeshInstance3D", true, false):
 		var mi := child as MeshInstance3D
 
-		# material override
+		
 		var mat := mi.material_override
 		if mat is StandardMaterial3D:
 			var sm := mat as StandardMaterial3D
@@ -71,7 +71,7 @@ func _apply_alpha(root: Node, a: float) -> void:
 			c.a = a
 			sm.albedo_color = c
 
-		# surface materials
+		
 		if mi.mesh != null:
 			var sc: int = mi.mesh.get_surface_count()
 			for s in range(sc):

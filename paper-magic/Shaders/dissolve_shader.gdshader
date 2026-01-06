@@ -5,11 +5,11 @@ uniform sampler2D screen_texture : hint_screen_texture, repeat_disable;
 
 uniform float progress : hint_range(0.0, 1.0) = 0.0;
 
-// Melt controls
-uniform float meltiness : hint_range(0.0, 0.5) = 0.15;   // amount of random column offset (UV units)
-uniform float top_bias  : hint_range(0.5, 8.0) = 2.5;    // stronger effect near the top
 
-// Fade controls
+uniform float meltiness : hint_range(0.0, 0.5) = 0.15;   
+uniform float top_bias  : hint_range(0.5, 8.0) = 2.5;    
+
+
 uniform float fade_start : hint_range(0.0, 1.0) = 0.2;
 uniform float fade_end   : hint_range(0.0, 1.0) = 0.5;
 uniform float fade_power : hint_range(0.2, 4.0) = 1.5;

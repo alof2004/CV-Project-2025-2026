@@ -2,7 +2,7 @@ shader_type spatial;
 render_mode blend_mix, cull_back, ambient_light_disabled;
 
 uniform vec3 lamp_pos = vec3(0.0);
-uniform vec3 lamp_dir = vec3(0.0, -1.0, 0.0); // world direction
+uniform vec3 lamp_dir = vec3(0.0, -1.0, 0.0); 
 uniform float lamp_range = 20.0;
 
 uniform float inner_angle_deg = 10.0;
@@ -23,7 +23,7 @@ void fragment() {
 	if (d > lamp_range) discard;
 
 	vec3 L = normalize(to_p);
-	float cone = dot(normalize(lamp_dir), L); // 1 = center of cone
+	float cone = dot(normalize(lamp_dir), L); 
 
 	float ci = cos(radians(inner_angle_deg));
 	float co = cos(radians(outer_angle_deg));

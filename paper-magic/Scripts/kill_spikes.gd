@@ -21,7 +21,7 @@ func _on_body_entered(body: Node) -> void:
 	if busy:
 		return
 
-	# body might be a child collider; find the actual player Node3D
+	
 	var p: Node3D = null
 	if body is Node3D and (body as Node3D).is_in_group("player"):
 		p = body as Node3D

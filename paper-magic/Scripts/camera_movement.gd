@@ -45,7 +45,7 @@ func _ready() -> void:
 	current = true
 	is_side = true
 	
-	# Start in 2D mode
+	
 	if player.has_method("set_2d_mode"):
 		player.set_2d_mode(true)
 
@@ -110,15 +110,15 @@ func _process(delta: float) -> void:
 		tmp = tmp.looking_at(p + Vector3(0.0, 1.5, 0.0), Vector3.UP)
 		target_rot = tmp.basis.get_euler()
 
-	# --- Apply Smoothing ---
+	
 	global_position = global_position.lerp(target_pos, follow_speed * delta)
 	rotation = rotation.lerp(target_rot, rotation_speed * delta)
 
-	# --- Apply FOV Smoothing ---
+	
 	var target_fov: float = fov_2d if is_side else fov_3d
 	fov = lerp(fov, target_fov, rotation_speed * delta)
 
-	# --- Apply Projection ---
+	
 	var use_orthographic := is_ortho_2d if is_side else is_ortho_3d
 	var target_projection := Camera3D.PROJECTION_ORTHOGONAL if use_orthographic else Camera3D.PROJECTION_PERSPECTIVE
 	if projection != target_projection:
@@ -130,7 +130,7 @@ func check_wall_collision(from_pos: Vector3, to_pos: Vector3) -> bool:
 	var space_state = get_world_3d().direct_space_state
 	var query = PhysicsRayQueryParameters3D.create(from_pos, to_pos)
 	
-	#exclude the player
+	
 	query.exclude = [player.get_rid()]
 	query.collision_mask = collision_mask 
 	
