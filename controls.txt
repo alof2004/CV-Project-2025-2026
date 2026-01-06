@@ -1,0 +1,21 @@
+Controls (from input map)
+move_left: A
+move_right: D
+jump: Space
+move_north: W
+move_south: S
+change_camera: M
+wand_grab: Right Mouse Button
+wand_rotate_l: Q
+wand_rotate_r: E
+wand_scale_up: R
+wand_scale_dn: F
+move_object_left: Left Arrow
+move_object_right: Right Arrow
+move_object_up: Up Arrow
+move_object_down: Down Arrow
+move_object_y_up: Page Up 
+move_object_y_down: Page Down
+fireball: C
+Interact: G
+change_perspective: O
