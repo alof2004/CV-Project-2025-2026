@@ -1,0 +1,6 @@
+Added Level 5 (covered in video report)
+Fixed camera bugs
+Fixed wand control bugs where if an object was under another it would be possible to move the hidden object
+Added gravity effect in Level 4 to the player_node
+Repository cleaned and restructured
+Added controls.txt file with input mappings
