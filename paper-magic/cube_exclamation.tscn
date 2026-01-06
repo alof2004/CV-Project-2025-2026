@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://b01etx6f3jblf"]
+
+[ext_resource type="PackedScene" uid="uid://oda3u1mynhps" path="res://Assets/Cube Exclamation.glb" id="1_ohjn5"]
+[ext_resource type="Script" path="res://Scripts/cube_exclamation_gate.gd" id="2_cube_gate"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cube_gate"]
+size = Vector3(1.6, 1.6, 1.6)
+
+[node name="Root Scene" instance=ExtResource("1_ohjn5")]
+script = ExtResource("2_cube_gate")
+
+[node name="BeamHitBody" type="StaticBody3D" parent="."]
+collision_layer = 1
+collision_mask = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="BeamHitBody"]
+shape = SubResource("BoxShape3D_cube_gate")
+
+[node name="GateSpawn" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 3)

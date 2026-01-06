@@ -21,8 +21,7 @@ const float sobel_y[9] = float[](
 );
 
 void fragment() {
-	vec2 texel = TEXTURE_PIXEL_SIZE; // size of the TextureRect’s UV step DOES NOT work with source_tex
-	// so compute texel from texture size:
+	vec2 texel = TEXTURE_PIXEL_SIZE; 
 	vec2 ts = vec2(textureSize(source_tex, 0));
 	texel = 1.0 / ts;
 

@@ -17,6 +17,7 @@ extends Node3D
 @export var islands_y_offset: float = 2.0
 @export var islands_x_pull: float = 1.2
 @export var islands_scale_mul: float = 1.25
+@export var islands_x_spacing_mul: float = 1.6
 
 # --- Finish trigger tuning ---
 @export var finish_area_size: Vector3 = Vector3(2.5, 3.0, 2.5) # box size around last island
@@ -93,9 +94,7 @@ func _spawn_islands() -> void:
 		# no tilt
 		isl.global_rotation = Vector3.ZERO
 
-		var p: Vector3 = data["pos"]
-		p.y -= islands_y_offset
-		p.x -= islands_x_pull
+		var p: Vector3 = _apply_island_offsets(data["pos"])
 		isl.global_position = p
 
 		var base_scale: Vector3 = data.get("scale", Vector3.ONE)
@@ -109,9 +108,7 @@ func _create_finish_area_on_last_island() -> void:
 
 	# Use last island final position (after offsets)
 	var last_data = islands[islands.size() - 1]
-	var p: Vector3 = last_data["pos"]
-	p.y -= islands_y_offset
-	p.x -= islands_x_pull
+	var p: Vector3 = _apply_island_offsets(last_data["pos"])
 
 	_finish_area = Area3D.new()
 	_finish_area.name = "FinishArea"
@@ -185,10 +182,20 @@ func _compute_gate_position() -> Vector3:
 
 	# Fallback: after last island
 	var last_data = islands[islands.size() - 1]
-	var p: Vector3 = last_data["pos"]
-	p.y -= islands_y_offset
-	p.x -= islands_x_pull
+	var p: Vector3 = _apply_island_offsets(last_data["pos"])
 	return p + Vector3(4, 1, 0)
+
+func _apply_island_offsets(pos: Vector3) -> Vector3:
+	var p := pos
+	p.y -= islands_y_offset
+
+	var base_x: float = 0.0
+	if not islands.is_empty():
+		base_x = islands[0]["pos"].x
+
+	var rel_x := pos.x - base_x
+	p.x = (base_x + rel_x * islands_x_spacing_mul) - islands_x_pull
+	return p
 
 func _node_has_property(n: Object, prop_name: String) -> bool:
 	for p in n.get_property_list():

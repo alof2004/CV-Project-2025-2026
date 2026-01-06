@@ -68,7 +68,7 @@ extends Node3D
 
 const TARGET_GROUP := "wand_target"
 const AURA_NAME := "SelectionAura"
-const ROTATE_STEP := PI * 0.5
+const ROTATE_STEP := PI * 0.25
 
 const HORIZ_EPS := 0.02
 const DOWN_SOLVE_STEPS := 10
@@ -83,6 +83,9 @@ var grabbed: Node3D = null
 var aura_tweens: Dictionary = {}             # MeshInstance3D -> Tween
 var aura_base_energy: Dictionary = {}        # MeshInstance3D -> float
 var rotate_tween: Tween = null
+var rotate_target: Vector3 = Vector3.ZERO
+var rotate_target_valid: bool = false
+var rotate_target_owner: Node3D = null
 
 # Relative scaling state
 var grabbed_scale_factor: float = 1.0
@@ -365,6 +368,8 @@ func _get_aura_material(aura: MeshInstance3D) -> StandardMaterial3D:
 	sm.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	sm.alpha_scissor_threshold = 0.0
 	sm.depth_draw_mode = BaseMaterial3D.DEPTH_DRAW_DISABLED
+	sm.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	sm.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
 	sm.render_priority = 1
 
 	if not aura_base_energy.has(aura):
@@ -461,12 +466,20 @@ func _start_rotation_tween(dir: int) -> void:
 		rotate_tween.kill()
 		rotate_tween = null
 
-	var target_rot := grabbed.rotation_degrees
-	target_rot.y += rad_to_deg(ROTATE_STEP) * dir
+	var current_rot := grabbed.rotation_degrees
+	if not rotate_target_valid or rotate_target_owner != grabbed:
+		rotate_target = current_rot
+		rotate_target_owner = grabbed
+		rotate_target_valid = true
+	else:
+		rotate_target.x = current_rot.x
+		rotate_target.z = current_rot.z
+
+	rotate_target.y += rad_to_deg(ROTATE_STEP) * dir
 
 	rotate_tween = get_tree().create_tween()
 	rotate_tween.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-	rotate_tween.tween_property(grabbed, "rotation_degrees", target_rot, rotate_anim_time)
+	rotate_tween.tween_property(grabbed, "rotation_degrees", rotate_target, rotate_anim_time)
 
 
 # ====================================================================
@@ -513,6 +526,8 @@ func _force_deselect() -> void:
 
 	grabbed_is_rb = false
 	grabbed = null
+	rotate_target_valid = false
+	rotate_target_owner = null
 	_update_magic_beam(null)
 
 
@@ -632,6 +647,9 @@ func _toggle_select() -> void:
 			_force_deselect()
 
 		grabbed = hovered
+		rotate_target = grabbed.rotation_degrees
+		rotate_target_owner = grabbed
+		rotate_target_valid = true
 
 		# If it's a RigidBody3D, freeze so physics doesn't fight you
 		grabbed_is_rb = false
@@ -726,6 +744,8 @@ func _set_aura_visible(target: Node3D, visible: bool) -> void:
 # ====================================================================
 func _update_move(delta: float) -> void:
 	if grabbed == null:
+		return
+	if grabbed.is_in_group("rot_only"):
 		return
 
 	var is_2d_mode := false

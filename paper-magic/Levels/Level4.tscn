@@ -2,20 +2,20 @@
 
 [ext_resource type="Script" uid="uid://dtfofqwlgace1" path="res://Scripts/level3_objects.gd" id="1_fmter"]
 [ext_resource type="PackedScene" uid="uid://cu13py3mjk8m1" path="res://Scenes/large_island.tscn" id="2_ru0sm"]
-[ext_resource type="PackedScene" uid="uid://5dkf6x7sqao6" path="res://Scenes/gate.tscn" id="3_f6a1p"]
-[ext_resource type="PackedScene" uid="uid://cbxwsd5rrggev" path="res://Scenes/LevelSelect.tscn" id="4_8ps5c"]
-[ext_resource type="Shader" uid="uid://bg8c1uykvkc8x" path="res://Shaders/large_island.gdshader" id="5_ght27"]
+[ext_resource type="PackedScene" uid="uid://5dkf6x7sqao6" path="res://Scenes/gate.tscn" id="3_nojkj"]
+[ext_resource type="PackedScene" uid="uid://cbxwsd5rrggev" path="res://Scenes/LevelSelect.tscn" id="4_fmter"]
+[ext_resource type="Shader" uid="uid://bg8c1uykvkc8x" path="res://Shaders/large_island.gdshader" id="5_fmter"]
 [ext_resource type="Script" uid="uid://bat3srnpdiw03" path="res://Scripts/parallax_background.gd" id="6_xiiss"]
 [ext_resource type="Texture2D" uid="uid://c1igsq54onmcg" path="res://Assets/moon/moon_sky.png" id="7_e7dnr"]
 [ext_resource type="Texture2D" uid="uid://00yu41qe2uwc" path="res://Assets/moon/moon_earth.png" id="8_33m2c"]
 [ext_resource type="Texture2D" uid="uid://dkobgnn5jsixo" path="res://Assets/moon/moon_back.png" id="9_tbx1f"]
 [ext_resource type="Texture2D" uid="uid://bm0oyi0pbta75" path="res://Assets/moon/moon_mid.png" id="10_u0nmc"]
 [ext_resource type="Texture2D" uid="uid://c3rxyjuf44iw1" path="res://Assets/moon/moon_front.png" id="11_sogum"]
+[ext_resource type="Environment" uid="uid://biyofk878tcm8" path="res://Environment/environment_level3.tres" id="12_3k6h0"]
 [ext_resource type="MeshLibrary" uid="uid://d2u2045t6cgcx" path="res://cubes_mesh_lib9.tres" id="12_ltxmk"]
 [ext_resource type="Script" uid="uid://bm17kkq57g2lu" path="res://Scripts/floor_level3.gd" id="13_stmdf"]
 [ext_resource type="PackedScene" uid="uid://bwveaoetdbncr" path="res://Scenes/magician.tscn" id="14_o5qk7"]
 [ext_resource type="PackedScene" uid="uid://5sf1605d56kp" path="res://Scenes/Fireball.tscn" id="15_byy5k"]
-[ext_resource type="Environment" uid="uid://biyofk878tcm8" path="res://Environment/environment_level3.tres" id="16_sfwot"]
 [ext_resource type="Script" uid="uid://d0fmx80seh18a" path="res://Scripts/camera_movement.gd" id="17_n57ws"]
 [ext_resource type="Shader" uid="uid://n1eam1wn670j" path="res://Shaders/outliner.gdshader" id="18_0pfuf"]
 [ext_resource type="PackedScene" uid="uid://d3o3tp5m42f1m" path="res://Scenes/lamp.tscn" id="19_th0kt"]
@@ -57,12 +57,12 @@ shader_parameter/edge_smooth = 0.05
 [node name="Level3" type="Node3D" node_paths=PackedStringArray("lamp_node")]
 script = ExtResource("1_fmter")
 island_scene = ExtResource("2_ru0sm")
-gate_scene = ExtResource("3_f6a1p")
-portal_target_scene = ExtResource("4_8ps5c")
+gate_scene = ExtResource("3_nojkj")
+portal_target_scene = ExtResource("4_fmter")
 grid_path = NodePath("SubViewportContainer/SubViewport/GridMap")
 subviewport_path = NodePath("SubViewportContainer/SubViewport")
 lamp_node = NodePath("SubViewportContainer/SubViewport/LightBulb")
-reveal_shader = ExtResource("5_ght27")
+reveal_shader = ExtResource("5_fmter")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -147,7 +147,7 @@ fireball_scene = ExtResource("15_byy5k")
 
 [node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport"]
 transform = Transform3D(-0.13571565, 0, 0.99074787, 0, 1, 0, -0.99074787, 0, -0.13571565, 8.038721, 1.6311646, 3.5629895)
-environment = ExtResource("16_sfwot")
+environment = ExtResource("12_3k6h0")
 far = 56.0
 script = ExtResource("17_n57ws")
 player_path = NodePath("../CharacterBody3D")
@@ -176,7 +176,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.192, 4.625)
 
 [node name="Large Island" parent="SubViewportContainer/SubViewport" instance=ExtResource("2_ru0sm")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.464, 0, -0.151)
-visible = false
 
 [node name="RespawnPoint" type="Node3D" parent="SubViewportContainer/SubViewport"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.7555246, 0, 0)

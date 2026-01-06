@@ -8,9 +8,9 @@ var is_casting: bool = false
 # -------------------------------
 
 const SPEED := 4.0
-const JUMP_FORCE := 5.0          
-const RUN_JUMP_FORCE := 6.0      
-const GRAVITY := 15.0
+const JUMP_FORCE := 5.0
+const RUN_JUMP_FORCE := 6.0
+@export var gravity := 15.0
 const ROTATION_SPEED := 10.0
 
 const IDLE_ANIM := "idle"
@@ -49,8 +49,10 @@ func _ready() -> void:
 	_saved_collision_layer = collision_layer
 	_saved_collision_mask = collision_mask
 
-	# Use the ShaderMaterial you configured in the Inspector as the template:
-	# Main_Mesh -> Surface Material Override -> 0
+	var current_scene := get_tree().current_scene
+	if current_scene != null and current_scene.scene_file_path.ends_with("Levels/Level4.tscn"):
+		gravity = 5
+
 	_burn_template = main_mesh.get_surface_override_material(0) as ShaderMaterial
 	if _burn_template == null:
 		_burn_template = main_mesh.get_active_material(0) as ShaderMaterial
@@ -128,7 +130,7 @@ func _physics_process(delta: float) -> void:
 	vel.z = 0.0 if is_2d else move_dir.z * SPEED
 
 	if not is_on_floor():
-		vel.y -= GRAVITY * delta
+		vel.y -= gravity * delta
 
 	if is_on_floor() and Input.is_action_just_pressed("jump"):
 		var horizontal_speed := Vector2(vel.x, vel.z).length()

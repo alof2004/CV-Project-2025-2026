@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=4 uid="uid://vb2gw7cf54s5"]
+[gd_scene load_steps=20 format=4 uid="uid://vb2gw7cf54s5"]
 
 [ext_resource type="PackedScene" uid="uid://cssfykhhlsyd1" path="res://Assets/cube.glb" id="1_6yhm0"]
 [ext_resource type="Texture2D" uid="uid://d1dynsvnu08tu" path="res://Assets/cave_ground_1.png" id="2_yvb3w"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://bh88oluaqr57q" path="res://Assets/cave_ground_3.png" id="4_umucf"]
 [ext_resource type="Texture2D" uid="uid://d3v3oelus1iib" path="res://Blender Files/cube_dirt2_image (2).png" id="5_dunqq"]
 [ext_resource type="Texture2D" uid="uid://3m20t361cqpn" path="res://Blender Files/cave_wall_2.png" id="6_umucf"]
+[ext_resource type="PackedScene" uid="uid://dp3uh8m57eaw" path="res://cube5.tscn" id="7_kfrfq"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_40sgn"]
 resource_name = "Material.001"
@@ -212,3 +213,6 @@ skeleton = NodePath("")
 [node name="Cube4" type="MeshInstance3D" parent="." index="3"]
 mesh = SubResource("ArrayMesh_e1k13")
 skeleton = NodePath("")
+
+[node name="Cube5" parent="." index="4" instance=ExtResource("7_kfrfq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.14, 0.205, 0)
