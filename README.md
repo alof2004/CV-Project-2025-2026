@@ -16,6 +16,7 @@ Other files at the repo root:
 - `controls.txt`: Input map controls to play the games
 - `changes.txt`: Notes on project changes.
 - `Presentation.pdf`: Presentation of the last class
+- `workload.txt`: Workload distribution between group members.
 
 Video Report link: [here](https://youtu.be/y0cSUOconcw)
 
