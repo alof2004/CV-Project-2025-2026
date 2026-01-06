@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://c1wm2hlalersx"]
+[gd_scene load_steps=34 format=3 uid="uid://c1wm2hlalersx"]
 
 [ext_resource type="Script" uid="uid://dtfofqwlgace1" path="res://Scripts/level3_objects.gd" id="1_fmter"]
 [ext_resource type="PackedScene" uid="uid://cu13py3mjk8m1" path="res://Scenes/large_island.tscn" id="2_ru0sm"]
@@ -22,6 +22,7 @@
 [ext_resource type="PackedScene" uid="uid://d3xr2ec1j7jy3" path="res://Scenes/light_bulb.tscn" id="20_7272a"]
 [ext_resource type="Script" uid="uid://21n7dn68s4mo" path="res://Scripts/kill_spikes.gd" id="21_bcbsr"]
 [ext_resource type="Shader" uid="uid://betjd852igm10" path="res://Shaders/edge_detection.gdshader" id="22_wo15c"]
+[ext_resource type="Shader" uid="uid://chf8lm8s6wge1" path="res://Shaders/pixelation.gdshader" id="23_ru0sm"]
 
 [sub_resource type="Environment" id="Environment_bptnd"]
 glow_intensity = 1.0
@@ -53,6 +54,30 @@ shader_parameter/stroke_color = Color(0, 0, 0, 1)
 shader_parameter/stroke_opacity = 0.50000002375
 shader_parameter/edge_threshold = 1.0
 shader_parameter/edge_smooth = 0.05
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_f6a1p"]
+viewport_path = NodePath("SubViewportContainer/SubViewport")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8ps5c"]
+resource_local_to_scene = true
+shader = ExtResource("22_wo15c")
+shader_parameter/source_tex = SubResource("ViewportTexture_f6a1p")
+shader_parameter/edge_strength = 0.30000001425
+shader_parameter/stroke_color = Color(0, 0, 0, 1)
+shader_parameter/stroke_opacity = 0.6000000285
+shader_parameter/edge_threshold = 0.10000000475
+shader_parameter/edge_smooth = 0.30000001425
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_ght27"]
+viewport_path = NodePath("SubViewportContainer/SubViewport")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xiiss"]
+resource_local_to_scene = true
+shader = ExtResource("23_ru0sm")
+shader_parameter/pixel_count = Vector2(320, 180)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_e7dnr"]
+viewport_path = NodePath("SubViewportContainer/SubViewport")
 
 [node name="Level3" type="Node3D" node_paths=PackedStringArray("lamp_node")]
 script = ExtResource("1_fmter")
@@ -191,6 +216,7 @@ shape = SubResource("BoxShape3D_80vsr")
 [node name="CanvasLayer2" type="CanvasLayer" parent="."]
 
 [node name="ColorRect" type="ColorRect" parent="CanvasLayer2"]
+visible = false
 material = SubResource("ShaderMaterial_20yf3")
 anchors_preset = 15
 anchor_right = 1.0
@@ -198,3 +224,16 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(1, 1, 1, 0)
+
+[node name="TextureRect2" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_8ps5c")
+offset_right = 1152.0
+offset_bottom = 648.0
+texture = SubResource("ViewportTexture_ght27")
+stretch_mode = 5
+
+[node name="TextureRect" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_xiiss")
+offset_right = 1152.0
+offset_bottom = 648.0
+texture = SubResource("ViewportTexture_e7dnr")

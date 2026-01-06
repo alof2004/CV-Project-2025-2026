@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://b6dfnjagko5dr"]
+[gd_scene load_steps=29 format=3 uid="uid://b6dfnjagko5dr"]
 
 [ext_resource type="PackedScene" uid="uid://cu13py3mjk8m1" path="res://Scenes/large_island.tscn" id="2_f0p6x"]
 [ext_resource type="Script" uid="uid://bat3srnpdiw03" path="res://Scripts/parallax_background.gd" id="5_4pe11"]
@@ -43,30 +43,29 @@ shader_parameter/light_direction = Vector3(-0.96, -0.18, 0.2)
 material = SubResource("ShaderMaterial_6v2wh")
 size = Vector2(2, 2)
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_jl3d8"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_tqo56"]
+viewport_path = NodePath("SubViewportContainer/SubViewport")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hwpcn"]
+resource_local_to_scene = true
+shader = ExtResource("12_rfcsb")
+shader_parameter/source_tex = SubResource("ViewportTexture_tqo56")
+shader_parameter/edge_strength = 0.30000001425
+shader_parameter/stroke_color = Color(0, 0, 0, 1)
+shader_parameter/stroke_opacity = 0.4850000230375
+shader_parameter/edge_threshold = 0.394000018715
+shader_parameter/edge_smooth = 0.5350000254125
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_n6ra6"]
 viewport_path = NodePath("SubViewportContainer/SubViewport")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_nupqn"]
 resource_local_to_scene = true
-shader = ExtResource("12_rfcsb")
-shader_parameter/source_tex = SubResource("ViewportTexture_jl3d8")
-shader_parameter/edge_strength = 0.30000001425
-shader_parameter/stroke_color = Color(0, 0, 0, 1)
-shader_parameter/stroke_opacity = 0.6000000285
-shader_parameter/edge_threshold = 0.10000000475
-shader_parameter/edge_smooth = 0.30000001425
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_f0p6x"]
-viewport_path = NodePath("SubViewportContainer/SubViewport")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_4pe11"]
-resource_local_to_scene = true
 shader = ExtResource("21_n6ra6")
 shader_parameter/pixel_count = Vector2(320, 180)
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_naxnf"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_f0p6x"]
 viewport_path = NodePath("SubViewportContainer/SubViewport")
-
 
 [node name="Level5" type="Node3D"]
 
@@ -144,11 +143,11 @@ script = ExtResource("13_nupqn")
 high_ground_start_x = 14
 high_ground_height = 0
 crystal_scene = ExtResource("14_hwpcn")
-crystal_pattern = "Manual"
-manual_crystal_cells = [Vector3i(0, 0, -4), Vector3i(4, 0, 0), Vector3i(8, 0, -4), Vector3i(12, 0, 0), Vector3i(16, 0, -4)]
 crystal_height_above_ground = 0.8
-crystal_scale = Vector3(0.7, 0.7, 0.7)
+crystal_pattern = "Manual"
+manual_crystal_cells = Array[Vector3i]([Vector3i(0, 0, -4), Vector3i(4, 0, 0), Vector3i(8, 0, -4), Vector3i(12, 0, 0), Vector3i(16, 0, -4)])
 add_small_jitter = false
+crystal_scale = Vector3(0.7, 0.7, 0.7)
 beam_block_enabled = true
 beam_block_cell = Vector3i(0, 0, -1)
 beam_emitter_path = NodePath("../BeamEmitter")
@@ -195,23 +194,23 @@ script = ExtResource("19_n6ra6")
 skeleton = NodePath("../..")
 
 [node name="CubeExclamation" parent="SubViewportContainer/SubViewport" instance=ExtResource("22_cube_excl")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 1, -4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 1, -8)
 gate_scene = ExtResource("24_gate")
 target_scene = ExtResource("23_level_select")
 gate_spawn_path = NodePath("../GridMap/GateSpawn")
 gate_world_offset = Vector3(0, -0.7, 0)
-gate_scale_mult = Vector3(0.007, 0.007, 0.007)
+require_all_prisms = true
+beam_emitter_path = NodePath("../BeamEmitter")
 
-[node name="TextureRect2" type="TextureRect" parent="."]
-visible = false
+[node name="TextureRect3" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_hwpcn")
+offset_right = 1152.0
+offset_bottom = 648.0
+texture = SubResource("ViewportTexture_n6ra6")
+stretch_mode = 5
+
+[node name="TextureRect4" type="TextureRect" parent="."]
 material = SubResource("ShaderMaterial_nupqn")
 offset_right = 1152.0
 offset_bottom = 648.0
 texture = SubResource("ViewportTexture_f0p6x")
-stretch_mode = 5
-
-[node name="TextureRect" type="TextureRect" parent="."]
-material = SubResource("ShaderMaterial_4pe11")
-offset_right = 1152.0
-offset_bottom = 648.0
-texture = SubResource("ViewportTexture_naxnf")

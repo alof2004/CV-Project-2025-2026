@@ -8,9 +8,17 @@ extends Node3D
 @export var gate_world_offset: Vector3 = Vector3.ZERO
 @export var trigger_once: bool = false
 
+@export_group("Beam Requirement")
+@export var require_all_prisms: bool = false
+@export var prism_group_name: StringName = &"beam_prism"
+@export var beam_emitter_path: NodePath
+
 var _gate_instance: Node3D = null
 
 func on_beam_hit(_hit_pos: Vector3, _hit_normal: Vector3, _segment: int) -> void:
+	if require_all_prisms and not _all_prisms_hit():
+		_set_gate_active(false)
+		return
 	_ensure_gate()
 	_set_gate_active(true)
 
@@ -70,3 +78,23 @@ func _node_has_property(n: Object, prop_name: String) -> bool:
 		if String(p.name) == prop_name:
 			return true
 	return false
+
+func _all_prisms_hit() -> bool:
+	var prisms := get_tree().get_nodes_in_group(prism_group_name)
+	if prisms.is_empty():
+		return true
+
+	var emitter := get_node_or_null(beam_emitter_path) as Node
+	if emitter == null:
+		push_warning("Cube gate: beam_emitter_path not set.")
+		return false
+
+	if not emitter.has_method("get_last_prisms_hit"):
+		push_warning("Cube gate: beam emitter missing get_last_prisms_hit().")
+		return false
+
+	var hit_list: Array = emitter.call("get_last_prisms_hit")
+	for prism in prisms:
+		if not hit_list.has(prism):
+			return false
+	return true

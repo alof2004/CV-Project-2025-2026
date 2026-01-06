@@ -58,15 +58,16 @@ lock_rotation = true
 freeze_mode = 1
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D2"]
-transform = Transform3D(1, -3.7252903e-09, 1.4901161e-08, 0, 1, 0, 1.4901161e-08, 1.4901161e-08, 1, 0, 0, 0)
+transform = Transform3D(1, -1.6093158e-09, -1.4814003e-08, 0, 0.99415094, -0.107999355, 1.4901161e-08, 0.107999355, 0.99415094, 0, 0, 0)
 shape = SubResource("ConcavePolygonShape3D_lx2hh")
 
 [node name="Cube" type="MeshInstance3D" parent="StaticBody3D2"]
+transform = Transform3D(1, 0, 0, 0, 0.99415094, -0.107999355, 0, 0.107999355, 0.99415094, 0, 0, 0)
 mesh = SubResource("ArrayMesh_1fos3")
 skeleton = NodePath("")
 
 [node name="SelectionAura" type="MeshInstance3D" parent="StaticBody3D2"]
-transform = Transform3D(1.0000001, -1.8626449e-09, -2.9802322e-08, 1.8626451e-09, 1.0000001, 7.450581e-09, 2.9802322e-08, -7.450581e-09, 1.0000001, 0, 0, 0)
+transform = Transform3D(1.0000001, -5.0812763e-09, -2.9628007e-08, 1.8517504e-09, 0.99415106, -0.10799937, 3.0003488e-08, 0.10799937, 0.99415106, 0, 0, 0)
 mesh = SubResource("ArrayMesh_1fos3")
 skeleton = NodePath("")
 surface_material_override/0 = ExtResource("1_lx2hh")

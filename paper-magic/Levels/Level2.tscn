@@ -44,13 +44,13 @@ shader_parameter/light_direction = Vector3(-0.96, -0.18, 0.2)
 material = SubResource("ShaderMaterial_na6ls")
 size = Vector2(2, 2)
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_jl3d8"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_l5acx"]
 viewport_path = NodePath("SubViewportContainer/SubViewport")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_jl3d8"]
 resource_local_to_scene = true
 shader = ExtResource("12_uyarr")
-shader_parameter/source_tex = SubResource("ViewportTexture_jl3d8")
+shader_parameter/source_tex = SubResource("ViewportTexture_l5acx")
 shader_parameter/edge_strength = 0.30000001425
 shader_parameter/stroke_color = Color(0, 0, 0, 1)
 shader_parameter/stroke_opacity = 0.6000000285
@@ -197,6 +197,7 @@ visible = false
 visible = false
 
 [node name="TextureRect2" type="TextureRect" parent="."]
+visible = false
 material = SubResource("ShaderMaterial_jl3d8")
 offset_right = 1152.0
 offset_bottom = 648.0

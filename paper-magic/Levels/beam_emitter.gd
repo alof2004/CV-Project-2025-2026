@@ -30,6 +30,7 @@ var _mat: StandardMaterial3D = StandardMaterial3D.new()
 var _thick_parent: Node3D
 var _thick_segments: Array[MeshInstance3D] = []
 var _last_receiver: Node = null
+var _last_prisms_hit: Array[Node] = []
 var _beam_light: OmniLight3D = null
 
 func _ready() -> void:
@@ -60,6 +61,7 @@ func _process(_delta: float) -> void:
 func _update_beam() -> void:
 	var points: PackedVector3Array = PackedVector3Array()
 	var hit_receiver: Node = null
+	var prisms_hit: Array[Node] = []
 
 	var dir: Vector3 = (-global_transform.basis.z).normalized()
 	if keep_horizontal_only:
@@ -91,8 +93,12 @@ func _update_beam() -> void:
 
 		# Stop if it isn't a prism (but allow receivers to react)
 		if not collider_node.is_in_group("beam_prism"):
+			_last_prisms_hit = prisms_hit
 			hit_receiver = _notify_beam_hit(collider_node, hit_pos, hit.get("normal", Vector3.ZERO), seg)
 			break
+
+		if not prisms_hit.has(collider_node):
+			prisms_hit.append(collider_node)
 
 		# Ask prism for exit point + exit direction
 		var exit_pos: Vector3 = hit_pos
@@ -137,6 +143,11 @@ func _update_beam() -> void:
 		_beam_light.light_color = beam_light_color
 		_beam_light.light_energy = beam_light_energy
 		_beam_light.omni_range = beam_light_range
+
+	_last_prisms_hit = prisms_hit
+
+func get_last_prisms_hit() -> Array[Node]:
+	return _last_prisms_hit.duplicate()
 
 func _notify_beam_hit(collider_node: Node, hit_pos: Vector3, hit_normal: Vector3, seg: int) -> Node:
 	if collider_node == null:

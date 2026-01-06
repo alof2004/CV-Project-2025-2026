@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://c01he1vgrnpvu"]
+[gd_scene load_steps=32 format=3 uid="uid://cwbfctn8j2rey"]
 
 [ext_resource type="MeshLibrary" uid="uid://d2u2045t6cgcx" path="res://cubes_mesh_lib9.tres" id="1_pp47a"]
 [ext_resource type="Script" uid="uid://4qdieh3k5asp" path="res://Scripts/map_level4.gd" id="2_idi36"]
@@ -22,6 +22,7 @@
 [ext_resource type="Texture2D" uid="uid://bkq4w6rfg84d8" path="res://Assets/forest_sprites/forest_short.png" id="20_mqg01"]
 [ext_resource type="Texture2D" uid="uid://b12x0viw2ehws" path="res://Assets/background_forest.png" id="21_84245"]
 [ext_resource type="Shader" uid="uid://chf8lm8s6wge1" path="res://Shaders/pixelation.gdshader" id="22_7b4vm"]
+[ext_resource type="Shader" uid="uid://betjd852igm10" path="res://Shaders/edge_detection.gdshader" id="22_idi36"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_na6ls"]
 render_priority = 0
@@ -41,17 +42,33 @@ size = Vector2(2, 2)
 [sub_resource type="BoxShape3D" id="BoxShape3D_wlwhd"]
 size = Vector3(571.80176, 0.001, 666.19214)
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_hrb3x"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_jl3d8"]
+viewport_path = NodePath("SubViewportContainer/SubViewport")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8ubki"]
+resource_local_to_scene = true
+shader = ExtResource("22_idi36")
+shader_parameter/source_tex = SubResource("ViewportTexture_jl3d8")
+shader_parameter/edge_strength = 0.30000001425
+shader_parameter/stroke_color = Color(0, 0, 0, 1)
+shader_parameter/stroke_opacity = 0.6000000285
+shader_parameter/edge_threshold = 0.10000000475
+shader_parameter/edge_smooth = 0.30000001425
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_d73st"]
+viewport_path = NodePath("SubViewportContainer/SubViewport")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_k7tvq"]
+resource_local_to_scene = true
 shader = ExtResource("22_7b4vm")
 shader_parameter/pixel_count = Vector2(320, 180)
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_ei6r3"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_62xmr"]
 viewport_path = NodePath("SubViewportContainer/SubViewport")
 
 [node name="Level4" type="Node3D"]
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="."]
-visible = false
 texture_filter = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -65,7 +82,7 @@ stretch_shrink = 3
 handle_input_locally = false
 size = Vector2i(384, 216)
 render_target_clear_mode = 1
-render_target_update_mode = 0
+render_target_update_mode = 4
 
 [node name="GridMap" type="GridMap" parent="SubViewportContainer/SubViewport"]
 mesh_library = ExtResource("1_pp47a")
@@ -191,9 +208,15 @@ position = Vector2(218, 676.295)
 scale = Vector2(21.84, 0.425)
 texture = ExtResource("21_84245")
 
-[node name="TextureRect" type="TextureRect" parent="."]
-visible = false
-material = SubResource("ShaderMaterial_hrb3x")
+[node name="TextureRect2" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_8ubki")
 offset_right = 1152.0
 offset_bottom = 648.0
-texture = SubResource("ViewportTexture_ei6r3")
+texture = SubResource("ViewportTexture_d73st")
+stretch_mode = 5
+
+[node name="TextureRect3" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_k7tvq")
+offset_right = 1152.0
+offset_bottom = 648.0
+texture = SubResource("ViewportTexture_62xmr")

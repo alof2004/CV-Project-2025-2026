@@ -65,6 +65,7 @@ skeleton = NodePath("")
 
 [node name="SelectionAura" type="MeshInstance3D" parent="."]
 transform = Transform3D(-2.1855694e-06, -50, 0, 50, -2.1855694e-06, 0, 0, 0, 50, 0, 1.685, 0)
+visible = false
 mesh = SubResource("ArrayMesh_gj2ed")
 skeleton = NodePath("")
 surface_material_override/0 = ExtResource("3_4gsdk")

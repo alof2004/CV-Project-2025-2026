@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://dfmvbxfnwxw4p"]
+[gd_scene load_steps=26 format=3 uid="uid://dfmvbxfnwxw4p"]
 
 [ext_resource type="Script" uid="uid://bat3srnpdiw03" path="res://Scripts/parallax_background.gd" id="1_hx0pg"]
 [ext_resource type="Texture2D" uid="uid://cv4h4cv1vqn42" path="res://Assets/purple/background_cave.png" id="2_uyp6w"]
@@ -14,7 +14,10 @@
 [ext_resource type="MeshLibrary" uid="uid://c8ta2xr53wxr" path="res://cubes_mesh_lib3.tres" id="12_ijr61"]
 [ext_resource type="Script" uid="uid://crxribpscxxol" path="res://Scripts/floor_cave_level.gd" id="13_preed"]
 [ext_resource type="PackedScene" uid="uid://xnd1qv10g2i" path="res://Scenes/lighted_torch.tscn" id="14_tf1wj"]
-[ext_resource type="PackedScene" uid="uid://5dkf6x7sqao6" path="res://Scenes/gate.tscn" id="15_y4skv"]
+[ext_resource type="PackedScene" uid="uid://beh7un0tayai" path="res://Scenes/mini_box.tscn" id="15_xc3xs"]
+[ext_resource type="Shader" uid="uid://betjd852igm10" path="res://Shaders/edge_detection.gdshader" id="16_t21pv"]
+[ext_resource type="PackedScene" uid="uid://fj2wnd5hej5a" path="res://Scenes/box.tscn" id="16_tqo56"]
+[ext_resource type="Shader" uid="uid://chf8lm8s6wge1" path="res://Shaders/pixelation.gdshader" id="17_xc3xs"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_na6ls"]
 render_priority = 0
@@ -30,6 +33,30 @@ shader_parameter/light_direction = Vector3(-0.96, -0.18, 0.2)
 [sub_resource type="QuadMesh" id="QuadMesh_8eeko"]
 material = SubResource("ShaderMaterial_na6ls")
 size = Vector2(2, 2)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_tqo56"]
+viewport_path = NodePath("SubViewportContainer/SubViewport")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4hxla"]
+resource_local_to_scene = true
+shader = ExtResource("16_t21pv")
+shader_parameter/source_tex = SubResource("ViewportTexture_tqo56")
+shader_parameter/edge_strength = 0.30000001425
+shader_parameter/stroke_color = Color(0, 0, 0, 1)
+shader_parameter/stroke_opacity = 0.4850000230375
+shader_parameter/edge_threshold = 0.394000018715
+shader_parameter/edge_smooth = 0.5350000254125
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_suhnr"]
+viewport_path = NodePath("SubViewportContainer/SubViewport")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gej81"]
+resource_local_to_scene = true
+shader = ExtResource("17_xc3xs")
+shader_parameter/pixel_count = Vector2(320, 180)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_2xbb2"]
+viewport_path = NodePath("SubViewportContainer/SubViewport")
 
 [node name="Cave" type="Node3D"]
 
@@ -131,7 +158,6 @@ mesh = SubResource("QuadMesh_8eeko")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport"]
 transform = Transform3D(-0.89885336, 0.4342035, 0.059413314, -0.33135426, -0.7620626, 0.5562957, 0.2868222, 0.48034137, 0.8288577, 0, 100, 30.232)
-visible = false
 light_color = Color(0.59350556, 0.6596805, 0.79592276, 1)
 light_indirect_energy = 9.0
 
@@ -139,5 +165,19 @@ light_indirect_energy = 9.0
 mesh_library = ExtResource("12_ijr61")
 script = ExtResource("13_preed")
 torch_scene = ExtResource("14_tf1wj")
-gate_scene = ExtResource("15_y4skv")
+gate_scene = ExtResource("15_xc3xs")
+box_scene = ExtResource("16_tqo56")
 metadata/_editor_floor_ = Vector3(0, 0, 0)
+
+[node name="TextureRect2" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_4hxla")
+offset_right = 1152.0
+offset_bottom = 648.0
+texture = SubResource("ViewportTexture_suhnr")
+stretch_mode = 5
+
+[node name="TextureRect" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_gej81")
+offset_right = 1152.0
+offset_bottom = 648.0
+texture = SubResource("ViewportTexture_2xbb2")

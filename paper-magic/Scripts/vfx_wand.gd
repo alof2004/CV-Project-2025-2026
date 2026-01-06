@@ -368,8 +368,6 @@ func _get_aura_material(aura: MeshInstance3D) -> StandardMaterial3D:
 	sm.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	sm.alpha_scissor_threshold = 0.0
 	sm.depth_draw_mode = BaseMaterial3D.DEPTH_DRAW_DISABLED
-	sm.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	sm.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
 	sm.render_priority = 1
 
 	if not aura_base_energy.has(aura):
