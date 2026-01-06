@@ -20,3 +20,5 @@ Other files at the repo root:
 Video Report link: [here](https://youtu.be/y0cSUOconcw)
 
 itch.io page link: [here](https://alof04.itch.io/mage-chronicles)
+
+Github page link: [here](https://github.com/alof2004/CV-Project-2025-2026)
